@@ -47,7 +47,7 @@ $Dashboard-theme: mat.define-light-theme((
 $primary: $Dashboard-primary;
 $accent:  $Dashboard-accent;
 $warn:  $Dashboard-warn;
-$apptheme:   mat.define-light-theme($primary, $accent);
+$apptheme:   mat.define-dark-theme($primary, $accent);
 
 // Include the default theme styles.
 @include mat.all-component-themes($apptheme);
@@ -178,7 +178,7 @@ $custom-typography: mat.define-typography-config(
 
 
 html {
-  background-color: white;  
+  background-color: rgba(0, 0, 0, 0.87);  
 }
 
 body {
@@ -190,7 +190,7 @@ body {
 
  
   .container {
-    max-width: 1100px;
+    max-width: 1000px;
     min-height: 100vh;
     margin: auto;
     padding: 1.2rem;
@@ -223,7 +223,7 @@ a:visited {
 }
 
 .mat-toolbar {
-    background: #fafafa;
+    background: #fafafa00;
 }
 
 .mat-card-avatar {

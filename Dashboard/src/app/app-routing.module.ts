@@ -14,10 +14,10 @@ const routes: Routes = [
     path: 'profile', component: ProfileComponent,
     canActivate: [AuthGuardService]
   },
-  {
+  /* {
     path: 'private', component: PrivateComponent,
     canActivate: [AuthGuardService]
-  },
+  }, */
   {
     path: 'admin', component: AdminComponent,
     canActivate: [AuthGuardService]

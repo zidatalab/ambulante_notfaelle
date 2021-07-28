@@ -4,12 +4,11 @@
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
-            <h1>Projektname</h1>
+            <h1>Ambulante Notfälle in Deutschland</h1>
         </div>
         <p *ngIf="!this.currentuser">
-            Dieses Dashboard ist ein internes Informationsportal **Projektbeschreibung**. Bitte
-            melden
-            Sie sich an, um Zugriff auf die enthaltenen Informationen zu erhalten.</p>
+            Dieses Dashboard ist ein internes Informationsportal zu ambulanten Notfällen in Deutschland. Bitte
+            melden Sie sich an, um Zugriff auf die enthaltenen Informationen zu erhalten. Aktuell ist das Portal noch ein Prototyp</p>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
         </p>
@@ -23,9 +22,6 @@
     </div>
 
     <div *ngIf="this.metadata && !this.progress">
-        <ng-container *ngIf="!(this.metadata.length>0 && this.levelvalues.length>0)">
-            <mat-progress></mat-progress>
-        </ng-container>
          <ng-container *ngIf="this.metadata.length>0 && this.levelvalues.length>0">
             <h1>Auswahl</h1>
             <h3><strong>Regionen</strong></h3>

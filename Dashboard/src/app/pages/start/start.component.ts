@@ -80,12 +80,14 @@ export class StartComponent implements OnInit {
     }
     if(this.metadata){
       if (this.metadata.length>0){
+        console.log("first try meta")
         this.dometasettings();
       }      
     }
     setTimeout(() => {
       if ((!this.metadata == false) && (!this.sortdata == false)) {
         if (this.metadata.length > 0) {
+          console.log("timeout try meta")
           this.dometasettings();
         }
       }

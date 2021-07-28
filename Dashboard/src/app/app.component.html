@@ -8,16 +8,16 @@
       <!-- <span>{{this.title}}</span> -->
       <span class="example-spacer"></span>
       <div fxShow="true" fxHide.lt-sm="true">  
-      <img src="./assets/branding/logo_project.png"
-      class="brandinglogo" >
+<!--       <img src="./assets/branding/logo_project.png"
+      class="brandinglogo" > -->
       <a href="https://www.zi.de">
         <img src="https://ziwebstorage.blob.core.windows.net/appradar/assets/logo_zi_small_transparent.png"
           class="brandinglogo">       
       </a>
       </div>
       <div fxShow="false" fxShow.lt-sm="true">  
-        <img src="./assets/branding/logo_project.png"
-        class="brandinglogotiny" >
+<!--          <img  src="./assets/branding/logo_project.png"
+        class="brandinglogotiny" >  -->
         <a href="https://www.zi.de">
           <img src="https://ziwebstorage.blob.core.windows.net/appradar/assets/logo_zi_small_transparent.png"
             class="brandinglogotiny">       
@@ -52,14 +52,14 @@
                 </a>
 
               </div>
-              <div *ngIf="this.loginstatus">
+<!--               <div *ngIf="this.loginstatus">
 
                 <a mat-icon-button (click)="drawer.toggle();" routerLink="/private">
                   <mat-icon class="icon">lock_open</mat-icon>
                   <span>Interne Tools</span>
                 </a>
 
-              </div>
+              </div> -->
               <div *ngIf="this.loginstatus">
 
                 <a mat-icon-button (click)="drawer.toggle();" routerLink="/profile">
