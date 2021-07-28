@@ -4,10 +4,10 @@
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
-            <h1>Kleinräumige GBE der Stadt Köln</h1>
+            <h1>Projektname</h1>
         </div>
         <p *ngIf="!this.currentuser">
-            Dieses Dashboard ist ein internes Informationsportal zur gesundheitlichen Lage der Bevölkerung Kölns. Bitte
+            Dieses Dashboard ist ein internes Informationsportal **Projektbeschreibung**. Bitte
             melden
             Sie sich an, um Zugriff auf die enthaltenen Informationen zu erhalten.</p>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">

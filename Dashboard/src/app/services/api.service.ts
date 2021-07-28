@@ -11,7 +11,7 @@ export class ApiService {
  
  
   public REST_API_SERVER =  "https://zidashboardapi.azurewebsites.net/";  //"http://localhost:8000/" ;// "https://zidashboardapi.azurewebsites.net/";  "http://localhost:8000/" //
-  public REST_API_SERVER_CLIENTID = "2021_06_gbe_koeln"; 
+  public REST_API_SERVER_CLIENTID = "test_client"; 
   public primarycolor = "e1141c"; // "#e91e63";
   public accentcolor = "3714e1";
   public warncolor = "e1149b";
