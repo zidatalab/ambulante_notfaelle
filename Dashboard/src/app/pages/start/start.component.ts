@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { SmedAggregationService } from 'src/app/services/smed-aggregation.service';
 
 
 
@@ -13,7 +14,7 @@ export class StartComponent implements OnInit {
 
 
 
-  constructor(private api: ApiService, private auth: AuthService) { }
+  constructor(private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
   metadata=[];
   progress:boolean;
   metadataok: boolean;
@@ -34,7 +35,12 @@ export class StartComponent implements OnInit {
   geojson_available: any;
   colorsscheme: any;
   levelid:string;
-  datakeystable:any;
+  datakeystable:any;  
+  
+  // SMED
+  stats_ts:any;
+  symptoms_list:any;
+  summaryinfo={};
   
 
   ngOnInit(): void {
@@ -45,16 +51,17 @@ export class StartComponent implements OnInit {
     this.mapdata=[];
     this.updatemetadata();
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok) { this.querydata();}
+    if (this.metadataok) {this.querydatasmed();}
     // Wait if no metadata and try again. Fixes logout behaviour
     else {
       setTimeout(() => {
         this.updatemetadata();
         if (this.metadataok) {
-          this.querydata()
+          this.querydatasmed();
         }
         else {
           this.progress=false;
+          
         };
       }, 1500);
     }    
@@ -69,7 +76,7 @@ export class StartComponent implements OnInit {
 
   setlevel(level, value) {
     this.levelsettings[level] = value;
-    this.querydata();
+    this.querydatasmed();
   }
 
   updatemetadata() {
@@ -80,14 +87,12 @@ export class StartComponent implements OnInit {
     }
     if(this.metadata){
       if (this.metadata.length>0){
-        console.log("first try meta")
         this.dometasettings();
       }      
     }
     setTimeout(() => {
       if ((!this.metadata == false) && (!this.sortdata == false)) {
         if (this.metadata.length > 0) {
-          console.log("timeout try meta")
           this.dometasettings();
         }
       }
@@ -111,7 +116,7 @@ export class StartComponent implements OnInit {
   dometasettings(){
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
           this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];
-          this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.level)[0]["values"];
+          this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.levelid)[0]["values"];
           if (this.levelvalues) {
             this.levelsettings["levelvalues"] = this.levelvalues[0]
               ;
@@ -122,7 +127,7 @@ export class StartComponent implements OnInit {
           this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
           if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
           this.metadataok = true;
-          this.progress=false;
+          this.progress=false;          
   }
   thereismapdata() {
     let res = this.thereisdata() && this.mapdata
@@ -131,21 +136,10 @@ export class StartComponent implements OnInit {
 
   querydata() {
     let query = {
-      "client_id": this.api.REST_API_SERVER_CLIENTID,
-      "groupinfo": {},
-      "showfields": [this.levelsettings["outcomes"]]
+      "client_id": this.api.REST_API_SERVER_CLIENTID      
     };
     let outcomeinfo = this.api.filterArray(this.metadata, "varname", this.levelsettings["outcomes"])[0]['type'];
     query["groupinfo"][this.level] = this.levelsettings["levelvalues"];
-    let i = 0
-    for (let group of this.subgroups) {
-      if (i > 0) {
-        if (this.levelsettings["subgroups"] != group && this.levelsettings["subgroups"] != this.subgroups[0]) {
-          query["groupinfo"][group] = this.api.filterArray(this.metadata, "varname", group)[0]["allforlevel"];
-        }
-      }
-      i++;
-    }
     this.api.postTypeRequest('get_data/', query).subscribe(data => {
       this.datakeys = Object.keys(data["data"][0]);
       this.datakeystable = Object.keys(data["data"][0]);
@@ -188,6 +182,38 @@ export class StartComponent implements OnInit {
     });
 
  
+  }
+
+  querydatasmed(){
+    let query = {
+      "client_id": this.api.REST_API_SERVER_CLIENTID      ,
+      "groupinfo":{}
+    };
+
+    query["groupinfo"]["level"] = "KV"
+    query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
+
+    this.api.postTypeRequest('get_data/', query).subscribe(
+      data => {this.data = data["data"][0];
+      this.makesmeditems();},
+      error => {this.data = NaN;});
+  }
+
+  makesmeditems(){
+    let statswdate = this.data["stats"];
+    // Change date here
+
+    statswdate = this.smed.adddate(statswdate,"Jahr","KW");
+    this.stats_ts=statswdate;
+    
+    let symptoms_list = this.data["mainsymptoms_ts"] ;
+    // Change date here
+
+    symptoms_list = this.smed.aggsymptoms(symptoms_list);
+    this.symptoms_list=symptoms_list.slice(0,20);
+    this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
+    this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
+    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.api.getValues(this.stats_ts,"Dauer_sek").length;
   }
 
 

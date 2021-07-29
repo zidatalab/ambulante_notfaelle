@@ -35,10 +35,9 @@ export class PlotComponent implements OnInit {
   @Input() ytitle = "";
   @Input() id = "";
   @Input() divid = "";
-
-  fontfamily = "Lato, sans-serif";
-  fontsize = ".85rem";
-  fontcolor= "black";
+  @Input() fontfamily = "Lato, sans-serif";
+  @Input() fontsize = ".85rem";
+  @Input() fontcolor= "black";
 
   constructor(private api:ApiService) { }
   plotlayout: any;
@@ -127,7 +126,7 @@ export class PlotComponent implements OnInit {
           gridcolor: "lightgrey",
           gridpattern: "dot",
           gridwidth: 1,
-          zerolinecolor: "black",
+          zerolinecolor: this.fontcolor,
           zerolinewidth: 2,
           annotations: this.annotations,
           ticksuffix:" ",
