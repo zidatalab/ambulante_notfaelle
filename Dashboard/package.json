@@ -1,6 +1,6 @@
 {
-  "name": "baredashboard",
-  "version": "0.9.9",
+  "name": "ambulantenotfaelle",
+  "version": "0.9.91",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
