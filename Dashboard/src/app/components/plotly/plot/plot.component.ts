@@ -108,7 +108,11 @@ export class PlotComponent implements OnInit {
       this.plotlayout = {
         barmode: "stack",
         xaxis: { fixedrange: false, showgrid: false, type: 'category', automargin: false},
-        yaxis: { fixedrange: true, title: '',  autosize: true, automargin: true, rangemode: 'tozero',ticksuffix:" " , nticks:this.n_yticks},
+        yaxis: { fixedrange: true, title: '',  autosize: true, automargin: true, 
+        rangemode: 'tozero',ticksuffix:" " , 
+        zerolinecolor: this.fontcolor,
+        zerolinewidth: 2,
+        nticks:this.n_yticks},
         padding: 0,
         legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
@@ -147,8 +151,12 @@ export class PlotComponent implements OnInit {
     if (this.plottype == "hbar") {
       this.plotlytype = "hbar";
       this.plotlayout = {
-        xaxis: { fixedrange: true, showgrid: false, title: '', automargin: true, nticks:this.n_yticks },
-        yaxis: { fixedrange: false, type: 'category', automargin: true, rangemode: 'tozero' ,ticksuffix:" "},
+        xaxis: { fixedrange: true, showgrid: true, title: '',       
+          automargin: true, nticks:this.n_yticks },
+        yaxis: { fixedrange: false, type: 'category', automargin: true, 
+        rangemode: 'tozero' ,ticksuffix:" ",
+        zerolinecolor: this.fontcolor,
+        zerolinewidth: 2},
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
         margin: { l: 200, r: 0, b: 20, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
