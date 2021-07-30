@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -231,7 +232,6 @@ export class StartComponent implements OnInit {
         enddate = new Date(today.getTime() - today.getDay()*millisperday);
         startdate = new Date(enddate.getTime()-((6))*millisperday);        
       }
-      console.log("APPLY FILTER","\ntoday",today,"\nstart",startdate,"\nend",enddate);
       for (let item of statswdate){
         item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
       }
@@ -240,6 +240,7 @@ export class StartComponent implements OnInit {
       }
       statswdate = this.api.filterArray(statswdate,"touse",true); 
       symptoms_list = this.api.filterArray(symptoms_list,"touse",true); 
+      this.levelsettings["anperioddays"]= Math.floor((enddate-startdate)/millisperday);
       this.progress=false;
     }
     

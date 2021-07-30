@@ -85,14 +85,14 @@
             </mat-card>
 
         </div>
-        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts">
+        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts && this.levelsettings['anperioddays']>7">
             <mat-card>
                 <h3>Assessments pro Woche</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [outcomes]="['Anzahl']"
                     [fontcolor]="'white'" plottype="tsline"></app-plot>
             </mat-card>
         </div>
-        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts">
+        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts && this.levelsettings['anperioddays']>7">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
