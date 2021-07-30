@@ -108,8 +108,113 @@
                     [outcomes]="['n']" plottype="hbar"></app-plot>
             </mat-card>
         </div>
-       
-
-    </div>
+        <!-- Detailergebnisse für kleine Zeiträume -->
+        <ng-container *ngIf="this.levelsettings['zeitraum']!=='Gesamt'">
+        <div fxFlex fxFlex.lt-md=100>
+            <mat-card>
+                <h3>Dringlichkeit der Behandlung</h3>
+                <div *ngIf="!this.ts_results['1_dingl_ort']">
+                    <mat-card class="fakecontent">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <h1><mat-icon>insights</mat-icon></h1>
+                               <mat-spinner [diameter]="30"></mat-spinner>
+                            </div>
+                        </div>
+                    </mat-card>                                        
+                </div>
+                <div  *ngIf="this.ts_results['1_dingl_ort']">
+                    <ng-container *ngIf="this.ts_results['1_dingl_ort'].length>0">
+                        Ergebnis:
+                        {{this.ts_results['1_dingl_ort'] | json}}
+                    </ng-container>                    
+                    <ng-container *ngIf="!(this.ts_results['1_dingl_ort'].length>0)">
+                        <p>Keine Daten</p>
+                    </ng-container>                    
+                </div>
+                <p class="mat-caption greycolor">Ergebnis zu empfohlenem Behandlungsort und -zeitpunkt.</p>
+              
+            </mat-card>
+        </div>
+       <!--  <div fxFlex=50 fxFlex.lt-md=100         *ngIf="this.currentuser">
+            <mat-card>
+                <h3>Abweichung zwischen Empfehlung und Entscheidung</h3>
+                <div *ngIf="!this.ts_results['2_abweichung']">
+                    <mat-card class="fakecontent">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <h1><mat-icon>insights</mat-icon></h1>
+                               <mat-spinner [diameter]="30"></mat-spinner>
+                            </div>
+                        </div>
+                    </mat-card>                                        
+                </div>
+                <div  *ngIf="this.ts_results['2_abweichung']">
+                    <ng-container *ngIf="this.ts_results['2_abweichung'].length>0">
+                        Ergebnis:
+                        {{this.ts_results['2_abweichung'] | json}}
+                    </ng-container>                    
+                    <ng-container *ngIf="!(this.ts_results['2_abweichung'].length>0)">
+                        <p>Keine Daten</p>
+                    </ng-container>                    
+                </div>
+                <p class="mat-caption greycolor">Nur für den internen Gebrauch.</p>              
+            </mat-card>
+        </div> -->
+        <div fxFlex=50 fxFlex.lt-md=100>
+            <mat-card>
+                <h3>Dauer nach Hauptsymptom</h3>
+                <div *ngIf="!this.ts_results['3_dauer_sympt']">
+                    <mat-card class="fakecontent">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <h1><mat-icon>insights</mat-icon></h1>
+                               <mat-spinner [diameter]="30"></mat-spinner>
+                            </div>
+                        </div>
+                    </mat-card>                                        
+                </div>
+                <div  *ngIf="this.ts_results['3_dauer_sympt']">
+                    <ng-container *ngIf="this.ts_results['3_dauer_sympt'].length>0">
+                        Ergebnis:
+                        {{this.ts_results['3_dauer_sympt'] | json}}
+                    </ng-container>                    
+                    <ng-container *ngIf="!(this.ts_results['3_dauer_sympt'].length>0)">
+                        <p>Keine Daten</p>
+                    </ng-container>                    
+                </div>
+                <p class="mat-caption greycolor">Dauer der Ersteinschätzung nach den häufigsten Hauptsymptomen.</p>              
+            </mat-card>
+        </div>
+    
+    <div fxFlex=50 fxFlex.lt-md=100>
+        <mat-card>
+            <h3>Dringlichkeit nach Hauptsymptom</h3>
+            <div *ngIf="!this.ts_results['4_dingl_sympt']">
+                <mat-card class="fakecontent">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <div>
+                            <h1><mat-icon>insights</mat-icon></h1>
+                           <mat-spinner [diameter]="30"></mat-spinner>
+                        </div>
+                    </div>
+                </mat-card>                                        
+            </div>
+            <div  *ngIf="this.ts_results['4_dingl_sympt']">
+                <ng-container *ngIf="this.ts_results['4_dingl_sympt'].length>0">
+                    Ergebnis:
+                    {{this.ts_results['4_dingl_sympt'] | json}}
+                </ng-container>                    
+                <ng-container *ngIf="!(this.ts_results['4_dingl_sympt'].length>0)">
+                    <p>Keine Daten</p>
+                </ng-container>                    
+            </div>
+            <p class="mat-caption greycolor">Dinglichkeit der Behandlung nach den häufigsten Hauptsymptomen.</p>
+          
+        </mat-card>
+    </div>      
+    </ng-container>
+</div>
+    
 
 </div>

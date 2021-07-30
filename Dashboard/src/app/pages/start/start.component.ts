@@ -44,7 +44,7 @@ export class StartComponent implements OnInit {
   summaryinfo={};
   smedrange={};
   zeitaumoptions=["Letzte Woche","Letzte 4 Wochen","Aktuelles Jahr","Letztes Jahr","Gesamt","Detailliert"];
-
+  ts_results={};
   ngOnInit(): void {
     this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Gesamt"};
     this.summaryinfo["done"]=false;
@@ -201,6 +201,29 @@ export class StartComponent implements OnInit {
       error => {this.data = NaN;this.progress=false;});
   }
 
+  querysmedts(groupvars=[],outcome="",resultname){
+    if (this.levelsettings["zeitraum"]!=="Gesamt") {    
+    // console.log("MY TURN! Settings:",this.levelsettings,"Group",groupvars,"Out",outcome)
+    let query = {
+      "startdate": this.levelsettings['start'].toISOString().slice(0,10),
+      "stopdate": this.levelsettings['end'].toISOString().slice(0,10),
+      "subgroups": groupvars,
+     // API ERROR:
+     // "filterlist": [{"level":"KV"},{"levelid":this.levelsettings["levelvalues"]}]
+    }
+    if (outcome!=""){
+      query["outcome"]=groupvars;
+    }
+    console.log("QUERY:",query);
+    return this.api.postTypeRequest('analytics/timeseries/', query).subscribe(
+      data => {this.ts_results[resultname]=data["result"];},
+      error => {this.ts_results[resultname]=[];});
+    }
+    else {
+      this.ts_results[resultname]=[];
+    };     
+  }
+
   makesmeditems(){
     this.summaryinfo["done"]=false;
     let statswdate = this.data["stats"];
@@ -241,6 +264,8 @@ export class StartComponent implements OnInit {
       statswdate = this.api.filterArray(statswdate,"touse",true); 
       symptoms_list = this.api.filterArray(symptoms_list,"touse",true); 
       this.levelsettings["anperioddays"]= Math.floor((enddate-startdate)/millisperday);
+      this.levelsettings["start"]=startdate;
+      this.levelsettings["end"]=enddate;
       this.progress=false;
     }
     
@@ -254,8 +279,19 @@ export class StartComponent implements OnInit {
     this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.api.getValues(this.stats_ts,"Dauer_sek").length;
     this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
-    this.summaryinfo["done"]=true;
+    this.summaryinfo["done"]=true;    
     }
+
+    // Query TS Data;
+          // Keys:
+          // 'timestamp', 'Dauer_sek', 'Geschlecht', 'ALTER_text', 'ALTER_id', 'TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id', 'SMED_Level', 'levelid', 'Hauptbeschwerde', 'Nebenbeschwerden', 'level', 'client_id'
+          this.ts_results={};
+          this.querysmedts(['TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id'],"","1_dingl_ort");
+          // HIER SPÄTER Abweichung zwischen Empfehlung und Entscheidung: 2_abweichung
+          // 3_dauer_sympt          
+          // 4_dringl_symp
+          this.querysmedts(['Hauptbeschwerde'],'TTTsmed_text','4_dringl_symp');
+
   }
 
   smeddetailquery(){

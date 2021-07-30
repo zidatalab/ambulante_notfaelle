@@ -38,3 +38,19 @@
  .minheight {
     margin-bottom: 2rem;
 }
+
+.fakecontent {
+    background-color: rgba(255, 255, 255, 0.185);
+    color:rgba(255, 255, 255, 0.466);
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+    min-height: 150px;
+    height: 100%;
+}
+.grey {
+    
+        stroke:rgba(255, 255, 255, 0.466)!important;
+        
+    
+}
