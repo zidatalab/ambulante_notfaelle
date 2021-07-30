@@ -16,14 +16,11 @@ adddate(Array,yearvar,isoweekvar){
 }
 
 getDateOfISOWeek(w, y) {
-  var simple = new Date(y, 0, 1 + (w -1) * 7);
-  var dow = simple.getDay();
-  var ISOweekStart = simple;
-  if (dow <= 4)
-      ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-  else
-      ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-  return ISOweekStart.toISOString();
+  let millisperday = 1000*60*60*24;
+  let yearstart = new Date(y+"-01-01");
+  yearstart=new Date(yearstart.getTime()-(yearstart.getDay()-1)*millisperday)
+  let ISOweekStart = new Date(yearstart.getTime()+millisperday*7*(w+1));
+  return ISOweekStart;
 }
 
 aggsymptoms(symptomsobject){

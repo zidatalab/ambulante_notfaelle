@@ -24,22 +24,46 @@
 
     <div *ngIf="this.metadata && !this.progress && this.currentuser">
         <ng-container *ngIf="this.metadata.length>0 && this.levelvalues.length>0">
+            <h3>KV</h3>
             <p>
                 <mat-chip-list>
                     <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.levelvalues"
-                        [selected]="(this.levelsettings['levelvalues']==item)" color="primary"
-                        [disabled]="this.levelsettings['subgroups']!='Keine'">
-                        {{item}}<span *ngIf="this.geojson_available.indexOf(item)>=0">
-                            <mat-icon class="primarycolor flagicon">map</mat-icon>
-                        </span>
+                        [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
+                        {{item}}
                     </mat-chip>
                 </mat-chip-list>
             </p>
+            <h3>Analysezeitraum</h3>
+            <p>
+                <mat-chip-list>
+                    <mat-chip (click)="this.setlevel('zeitraum',item);" *ngFor="let item of this.zeitaumoptions"
+                        [selected]="(this.levelsettings['zeitraum']==item)" color="primary">
+                        {{item}}
+                    </mat-chip>
+                </mat-chip-list>
+            </p>
+            <p *ngIf="this.levelsettings['zeitraum']=='Detailliert'">
+                <mat-form-field appearance="fill">
+                    <mat-label>Analysezeitraum</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                      <input (dateChange)="smeddetailquery()" matStartDate placeholder="Start date" [(ngModel)]="this.levelsettings['start']">
+                      <input (dateChange)="smeddetailquery()" matEndDate placeholder="End date" [(ngModel)]="this.levelsettings['end']">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                  </mat-form-field>
+            </p>            
         </ng-container>
     </div>    
-    <div *ngIf="this.symptoms_list && this.stats_ts" fxLayout="row wrap">
-        <div fxFlex=100  >
-            <mat-card>
+    <div *ngIf="!this.summaryinfo['done'] && !this.progress && 
+    (this.levelsettings['zeitraum']!=='Detailliert' || (this.levelsettings['start'] && this.levelsettings['end']))">
+        <p>
+            Keine Daten verfügbar
+        </p>
+    </div>
+    <div *ngIf="this.symptoms_list && this.stats_ts && this.summaryinfo['done']" fxLayout="row wrap">
+        <div fxFlex=100 >
+            <mat-card >
                 <div  fxLayout="row wrap">
                 <div fxFlex  fxFlex.lt-md=100>
                     <app-box 

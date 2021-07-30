@@ -26,6 +26,7 @@ export class BoxComponent implements OnInit {
     this.value = Number(this.value);
     if (!this.numberformat) { this.numberformat = '1.1-1'; }
     if (!this.maincolor) { this.maincolor = this.api.primarycolor; }
+    if (!this.cutoffs) { this.cutoffs = []; }
     this.setcolor();
   };
 

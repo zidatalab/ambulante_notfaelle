@@ -25,7 +25,8 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSliderModule} from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [],
@@ -36,6 +37,8 @@ import { FormsModule } from '@angular/forms';
     MatSidenavModule,
     MatToolbarModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatIconModule,
     MatListModule,
     MatCardModule,
@@ -65,9 +68,11 @@ import { FormsModule } from '@angular/forms';
     MatSliderModule,
     FormsModule,
     MatCheckboxModule,
+    MatDatepickerModule,
     MatToolbarModule,
     MatIconModule,
     MatListModule,
+    MatNativeDateModule,
     MatCardModule,
     MatButtonModule,
     MatTableModule,
@@ -85,7 +90,8 @@ import { FormsModule } from '@angular/forms';
     MatChipsModule,
     MatBadgeModule,
     MatStepperModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+  
     
   ]
 })
