@@ -96,7 +96,7 @@
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [fontcolor]="'white'" 
+                    [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']"
                     [outcomes]="['Dauer_sek']" plottype="tsline"></app-plot>
             </mat-card>
         </div>
