@@ -110,7 +110,7 @@
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->
         <ng-container *ngIf="this.levelsettings['zeitraum']!=='Gesamt'">
-        <div fxFlex fxFlex.lt-md=100>
+        <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
                 <h3>Dringlichkeit der Behandlung</h3>
                 <div *ngIf="!this.ts_results['1_dingl_ort']">
@@ -169,7 +169,7 @@
                 <p class="mat-caption greycolor">Nur für den internen Gebrauch.</p>              
             </mat-card>
         </div> -->
-        <div fxFlex=50 fxFlex.lt-md=100>
+        <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
                 <h3>Dauer nach Hauptsymptom</h3>
                 <div *ngIf="!this.ts_results['3_dauer_sympt']">
@@ -201,7 +201,7 @@
             </mat-card>
         </div>
     
-    <div fxFlex=50 fxFlex.lt-md=100>
+    <div fxFlex fxFlex.lt-md=100>
         <mat-card>
             <h3>Dringlichkeit nach Hauptsymptom</h3>
             <div *ngIf="!this.ts_results['4_dringl_symp']">
