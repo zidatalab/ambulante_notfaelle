@@ -54,7 +54,6 @@ export class PlotComponent implements OnInit {
     if (!this.linewidth) { this.linewidth = 2 };
     if (this.basecolor=="") { this.basecolor=this.api.primarycolor};   
     if (this.colorscheme.length==0){this.colorscheme=[this.basecolor];}
-    console.log("COLORBY:",this.colorby,this.api.getValues(this.data,this.colorby));
     this.make_plot();
   }
 

@@ -67,8 +67,8 @@ export class StartComponent implements OnInit {
           
         };
       }, 1500);
-    }    
-    console.log(this.levelsettings);
+    }   
+    
   }
 
   ngOnDestroy(){
@@ -202,7 +202,6 @@ export class StartComponent implements OnInit {
 
   querysmedts(groupvars=[],outcome="",resultname,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
     if (this.levelsettings["zeitraum"]!=="Gesamt") {    
-    // console.log("MY TURN! Settings:",this.levelsettings,"Group",groupvars,"Out",outcome)
     let query = {
       "startdate": this.levelsettings['start'].toISOString().slice(0,10),
       "stopdate": this.levelsettings['end'].toISOString().slice(0,10),
@@ -215,8 +214,7 @@ export class StartComponent implements OnInit {
       query["outcome"]=outcome;
     }
     let tofilter = false;
-    if (filtervar!=="" && filtervalues.length>0){tofilter=true};
-    console.log("QUERY:",query);
+    if (filtervar!=="" && filtervalues.length>0){tofilter=true};    
     return this.api.postTypeRequest('analytics/timeseries/', query).subscribe(
       data => {
         let res = data["result"];

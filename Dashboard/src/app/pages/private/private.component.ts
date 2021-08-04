@@ -140,8 +140,7 @@ export class PrivateComponent implements OnInit {
      anquery["groupinfo"][this.level] = this.currentlevel;
      this.regressiondata=null;
      this.api.postTypeRequest('analytics/regression/', anquery).subscribe(data => 
-       {let res = data;this.regressiondata=res;
-        //console.log(this.regressiondata);
+       {let res = data;this.regressiondata=res;        
       }); 
     };
   }
