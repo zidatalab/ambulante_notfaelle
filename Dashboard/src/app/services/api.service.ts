@@ -92,6 +92,16 @@ public  filterArray(array,key,value){
  return result
 }
 
+public  filterArraybyList(array,key,list){
+  let i =0
+  let result = []
+  for (let item of array){
+    if (list.indexOf(item[key])>=0){result.push(item)};
+    i = i+1
+  }
+  return result
+ }
+
 public  getmetadata(name){
   return JSON.parse(localStorage.getItem(name));
 }
@@ -119,5 +129,6 @@ public getuniqueValues(array, key) {
 }
 
 public makescale(bins=5){
-  return chroma.scale([chroma(this.primarycolor).set('hsl.h', -120),this.primarycolor]).colors(bins); }
+  return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); }
 }
+

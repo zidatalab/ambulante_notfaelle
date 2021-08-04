@@ -125,8 +125,16 @@
                 </div>
                 <div  *ngIf="this.ts_results['1_dingl_ort']">
                     <ng-container *ngIf="this.ts_results['1_dingl_ort'].length>0">
-                        Ergebnis:
-                        {{this.ts_results['1_dingl_ort'] | json}}
+                        <app-plot
+                        [(data)]="this.ts_results['1_dingl_ort']" 
+                        [xvalue]="'TTTsmed_text'"
+                        [fontcolor]="'white'"  
+                        [legendbg]="'#00000020'"
+                        [legendpos]="'right'"
+                        [outcomes]="['count']" 
+                        [custommargins]="{ l: 0, r: 0, b: 200, t: 20 }"
+                        [colorby]="'POCsmed_text'" plottype="stackedbar"
+                        ></app-plot>                       
                     </ng-container>                    
                     <ng-container *ngIf="!(this.ts_results['1_dingl_ort'].length>0)">
                         <p>Keine Daten</p>
@@ -176,8 +184,14 @@
                 </div>
                 <div  *ngIf="this.ts_results['3_dauer_sympt']">
                     <ng-container *ngIf="this.ts_results['3_dauer_sympt'].length>0">
-                        Ergebnis:
-                        {{this.ts_results['3_dauer_sympt'] | json}}
+                        <app-plot
+                        [(data)]="this.ts_results['3_dauer_sympt']" 
+                        [xvalue]="'Hauptbeschwerde'"
+                        [fontcolor]="'white'"  
+                        [outcomes]="['Dauer_sek']" 
+                        [custommargins]="{ l: 200, r: 0, b: 20, t: 20 }"
+                        plottype="hbar"
+                        ></app-plot>            
                     </ng-container>                    
                     <ng-container *ngIf="!(this.ts_results['3_dauer_sympt'].length>0)">
                         <p>Keine Daten</p>
@@ -190,7 +204,7 @@
     <div fxFlex=50 fxFlex.lt-md=100>
         <mat-card>
             <h3>Dringlichkeit nach Hauptsymptom</h3>
-            <div *ngIf="!this.ts_results['4_dingl_sympt']">
+            <div *ngIf="!this.ts_results['4_dringl_symp']">
                 <mat-card class="fakecontent">
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <div>
@@ -200,12 +214,22 @@
                     </div>
                 </mat-card>                                        
             </div>
-            <div  *ngIf="this.ts_results['4_dingl_sympt']">
-                <ng-container *ngIf="this.ts_results['4_dingl_sympt'].length>0">
-                    Ergebnis:
-                    {{this.ts_results['4_dingl_sympt'] | json}}
+            <div  *ngIf="this.ts_results['4_dringl_symp']">
+                <ng-container *ngIf="this.ts_results['4_dringl_symp'].length>0">
+                    <app-plot
+                    [data]="this.ts_results['4_dringl_symp']" 
+                    [xvalue]="'Hauptbeschwerde'"
+                    [fontcolor]="'white'"  
+                    [legendbg]="'#00000020'"
+                    [legendpos]="'right'"
+                    [outcomes]="['count']" 
+                    [custommargins]="{ l: 0, r: 0, b: 200, t: 20 }"
+                    [colorby]="'TTTsmed_text'" plottype="stackedbar"
+                    ></app-plot>          
+                    <!-- Ergebnis:
+                    {{this.ts_results['4_dringl_symp'] | json}} -->
                 </ng-container>                    
-                <ng-container *ngIf="!(this.ts_results['4_dingl_sympt'].length>0)">
+                <ng-container *ngIf="!(this.ts_results['4_dringl_symp'].length>0)">
                     <p>Keine Daten</p>
                 </ng-container>                    
             </div>

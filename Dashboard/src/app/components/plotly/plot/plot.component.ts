@@ -38,6 +38,9 @@ export class PlotComponent implements OnInit {
   @Input() fontfamily = "Lato, sans-serif";
   @Input() fontsize = ".85rem";
   @Input() fontcolor= "black";
+  @Input() legendbg='ffffff20'; 
+  @Input() legendposx='right'; 
+  @Input() legendposy=1; 
 
   constructor(private api:ApiService) { }
   plotlayout: any;
@@ -51,6 +54,7 @@ export class PlotComponent implements OnInit {
     if (!this.linewidth) { this.linewidth = 2 };
     if (this.basecolor=="") { this.basecolor=this.api.primarycolor};   
     if (this.colorscheme.length==0){this.colorscheme=[this.basecolor];}
+    console.log("COLORBY:",this.colorby,this.api.getValues(this.data,this.colorby));
     this.make_plot();
   }
 
@@ -79,7 +83,7 @@ export class PlotComponent implements OnInit {
         yaxis: { fixedrange: true, showgrid: false, title: '', 
         automargin: true, rangemode: 'tozero',ticksuffix:" " , nticks:this.n_yticks},
         autosize: true, padding: 0,
-        legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
       };
@@ -94,7 +98,7 @@ export class PlotComponent implements OnInit {
         xaxis: { fixedrange: false, type: 'category', automargin: false },
         yaxis: {  zeroline: false , automargin: true, rangemode: 'tozero',ticksuffix:" " },
         autosize: true, padding: 0,
-        legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
       };
@@ -114,7 +118,7 @@ export class PlotComponent implements OnInit {
         zerolinewidth: 2,
         nticks:this.n_yticks},
         padding: 0,
-        legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
       };
@@ -137,7 +141,7 @@ export class PlotComponent implements OnInit {
           nticks:this.n_yticks          
         },
         autosize: true, padding: 0,
-        legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 20, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
       };
       if (this.percent){
@@ -158,7 +162,7 @@ export class PlotComponent implements OnInit {
         zerolinecolor: this.fontcolor,
         zerolinewidth: 2},
         autosize: true, padding: 0,
-        legend: { x: 1, xanchor: 'right', y: .8, bgcolor: 'ffffffa7' },
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 200, r: 0, b: 20, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
 

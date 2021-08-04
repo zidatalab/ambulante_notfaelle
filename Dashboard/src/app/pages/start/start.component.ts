@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -201,22 +200,55 @@ export class StartComponent implements OnInit {
       error => {this.data = NaN;this.progress=false;});
   }
 
-  querysmedts(groupvars=[],outcome="",resultname){
+  querysmedts(groupvars=[],outcome="",resultname,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
     if (this.levelsettings["zeitraum"]!=="Gesamt") {    
     // console.log("MY TURN! Settings:",this.levelsettings,"Group",groupvars,"Out",outcome)
     let query = {
       "startdate": this.levelsettings['start'].toISOString().slice(0,10),
       "stopdate": this.levelsettings['end'].toISOString().slice(0,10),
-      "subgroups": groupvars,
-     // API ERROR:
-     // "filterlist": [{"level":"KV"},{"levelid":this.levelsettings["levelvalues"]}]
+      "subgroups": groupvars      
+    }
+    if (this.levelsettings["levelvalues"]!=="Gesamt"){
+      query["filterlist"]= [{"level":"KV"},{"levelid":this.levelsettings["levelvalues"]}]
     }
     if (outcome!=""){
-      query["outcome"]=groupvars;
+      query["outcome"]=outcome;
     }
+    let tofilter = false;
+    if (filtervar!=="" && filtervalues.length>0){tofilter=true};
     console.log("QUERY:",query);
     return this.api.postTypeRequest('analytics/timeseries/', query).subscribe(
-      data => {this.ts_results[resultname]=data["result"];},
+      data => {
+        let res = data["result"];
+        if (sort){
+          res = this.api.sortArray(res,"count","descending");
+        }
+        if (topx && topxvar==''){
+          res = res.slice(0,topx);
+        }
+        if (tofilter){
+          res = this.api.filterArraybyList(res,filtervar,filtervalues);
+        }
+        if (topx && topxvar!==''){
+          let keycounts = {};
+          for (let item of res){
+            if (keycounts[item[topxvar]] && Math.round(item['count'])){
+              keycounts[item[topxvar]]=keycounts[item[topxvar]]+item['count'];
+            }
+            if (!keycounts[item[topxvar]] && Math.round(item['count'])) {
+              keycounts[item[topxvar]]=item['count'];
+            }
+          }
+          let keycountsarray= [];
+          for (let key of Object.keys(keycounts)){
+            keycountsarray.push({"name":key,"count":keycounts[key]})
+          }
+          let filterlist = this.api.getValues(this.api.sortArray(keycountsarray,'count',"descending").slice(0,topx),"name");
+          res= this.api.filterArraybyList(res,topxvar,filterlist);
+        }
+        this.ts_results[resultname]= res;
+        
+      },        
       error => {this.ts_results[resultname]=[];});
     }
     else {
@@ -288,10 +320,10 @@ export class StartComponent implements OnInit {
           this.ts_results={};
           this.querysmedts(['TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id'],"","1_dingl_ort");
           // HIER SPÄTER Abweichung zwischen Empfehlung und Entscheidung: 2_abweichung
-          // 3_dauer_sympt          
+          // 3_dauer_sympt top 20         
+          this.querysmedts(['Hauptbeschwerde'],"Dauer_sek",'3_dauer_sympt',true,20);
           // 4_dringl_symp
-          this.querysmedts(['Hauptbeschwerde'],'TTTsmed_text','4_dringl_symp');
-
+          this.querysmedts(['Hauptbeschwerde','TTTsmed_text'],"",'4_dringl_symp',false,20,"",[],'Hauptbeschwerde');
   }
 
   smeddetailquery(){
