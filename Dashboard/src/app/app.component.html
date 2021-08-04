@@ -104,7 +104,7 @@
 
 <!-- Footer nur für Desktop Screen -->
 <footer >
-  <div style="background: black!important;">
+  <div class="footerstyle">
     <div fxLayout="column" fxLayoutGap="0.5rem">
 
       <div fxLayout="column wrap" fxLayoutAlign="space-around start">
@@ -129,7 +129,7 @@
             <br>
           </div>
           <div style="padding:0.5rem;text-align: center;">
-            <p>© 2020 Zentralinstitut für die kassenärztliche Versorgung in der Bundesrepublik
+            <p>© {{this.currentdate | date:'Y'}} Zentralinstitut für die kassenärztliche Versorgung in der Bundesrepublik
               Deutschland</p>
           </div>
         </div>

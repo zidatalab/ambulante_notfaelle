@@ -16,7 +16,7 @@ export class AppComponent {
   loginoption = true;
   public loginstatus:boolean;
   public adminstatus:boolean;
-
+  currentdate:any;
 
   constructor(
     private _auth : AuthService,
@@ -25,6 +25,7 @@ export class AppComponent {
   ) { }
 
   ngOnInit() {
+    this.currentdate = new Date();
     this._auth.currentUser.subscribe(data => {
       if (data){
         this.currentuser = data;
