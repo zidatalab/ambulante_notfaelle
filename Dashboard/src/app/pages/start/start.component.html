@@ -4,12 +4,8 @@
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
-            <h1>Ambulante Notfälle in Deutschland</h1>
+            <h1><span style="color: crimson !important;">TESTBETRIEB KEINE ECHTEN DATEN</span><br>Ambulante Notfälle in Deutschland</h1>
         </div>
-        <p *ngIf="!this.currentuser">
-            Dieses Dashboard ist ein internes Informationsportal zu ambulanten Notfällen in Deutschland. Bitte
-            melden Sie sich an, um Zugriff auf die enthaltenen Informationen zu erhalten. Aktuell ist das Portal noch
-            ein Prototyp</p>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
         </p>
@@ -22,10 +18,10 @@
         <mat-spinner></mat-spinner>
     </div>
 
-    <div *ngIf="this.metadata && !this.progress && this.currentuser">
+    <div *ngIf="this.metadata && !this.progress">
         <ng-container *ngIf="this.metadata.length>0 && this.levelvalues.length>0">
-            <h3>KV</h3>
-            <p>
+            <h3 *ngIf="this.currentuser">KV</h3>
+            <p *ngIf="this.currentuser">
                 <mat-chip-list>
                     <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.levelvalues"
                         [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
@@ -109,7 +105,7 @@
             </mat-card>
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->
-        <ng-container *ngIf="this.levelsettings['zeitraum']!=='Gesamt'">
+        <ng-container *ngIf="this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser">
         <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
                 <h3>Dringlichkeit der Behandlung</h3>

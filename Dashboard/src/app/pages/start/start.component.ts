@@ -193,7 +193,7 @@ export class StartComponent implements OnInit {
 
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
-
+    query["showfields"]=this.api.getValues(this.metadata,"varname");
     this.api.postTypeRequest('get_data/', query).subscribe(
       data => {this.data = data["data"][0];
       this.makesmeditems();this.progress=false;},
