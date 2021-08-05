@@ -201,6 +201,9 @@ export class StartComponent implements OnInit {
   }
 
   querysmedts(groupvars=[],outcome="",resultname,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
+    if (!this.currentuser){
+      return;
+    }
     if (this.levelsettings["zeitraum"]!=="Gesamt") {    
     let query = {
       "startdate": this.levelsettings['start'].toISOString().slice(0,10),
