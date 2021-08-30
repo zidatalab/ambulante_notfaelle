@@ -4,7 +4,7 @@
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
-            <h1><span style="color: crimson !important;">TESTBETRIEB KEINE ECHTEN DATEN</span><br>Ambulante Notfälle in Deutschland</h1>
+            <h1><span style="color: crimson !important;">TESTBETRIEB KEINE ECHTEN DATEN</span><br>Ambulante Akut- und Notfälle in Deutschland</h1>
         </div>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
@@ -98,7 +98,7 @@
         </div>
         <div fxFlex=100>
             <mat-card>
-                <h3>Hauptsymptome</h3>
+                <h3>Hauptbeschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'name'"
                     [fontcolor]="'white'" 
                     [outcomes]="['n']" plottype="hbar"></app-plot>
@@ -167,7 +167,7 @@
         </div> -->
         <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
-                <h3>Dauer nach Hauptsymptom</h3>
+                <h3>Dauer nach Hauptbeschwerde</h3>
                 <div *ngIf="!this.ts_results['3_dauer_sympt']">
                     <mat-card class="fakecontent">
                         <div fxLayout="row" fxLayoutAlign="center center">
@@ -193,13 +193,13 @@
                         <p>Keine Daten</p>
                     </ng-container>                    
                 </div>
-                <p class="mat-caption greycolor">Dauer der Ersteinschätzung nach den häufigsten Hauptsymptomen.</p>              
+                <p class="mat-caption greycolor">Dauer der Ersteinschätzung nach den häufigsten Hauptbeschwerden.</p>              
             </mat-card>
         </div>
     
     <div fxFlex fxFlex.lt-md=100>
         <mat-card>
-            <h3>Dringlichkeit nach Hauptsymptom</h3>
+            <h3>Dringlichkeit nach Hauptbeschwerde</h3>
             <div *ngIf="!this.ts_results['4_dringl_symp']">
                 <mat-card class="fakecontent">
                     <div fxLayout="row" fxLayoutAlign="center center">
@@ -229,7 +229,7 @@
                     <p>Keine Daten</p>
                 </ng-container>                    
             </div>
-            <p class="mat-caption greycolor">Dinglichkeit der Behandlung nach den häufigsten Hauptsymptomen.</p>
+            <p class="mat-caption greycolor">Dinglichkeit der Behandlung nach den häufigsten Hauptbeschwerden.</p>
           
         </mat-card>
     </div>      
