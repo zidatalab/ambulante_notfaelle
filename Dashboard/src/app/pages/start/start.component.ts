@@ -42,8 +42,9 @@ export class StartComponent implements OnInit {
   symptoms_list:any;
   summaryinfo={};
   smedrange={};
-  zeitaumoptions=["Letzte Woche","Letzte 4 Wochen","Aktuelles Jahr","Letztes Jahr","Gesamt","Detailliert"];
+  zeitaumoptions=["Letztes Jahr","Aktuelles Jahr","Gesamt","Detailliert"];
   ts_results={};
+  utiltimes = [];
   ngOnInit(): void {
     this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Gesamt"};
     this.summaryinfo["done"]=false;
@@ -193,7 +194,7 @@ export class StartComponent implements OnInit {
 
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
-    query["showfields"]=this.api.getValues(this.metadata,"varname");
+    query["showfields"]=this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
     this.api.postTypeRequest('get_data/', query).subscribe(
       data => {this.data = data["data"][0];
       this.makesmeditems();this.progress=false;},
@@ -208,10 +209,12 @@ export class StartComponent implements OnInit {
     let query = {
       "startdate": this.levelsettings['start'].toISOString().slice(0,10),
       "stopdate": this.levelsettings['end'].toISOString().slice(0,10),
-      "subgroups": groupvars      
+      "subgroups": groupvars    ,
+      "filterlist": []
     }
+    query["filterlist"].push({"level":"KV"});
     if (this.levelsettings["levelvalues"]!=="Gesamt"){
-      query["filterlist"]= [{"level":"KV"},{"levelid":this.levelsettings["levelvalues"]}]
+      query["filterlist"].push({"levelid":this.levelsettings["levelvalues"]});
     }
     if (outcome!=""){
       query["outcome"]=outcome;
@@ -259,12 +262,13 @@ export class StartComponent implements OnInit {
 
   makesmeditems(){
     this.summaryinfo["done"]=false;
-    let statswdate = this.data["stats"];
-    statswdate = this.smed.adddate(statswdate,"Jahr","KW");    
-    let symptoms_list = this.smed.adddate(this.data["mainsymptoms_ts"] ,"Jahr","KW");   
+    let statswdate = this.smed.adddate(this.data["stats"],"Jahr","KW");    
+    let symptoms_list = this.smed.adddatemonth(this.data["mainsymptoms_ts"] ,"Jahr","Monat");  
+    let utiltimes = this.smed.adddatemonth(this.data["timestats"],"Jahr","Monat");
     // Appply date filters
     if (this.levelsettings["zeitraum"]!=="Gesamt"){
-      let today = new Date()
+      this.levelsettings["anperioddays"]=65;
+      let today = new Date();
       today.setHours(0);
       today.setMinutes(0);
       today.setSeconds(0);
@@ -289,43 +293,72 @@ export class StartComponent implements OnInit {
         startdate = new Date(enddate.getTime()-((6))*millisperday);        
       }
       for (let item of statswdate){
-        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
+        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);          
       }
       for (let item of symptoms_list){
         item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
       }
+      for (let item of utiltimes){
+        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
+      }
+
       statswdate = this.api.filterArray(statswdate,"touse",true); 
       symptoms_list = this.api.filterArray(symptoms_list,"touse",true); 
+      utiltimes = this.api.filterArray(utiltimes,"touse",true);
+      
       this.levelsettings["anperioddays"]= Math.floor((enddate-startdate)/millisperday);
       this.levelsettings["start"]=startdate;
       this.levelsettings["end"]=enddate;
       this.progress=false;
     }
+
+    utiltimes = this.api.groupbysum(utiltimes,"wd","h","Anzahl");
+    this.utiltimes = utiltimes;
+    for (let item of this.utiltimes){
+      item["Wochentag"]=this.api.getweekdayname(item["wd"]);
+    }
+    
+    
     
     
     this.stats_ts=statswdate;
+    for (let item of this.stats_ts) {
+      item["Mittlere Dauer (Min.)"]=(item["Dauer_sek"]/item["Anzahl"])/60;                
+      if (item["Dauer_sek"]==0){
+        item["Mittlere Dauer (Min.)"]=null;
+      }
+      item["Mittlere Anzahl Fragen"]=item["Anzahl_Fragen"]/item["Anzahl"];                
+      if (item["Anzahl_Fragen"]==0){
+        item["Mittlere Anzahl Fragen"]=null;
+      }
+    };
     if (statswdate.length>0){
     symptoms_list = this.smed.aggsymptoms(symptoms_list);
     this.symptoms_list=symptoms_list.slice(0,20);
     this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
     this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
-    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.api.getValues(this.stats_ts,"Dauer_sek").length;
+    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.summaryinfo["Assessments Gesamt"];
     this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["done"]=true;    
     }
 
+
+
+    if (this.levelsettings["anperioddays"]<=64 && (this.levelsettings["zeitraum"]!=="Gesamt")){
     // Query TS Data;
           // Keys:
           // 'timestamp', 'Dauer_sek', 'Geschlecht', 'ALTER_text', 'ALTER_id', 'TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id', 'SMED_Level', 'levelid', 'Hauptbeschwerde', 'Nebenbeschwerden', 'level', 'client_id'
           this.ts_results={};
-          this.querysmedts(['TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id'],"","1_dingl_ort");
+          //this.querysmedts(['TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id'],"","1_dingl_ort");
           // HIER SPÄTER Abweichung zwischen Empfehlung und Entscheidung: 2_abweichung
           // 3_dauer_sympt top 20         
-          this.querysmedts(['Hauptbeschwerde'],"Dauer_sek",'3_dauer_sympt',true,20);
+          //this.querysmedts(['Hauptbeschwerde'],"Dauer_sek",'3_dauer_sympt',true,20);
           // 4_dringl_symp
-          this.querysmedts(['Hauptbeschwerde','TTTsmed_text'],"",'4_dringl_symp',false,20,"",[],'Hauptbeschwerde');
-  }
+          //this.querysmedts(['Hauptbeschwerde','TTTsmed_text'],"",'4_dringl_symp',false,20,"",[],'Hauptbeschwerde');
+  
+        }
+      }
 
   smeddetailquery(){
     if (this.levelsettings["start"] && this.levelsettings["end"]){

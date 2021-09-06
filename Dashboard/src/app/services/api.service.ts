@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
  
-  public REST_API_SERVER =   "https://zidashboardapi.azurewebsites.net/" //  "http://localhost:8000/" 
+  public REST_API_SERVER =   "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
@@ -126,6 +126,52 @@ public sumArray(array) {
 public getuniqueValues(array, key) {
   let items = this.getValues(array, key);
   return [...new Set(items)];
+}
+
+
+public groupbysum(array,key1,key2="",outcome){
+  let result = [];
+  let valueskey1= this.getuniqueValues(array,key1);
+  let valueskey2= [];
+  if (key2!=""){
+    valueskey2= this.getuniqueValues(array,key2);
+  }
+
+  for (let value of valueskey1){
+    let keyvalues = this.filterArray(array,key1,value);
+
+    if (key2==""){
+      let topush = {};
+      topush[key1]=value;      
+      topush[outcome]=this.sumArray(this.getValues(keyvalues,outcome));
+      result.push(topush);
+    }
+    if (key2!==""){
+      for (let k2value of valueskey2){
+        let topush = {};
+        topush[key1]=value;      
+        topush[key2]=k2value;      
+        topush[outcome]=this.sumArray(this.getValues(this.filterArray(keyvalues,key2,k2value),outcome));
+        result.push(topush);
+      }
+      
+    };
+  }
+  return result;
+}
+
+public getweekdayname(dayofweek){
+  let days = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+  return days[dayofweek-1];
+}
+
+public splitarraybykey(array,splitkey){
+  let res = []
+  let splitvalues = this.getuniqueValues(array,splitkey);
+  for (let value of splitvalues){
+    res.push(this.filterArray(array,splitkey,value));
+  }
+  return res = [];
 }
 
 public makescale(bins=5){

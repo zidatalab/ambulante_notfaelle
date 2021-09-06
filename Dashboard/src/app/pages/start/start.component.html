@@ -4,7 +4,7 @@
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
-            <h1><span style="color: crimson !important;">TESTBETRIEB KEINE ECHTEN DATEN</span><br>Ambulante Akut- und Notfälle in Deutschland</h1>
+            <h1>Ambulante Akut- und Notfälle in Deutschland</h1>
         </div>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
@@ -68,7 +68,7 @@
                     description="Assessments"></app-box>
                 </div>
                 <div fxFlex fxFlex.lt-md=100>
-                    <app-box  
+                    <app-box  [numberformat]="'1.0-0'"
                     [value]="this.summaryinfo['Assessments pro Woche']" 
                     description="pro Woche"></app-box>
                 </div>
@@ -81,19 +81,36 @@
             </mat-card>
 
         </div>
-        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts  ">
+        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts  ">
             <mat-card>
                 <h3>Assessments pro Woche</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [outcomes]="['Anzahl']"
                     [fontcolor]="'white'" plottype="tsline"></app-plot>
             </mat-card>
         </div>
-        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts ">
+        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts ">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
                     [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']"
-                    [outcomes]="['Dauer_sek']" plottype="tsline"></app-plot>
+                    [outcomes]="['Mittlere Dauer (Min.)']" plottype="tsline"></app-plot>
+            </mat-card>
+        </div>
+        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts ">
+            <mat-card>
+                <h3>Fragen pro Assessment</h3>
+                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
+                    [fontcolor]="'white'" [colorscheme]="['rgb(183,205,30)']"
+                    [outcomes]="['Mittlere Anzahl Fragen']" plottype="tsline"></app-plot>
+            </mat-card>
+        </div>
+        <div fxFlex=100>
+            <mat-card>
+                <h3>Aufkommen nach Tag und Uhrzeit</h3>
+                <app-plot [(data)]="this.utiltimes" [xvalue]="'Wochentag'"
+                    [fontcolor]="'white'" 
+                    [outcomes]="['Anzahl']"  [colorby]="'h'" plottype="stackedbar">
+                </app-plot>
             </mat-card>
         </div>
         <div fxFlex=100>
@@ -105,7 +122,7 @@
             </mat-card>
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->
-        <ng-container *ngIf="this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser">
+        <ng-container *ngIf="false && this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser && (this.levelsettings['anperioddays']<=64)">
         <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
                 <h3>Dringlichkeit der Behandlung</h3>

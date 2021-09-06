@@ -15,6 +15,13 @@ adddate(Array,yearvar,isoweekvar){
   return Array;
 }
 
+adddatemonth(Array,yearvar,monthvar){
+  for (const item of Array){
+    item["Datum"]=new Date(item[yearvar]+"-"+item[monthvar]+"-01");
+  }
+  return Array;
+}
+
 getDateOfISOWeek(w, y) {
   let millisperday = 1000*60*60*24;
   let yearstart = new Date(y+"-01-01");
