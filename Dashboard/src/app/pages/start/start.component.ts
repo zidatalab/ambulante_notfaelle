@@ -56,12 +56,12 @@ export class StartComponent implements OnInit {
     this.mapdata=[];
     this.updatemetadata();
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok) {this.progress=true;this.querydatasmed();}
+    if (this.metadataok && this.metadata.length>0) {this.progress=true;this.querydatasmed();}
     // Wait if no metadata and try again. Fixes logout behaviour
     else {
       setTimeout(() => {
         this.updatemetadata();
-        if (this.metadataok) {
+        if (this.metadataok && this.metadata.length>0) {
           this.progress=true;
           this.querydatasmed();
         }

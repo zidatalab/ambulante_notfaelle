@@ -51,7 +51,7 @@
             </p>            
         </ng-container>
     </div>    
-    <div *ngIf="!this.summaryinfo['done'] && !this.progress && 
+    <div *ngIf="!this.summaryinfo['done'] && !this.progress && (this.metadata.length>0) && 
     (this.levelsettings['zeitraum']!=='Detailliert' || (this.levelsettings['start'] && this.levelsettings['end']))">
         <p>
             Keine Daten verfügbar
