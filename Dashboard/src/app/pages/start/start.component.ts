@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { SmedAggregationService } from 'src/app/services/smed-aggregation.service';
-
+import { CsvexportService } from 'src/app/services/csvexport.service';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class StartComponent implements OnInit {
 
 
 
-  constructor(private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
+  constructor(private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
   metadata=[];
   progress:boolean;
   metadataok: boolean;
@@ -40,6 +40,7 @@ export class StartComponent implements OnInit {
   // SMED
   stats_ts:any;
   symptoms_list:any;
+  symptoms_list_export:any;
   summaryinfo={};
   smedrange={};
   zeitaumoptions=["Letztes Jahr","Aktuelles Jahr","Gesamt","Detailliert"];
@@ -55,12 +56,13 @@ export class StartComponent implements OnInit {
     this.mapdata=[];
     this.updatemetadata();
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok) {this.querydatasmed();}
+    if (this.metadataok) {this.progress=true;this.querydatasmed();}
     // Wait if no metadata and try again. Fixes logout behaviour
     else {
       setTimeout(() => {
         this.updatemetadata();
         if (this.metadataok) {
+          this.progress=true;
           this.querydatasmed();
         }
         else {
@@ -82,7 +84,7 @@ export class StartComponent implements OnInit {
   setlevel(level, value) {
     this.progress = true;
     this.levelsettings[level] = value;
-    this.querydatasmed();
+    this.querydatasmed(level);
   }
 
   updatemetadata() {
@@ -186,7 +188,7 @@ export class StartComponent implements OnInit {
  
   }
 
-  querydatasmed(){
+  querydatasmed(changetype=""){
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID      ,
       "groupinfo":{}
@@ -195,10 +197,15 @@ export class StartComponent implements OnInit {
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["showfields"]=this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
+    if (changetype!="zeitraum"){
     this.api.postTypeRequest('get_data/', query).subscribe(
       data => {this.data = data["data"][0];
-      this.makesmeditems();this.progress=false;},
+      this.makesmeditems();},
       error => {this.data = NaN;this.progress=false;});
+    }
+    else {
+      this.makesmeditems();
+    }
   }
 
   querysmedts(groupvars=[],outcome="",resultname,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
@@ -258,6 +265,12 @@ export class StartComponent implements OnInit {
     else {
       this.ts_results[resultname]=[];
     };     
+  }
+
+
+  exportascsv(name, data) {
+    this.csv.exportToCsv(name, data);
+    this.csv.exportToCsv(name+"_settings.csv", [this.levelsettings] );
   }
 
   makesmeditems(){
@@ -333,8 +346,8 @@ export class StartComponent implements OnInit {
       }
     };
     if (statswdate.length>0){
-    symptoms_list = this.smed.aggsymptoms(symptoms_list);
-    this.symptoms_list=symptoms_list.slice(0,20);
+    this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
+    this.symptoms_list = this.symptoms_list_export.slice(0,15);
     this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
     this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
     this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.summaryinfo["Assessments Gesamt"];
@@ -343,7 +356,7 @@ export class StartComponent implements OnInit {
     this.summaryinfo["done"]=true;    
     }
 
-
+    this.progress=false;
 
     if (this.levelsettings["anperioddays"]<=64 && (this.levelsettings["zeitraum"]!=="Gesamt")){
     // Query TS Data;
