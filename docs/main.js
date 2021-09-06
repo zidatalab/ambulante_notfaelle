@@ -2683,7 +2683,7 @@ __webpack_require__.r(__webpack_exports__);
 let ApiService = class ApiService {
     constructor(httpClient) {
         this.httpClient = httpClient;
-        this.REST_API_SERVER = "http://localhost:8000/"; //  "https://zidashboardapi.azurewebsites.net/" 
+        this.REST_API_SERVER = "https://zidashboardapi.azurewebsites.net/"; // "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
         this.REST_API_SERVER_CLIENTID = "smed_reporting";
         this.primarycolor = "#2196f3"; // "#e91e63";
         this.accentcolor = "#e3714e1";
