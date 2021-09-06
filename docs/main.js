@@ -149,7 +149,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\" fxLayout=\"column\" fxLayoutGap=\"1rem\" fxLayoutAllign=\"space-around\">\n    <div>\n        <p *ngIf=\"this.currentuser\" class=\"mat-caption right\">\n            Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+\"\n                \"+this.currentuser.lastname:\"\" }}</span></p>\n        <div class=\"brandingpicture\" [ngClass]=\"{'smallheader': this.currentuser}\">\n            <h1>Ambulante Akut- und Notfälle in Deutschland</h1>\n        </div>\n        <p *ngIf=\"this.metadata.length==0 && !this.currentuser && !this.progress\">\n            Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.\n        </p>\n        <p *ngIf=\"(this.metadata.length==0) && this.currentuser && !this.progress\">\n            Es sind keine Daten im System, bitte wenden Sie sich an einen Administrator.\n        </p>\n    </div>\n\n    <div *ngIf=\"this.progress &&  this.currentuser\">\n        <mat-spinner></mat-spinner>\n    </div>\n\n    <div *ngIf=\"this.metadata && !this.progress\">\n        <ng-container *ngIf=\"this.metadata.length>0 && this.levelvalues.length>0\">\n            <h3 *ngIf=\"this.currentuser\">KV</h3>\n            <p *ngIf=\"this.currentuser\">\n                <mat-chip-list>\n                    <mat-chip (click)=\"this.setlevel('levelvalues',item);\" *ngFor=\"let item of this.levelvalues\"\n                        [selected]=\"(this.levelsettings['levelvalues']==item)\" color=\"primary\">\n                        {{item}}\n                    </mat-chip>\n                </mat-chip-list>\n            </p>\n            <h3>Analysezeitraum</h3>\n            <p>\n                <mat-chip-list>\n                    <mat-chip (click)=\"this.setlevel('zeitraum',item);\" *ngFor=\"let item of this.zeitaumoptions\"\n                        [selected]=\"(this.levelsettings['zeitraum']==item)\" color=\"primary\">\n                        {{item}}\n                    </mat-chip>\n                </mat-chip-list>\n            </p>\n            <p *ngIf=\"this.levelsettings['zeitraum']=='Detailliert'\">\n                <mat-form-field appearance=\"fill\">\n                    <mat-label>Analysezeitraum</mat-label>\n                    <mat-date-range-input [rangePicker]=\"picker\">\n                      <input (dateChange)=\"smeddetailquery()\" matStartDate placeholder=\"Start date\" [(ngModel)]=\"this.levelsettings['start']\">\n                      <input (dateChange)=\"smeddetailquery()\" matEndDate placeholder=\"End date\" [(ngModel)]=\"this.levelsettings['end']\">\n                    </mat-date-range-input>\n                    <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\n                    <mat-date-range-picker #picker></mat-date-range-picker>\n                  </mat-form-field>\n            </p>            \n        </ng-container>\n    </div>    \n    <div *ngIf=\"!this.summaryinfo['done'] && !this.progress && \n    (this.levelsettings['zeitraum']!=='Detailliert' || (this.levelsettings['start'] && this.levelsettings['end']))\">\n        <p>\n            Keine Daten verfügbar\n        </p>\n    </div>\n    <div *ngIf=\"this.symptoms_list && this.stats_ts && this.summaryinfo['done']\" fxLayout=\"row wrap\">\n        <div fxFlex=100 >\n            <mat-card >\n                <div  fxLayout=\"row wrap\">\n                <div fxFlex  fxFlex.lt-md=100>\n                    <app-box \n                    [value]=\"this.summaryinfo['Assessments Gesamt']\"  [numberformat]=\"'1.0-0'\"\n                    [maincolor]=\"this.api.primary\" \n                    description=\"Assessments\"></app-box>\n                </div>\n                <div fxFlex fxFlex.lt-md=100>\n                    <app-box  [numberformat]=\"'1.0-0'\"\n                    [value]=\"this.summaryinfo['Assessments pro Woche']\" \n                    description=\"pro Woche\"></app-box>\n                </div>\n                <div fxFlex fxFlex.lt-md=100>\n                    <app-box [textbehind]=\"true\"   title=\"min\" [numberformat]=\"'1.1-1'\"\n                    [value]=\"this.summaryinfo['Mittlere Dauer']/60\" \n                    description=\"Dauer\"></app-box>\n                </div> \n                </div>            \n            </mat-card>\n\n        </div>\n        <div fxFlex=33 fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts  \">\n            <mat-card>\n                <h3>Assessments pro Woche</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\" [outcomes]=\"['Anzahl']\"\n                    [fontcolor]=\"'white'\" plottype=\"tsline\"></app-plot>\n            </mat-card>\n        </div>\n        <div fxFlex=33 fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts \">\n            <mat-card>\n                <h3>Mittlere Dauer pro Assessment</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\"\n                    [fontcolor]=\"'white'\" [colorscheme]=\"['rgb(183,205,0)']\"\n                    [outcomes]=\"['Mittlere Dauer (Min.)']\" plottype=\"tsline\"></app-plot>\n            </mat-card>\n        </div>\n        <div fxFlex=33 fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts \">\n            <mat-card>\n                <h3>Fragen pro Assessment</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\"\n                    [fontcolor]=\"'white'\" [colorscheme]=\"['rgb(183,205,30)']\"\n                    [outcomes]=\"['Mittlere Anzahl Fragen']\" plottype=\"tsline\"></app-plot>\n            </mat-card>\n        </div>\n        <div fxFlex=100>\n            <mat-card>\n                <h3>Aufkommen nach Tag und Uhrzeit</h3>\n                <app-plot [(data)]=\"this.utiltimes\" [xvalue]=\"'Wochentag'\"\n                    [fontcolor]=\"'white'\" \n                    [outcomes]=\"['Anzahl']\"  [colorby]=\"'h'\" plottype=\"stackedbar\">\n                </app-plot>\n            </mat-card>\n        </div>\n        <div fxFlex=100>\n            <mat-card>\n                <h3>Hauptbeschwerden</h3>\n                <app-plot [(data)]=\"this.symptoms_list\" [xvalue]=\"'name'\"\n                    [fontcolor]=\"'white'\" \n                    [outcomes]=\"['n']\" plottype=\"hbar\"></app-plot>\n            </mat-card>\n        </div>\n        <!-- Detailergebnisse für kleine Zeiträume -->\n        <ng-container *ngIf=\"false && this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser && (this.levelsettings['anperioddays']<=64)\">\n        <div fxFlex=100 fxFlex.lt-md=100>\n            <mat-card>\n                <h3>Dringlichkeit der Behandlung</h3>\n                <div *ngIf=\"!this.ts_results['1_dingl_ort']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['1_dingl_ort']\">\n                    <ng-container *ngIf=\"this.ts_results['1_dingl_ort'].length>0\">\n                        <app-plot\n                        [(data)]=\"this.ts_results['1_dingl_ort']\" \n                        [xvalue]=\"'TTTsmed_text'\"\n                        [fontcolor]=\"'white'\"  \n                        [legendbg]=\"'#00000020'\"\n                        [legendpos]=\"'right'\"\n                        [outcomes]=\"['count']\" \n                        [custommargins]=\"{ l: 0, r: 0, b: 200, t: 20 }\"\n                        [colorby]=\"'POCsmed_text'\" plottype=\"stackedbar\"\n                        ></app-plot>                       \n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['1_dingl_ort'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Ergebnis zu empfohlenem Behandlungsort und -zeitpunkt.</p>\n              \n            </mat-card>\n        </div>\n       <!--  <div fxFlex=50 fxFlex.lt-md=100         *ngIf=\"this.currentuser\">\n            <mat-card>\n                <h3>Abweichung zwischen Empfehlung und Entscheidung</h3>\n                <div *ngIf=\"!this.ts_results['2_abweichung']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['2_abweichung']\">\n                    <ng-container *ngIf=\"this.ts_results['2_abweichung'].length>0\">\n                        Ergebnis:\n                        {{this.ts_results['2_abweichung'] | json}}\n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['2_abweichung'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Nur für den internen Gebrauch.</p>              \n            </mat-card>\n        </div> -->\n        <div fxFlex=100 fxFlex.lt-md=100>\n            <mat-card>\n                <h3>Dauer nach Hauptbeschwerde</h3>\n                <div *ngIf=\"!this.ts_results['3_dauer_sympt']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['3_dauer_sympt']\">\n                    <ng-container *ngIf=\"this.ts_results['3_dauer_sympt'].length>0\">\n                        <app-plot\n                        [(data)]=\"this.ts_results['3_dauer_sympt']\" \n                        [xvalue]=\"'Hauptbeschwerde'\"\n                        [fontcolor]=\"'white'\"  \n                        [outcomes]=\"['Dauer_sek']\" \n                        [custommargins]=\"{ l: 200, r: 0, b: 20, t: 20 }\"\n                        plottype=\"hbar\"\n                        ></app-plot>            \n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['3_dauer_sympt'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Dauer der Ersteinschätzung nach den häufigsten Hauptbeschwerden.</p>              \n            </mat-card>\n        </div>\n    \n    <div fxFlex fxFlex.lt-md=100>\n        <mat-card>\n            <h3>Dringlichkeit nach Hauptbeschwerde</h3>\n            <div *ngIf=\"!this.ts_results['4_dringl_symp']\">\n                <mat-card class=\"fakecontent\">\n                    <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                        <div>\n                            <h1><mat-icon>insights</mat-icon></h1>\n                           <mat-spinner [diameter]=\"30\"></mat-spinner>\n                        </div>\n                    </div>\n                </mat-card>                                        \n            </div>\n            <div  *ngIf=\"this.ts_results['4_dringl_symp']\">\n                <ng-container *ngIf=\"this.ts_results['4_dringl_symp'].length>0\">\n                    <app-plot\n                    [data]=\"this.ts_results['4_dringl_symp']\" \n                    [xvalue]=\"'Hauptbeschwerde'\"\n                    [fontcolor]=\"'white'\"  \n                    [legendbg]=\"'#00000020'\"\n                    [legendpos]=\"'right'\"\n                    [outcomes]=\"['count']\" \n                    [custommargins]=\"{ l: 0, r: 0, b: 200, t: 20 }\"\n                    [colorby]=\"'TTTsmed_text'\" plottype=\"stackedbar\"\n                    ></app-plot>          \n                    <!-- Ergebnis:\n                    {{this.ts_results['4_dringl_symp'] | json}} -->\n                </ng-container>                    \n                <ng-container *ngIf=\"!(this.ts_results['4_dringl_symp'].length>0)\">\n                    <p>Keine Daten</p>\n                </ng-container>                    \n            </div>\n            <p class=\"mat-caption greycolor\">Dinglichkeit der Behandlung nach den häufigsten Hauptbeschwerden.</p>\n          \n        </mat-card>\n    </div>      \n    </ng-container>\n</div>\n    \n\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\" fxLayout=\"column\" fxLayoutGap=\"1rem\" fxLayoutAllign=\"space-around\">\n    <div>\n        <p *ngIf=\"this.currentuser\" class=\"mat-caption right\">\n            Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+\"\n                \"+this.currentuser.lastname:\"\" }}</span></p>\n        <div class=\"brandingpicture\" [ngClass]=\"{'smallheader': this.currentuser}\">\n            <h1>Ambulante Akut- und Notfälle in Deutschland</h1>\n        </div>\n        <p *ngIf=\"this.metadata.length==0 && !this.currentuser && !this.progress\">\n            Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.\n        </p>\n        <p *ngIf=\"(this.metadata.length==0) && this.currentuser && !this.progress\">\n            Es sind keine Daten im System, bitte wenden Sie sich an einen Administrator.\n        </p>\n    </div>\n\n    <div *ngIf=\"this.progress &&  this.currentuser\">\n        <mat-spinner></mat-spinner>\n    </div>\n\n    <div *ngIf=\"this.metadata && !this.progress\">\n        <ng-container *ngIf=\"this.metadata.length>0 && this.levelvalues.length>0\">\n            <h3 *ngIf=\"this.currentuser\">KV</h3>\n            <p *ngIf=\"this.currentuser\">\n                <mat-chip-list>\n                    <mat-chip (click)=\"this.setlevel('levelvalues',item);\" *ngFor=\"let item of this.levelvalues\"\n                        [selected]=\"(this.levelsettings['levelvalues']==item)\" color=\"primary\">\n                        {{item}}\n                    </mat-chip>\n                </mat-chip-list>\n            </p>\n            <h3>Analysezeitraum</h3>\n            <p>\n                <mat-chip-list>\n                    <mat-chip (click)=\"this.setlevel('zeitraum',item);\" *ngFor=\"let item of this.zeitaumoptions\"\n                        [selected]=\"(this.levelsettings['zeitraum']==item)\" color=\"primary\">\n                        {{item}}\n                    </mat-chip>\n                </mat-chip-list>\n            </p>\n            <p *ngIf=\"this.levelsettings['zeitraum']=='Detailliert'\">\n                <mat-form-field appearance=\"fill\">\n                    <mat-label>Analysezeitraum</mat-label>\n                    <mat-date-range-input [rangePicker]=\"picker\">\n                      <input (dateChange)=\"smeddetailquery()\" matStartDate placeholder=\"Start date\" [(ngModel)]=\"this.levelsettings['start']\">\n                      <input (dateChange)=\"smeddetailquery()\" matEndDate placeholder=\"End date\" [(ngModel)]=\"this.levelsettings['end']\">\n                    </mat-date-range-input>\n                    <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\n                    <mat-date-range-picker #picker></mat-date-range-picker>\n                  </mat-form-field>\n            </p>            \n        </ng-container>\n    </div>    \n    <div *ngIf=\"!this.summaryinfo['done'] && !this.progress && \n    (this.levelsettings['zeitraum']!=='Detailliert' || (this.levelsettings['start'] && this.levelsettings['end']))\">\n        <p>\n            Keine Daten verfügbar\n        </p>\n    </div>\n    <div *ngIf=\"this.symptoms_list && this.stats_ts && this.summaryinfo['done']\" fxLayout=\"row wrap\">\n        <div fxFlex=100 >\n            <mat-card >\n                <div  fxLayout=\"row wrap\">\n                <div fxFlex  fxFlex.lt-md=100>\n                    <app-box \n                    [value]=\"this.summaryinfo['Assessments Gesamt']\"  [numberformat]=\"'1.0-0'\"\n                    [maincolor]=\"this.api.primary\" \n                    description=\"Assessments\"></app-box>\n                </div>\n                <div fxFlex fxFlex.lt-md=100>\n                    <app-box  [numberformat]=\"'1.0-0'\"\n                    [value]=\"this.summaryinfo['Assessments pro Woche']\" \n                    description=\"pro Woche\"></app-box>\n                </div>\n                <div fxFlex fxFlex.lt-md=100>\n                    <app-box [textbehind]=\"true\"   title=\"min\" [numberformat]=\"'1.1-1'\"\n                    [value]=\"this.summaryinfo['Mittlere Dauer']/60\" \n                    description=\"Dauer\"></app-box>\n                </div> \n                </div>            \n            </mat-card>\n\n        </div>\n        <div fxFlex=33 fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts  \">\n            <mat-card>\n                <h3>Assessments pro Woche</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\" [outcomes]=\"['Anzahl']\"\n                    [fontcolor]=\"'white'\" plottype=\"tsline\"></app-plot>\n                    <p  *ngIf=\"this.currentuser\"><a class=\"lightgreycolor\" (click)=\"this.exportascsv('zeitreihe.csv',this.stats_ts)\">\n                        <mat-icon>file_download</mat-icon>\n                    </a></p>\n            </mat-card>\n        </div>\n        <div fxFlex=33 fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts \">\n            <mat-card>\n                <h3>Mittlere Dauer pro Assessment</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\"\n                    [fontcolor]=\"'white'\" [colorscheme]=\"['rgb(183,205,0)']\"\n                    [outcomes]=\"['Mittlere Dauer (Min.)']\" plottype=\"tsline\"></app-plot>\n                    <p *ngIf=\"this.currentuser\"><a class=\"lightgreycolor\" (click)=\"this.exportascsv('zeitreihe.csv',this.stats_ts)\">\n                        <mat-icon>file_download</mat-icon>\n                    </a></p>\n            </mat-card>\n            \n        </div>\n        <div fxFlex fxFlex.lt-md=100 *ngIf=\"this.symptoms_list && this.stats_ts \">\n            <mat-card>\n                <h3>Fragen pro Assessment</h3>\n                <app-plot [(data)]=\"this.stats_ts\" xtickformat=\"%d.%m.<br>%Y\" [xvalue]=\"'Datum'\"\n                    [fontcolor]=\"'white'\" [colorscheme]=\"['orange']\"\n                    [outcomes]=\"['Mittlere Anzahl Fragen']\" plottype=\"tsline\"></app-plot>\n                    <p *ngIf=\"this.currentuser\"><a class=\"lightgreycolor\" (click)=\"this.exportascsv('zeitreihe.csv',this.stats_ts)\">\n                        <mat-icon>file_download</mat-icon>\n                    </a></p>\n            </mat-card>\n        </div>\n        <div fxFlex=100>\n            <mat-card>\n                <h3>Aufkommen nach Tag und Uhrzeit</h3>\n                <app-plot [(data)]=\"this.utiltimes\" [xvalue]=\"'Wochentag'\"\n                    [fontcolor]=\"'white'\" \n                    [outcomes]=\"['Anzahl']\"  [colorby]=\"'h'\" plottype=\"stackedbar\">\n                </app-plot>\n                <p *ngIf=\"this.currentuser\"><a class=\"lightgreycolor\" (click)=\"this.exportascsv('zeiten.csv',this.utiltimes)\">\n                    <mat-icon>file_download</mat-icon>\n                </a></p>\n            </mat-card>\n        </div>\n        <div fxFlex=100>\n            <mat-card>\n                <h3>Hauptbeschwerden</h3>\n                <app-plot [(data)]=\"this.symptoms_list\" [xvalue]=\"'name'\"\n                    [fontcolor]=\"'white'\" [sort]=\"true\"\n                    [outcomes]=\"['n']\" plottype=\"hbar\"></app-plot>\n                    <p *ngIf=\"this.currentuser\"><a class=\"lightgreycolor\" (click)=\"this.exportascsv('symptome.csv',this.symptoms_list_export)\">\n                        <mat-icon>file_download</mat-icon>\n                    </a></p>\n            </mat-card>\n        </div>\n        <!-- Detailergebnisse für kleine Zeiträume -->\n        <ng-container *ngIf=\"false && this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser && (this.levelsettings['anperioddays']<=64)\">\n        <div fxFlex=100 fxFlex.lt-md=100>\n            <mat-card>\n                <h3>Dringlichkeit der Behandlung</h3>\n                <div *ngIf=\"!this.ts_results['1_dingl_ort']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['1_dingl_ort']\">\n                    <ng-container *ngIf=\"this.ts_results['1_dingl_ort'].length>0\">\n                        <app-plot\n                        [(data)]=\"this.ts_results['1_dingl_ort']\" \n                        [xvalue]=\"'TTTsmed_text'\"\n                        [fontcolor]=\"'white'\"  \n                        [legendbg]=\"'#00000020'\"\n                        [legendpos]=\"'right'\"\n                        [outcomes]=\"['count']\" \n                        [custommargins]=\"{ l: 0, r: 0, b: 200, t: 20 }\"\n                        [colorby]=\"'POCsmed_text'\" plottype=\"stackedbar\"\n                        ></app-plot>                       \n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['1_dingl_ort'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Ergebnis zu empfohlenem Behandlungsort und -zeitpunkt.</p>\n              \n            </mat-card>\n        </div>\n       <!--  <div fxFlex=50 fxFlex.lt-md=100         *ngIf=\"this.currentuser\">\n            <mat-card>\n                <h3>Abweichung zwischen Empfehlung und Entscheidung</h3>\n                <div *ngIf=\"!this.ts_results['2_abweichung']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['2_abweichung']\">\n                    <ng-container *ngIf=\"this.ts_results['2_abweichung'].length>0\">\n                        Ergebnis:\n                        {{this.ts_results['2_abweichung'] | json}}\n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['2_abweichung'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Nur für den internen Gebrauch.</p>              \n            </mat-card>\n        </div> -->\n        <div fxFlex=100 fxFlex.lt-md=100>\n            <mat-card>\n                <h3>Dauer nach Hauptbeschwerde</h3>\n                <div *ngIf=\"!this.ts_results['3_dauer_sympt']\">\n                    <mat-card class=\"fakecontent\">\n                        <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                            <div>\n                                <h1><mat-icon>insights</mat-icon></h1>\n                               <mat-spinner [diameter]=\"30\"></mat-spinner>\n                            </div>\n                        </div>\n                    </mat-card>                                        \n                </div>\n                <div  *ngIf=\"this.ts_results['3_dauer_sympt']\">\n                    <ng-container *ngIf=\"this.ts_results['3_dauer_sympt'].length>0\">\n                        <app-plot\n                        [(data)]=\"this.ts_results['3_dauer_sympt']\" \n                        [xvalue]=\"'Hauptbeschwerde'\"\n                        [fontcolor]=\"'white'\"  \n                        [outcomes]=\"['Dauer_sek']\" \n                        [custommargins]=\"{ l: 200, r: 0, b: 20, t: 20 }\"\n                        plottype=\"hbar\"\n                        ></app-plot>            \n                    </ng-container>                    \n                    <ng-container *ngIf=\"!(this.ts_results['3_dauer_sympt'].length>0)\">\n                        <p>Keine Daten</p>\n                    </ng-container>                    \n                </div>\n                <p class=\"mat-caption greycolor\">Dauer der Ersteinschätzung nach den häufigsten Hauptbeschwerden.</p>              \n            </mat-card>\n        </div>\n    \n    <div fxFlex fxFlex.lt-md=100>\n        <mat-card>\n            <h3>Dringlichkeit nach Hauptbeschwerde</h3>\n            <div *ngIf=\"!this.ts_results['4_dringl_symp']\">\n                <mat-card class=\"fakecontent\">\n                    <div fxLayout=\"row\" fxLayoutAlign=\"center center\">\n                        <div>\n                            <h1><mat-icon>insights</mat-icon></h1>\n                           <mat-spinner [diameter]=\"30\"></mat-spinner>\n                        </div>\n                    </div>\n                </mat-card>                                        \n            </div>\n            <div  *ngIf=\"this.ts_results['4_dringl_symp']\">\n                <ng-container *ngIf=\"this.ts_results['4_dringl_symp'].length>0\">\n                    <app-plot\n                    [data]=\"this.ts_results['4_dringl_symp']\" \n                    [xvalue]=\"'Hauptbeschwerde'\"\n                    [fontcolor]=\"'white'\"  \n                    [legendbg]=\"'#00000020'\"\n                    [legendpos]=\"'right'\"\n                    [outcomes]=\"['count']\" \n                    [custommargins]=\"{ l: 0, r: 0, b: 200, t: 20 }\"\n                    [colorby]=\"'TTTsmed_text'\" plottype=\"stackedbar\"\n                    ></app-plot>          \n                    <!-- Ergebnis:\n                    {{this.ts_results['4_dringl_symp'] | json}} -->\n                </ng-container>                    \n                <ng-container *ngIf=\"!(this.ts_results['4_dringl_symp'].length>0)\">\n                    <p>Keine Daten</p>\n                </ng-container>                    \n            </div>\n            <p class=\"mat-caption greycolor\">Dinglichkeit der Behandlung nach den häufigsten Hauptbeschwerden.</p>\n          \n        </mat-card>\n    </div>      \n    </ng-container>\n</div>\n    \n\n</div>");
 
 /***/ }),
 
@@ -160,7 +160,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! exports provided: name, version, scripts, private, dependencies, devDependencies, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"ambulantenotfaelle\",\"version\":\"0.9.94\",\"scripts\":{\"ng\":\"ng\",\"start\":\"ng serve\",\"build\":\"ng build\",\"test\":\"ng test\",\"lint\":\"ng lint\",\"e2e\":\"ng e2e\"},\"private\":true,\"dependencies\":{\"@angular/animations\":\"~12.0.2\",\"@angular/cdk\":\"^12.0.2\",\"@angular/common\":\"~12.0.2\",\"@angular/compiler\":\"~12.0.2\",\"@angular/core\":\"~12.0.2\",\"@angular/flex-layout\":\"^10.0.0-beta.32\",\"@angular/forms\":\"~12.0.2\",\"@angular/material\":\"^12.0.2\",\"@angular/platform-browser\":\"~12.0.2\",\"@angular/platform-browser-dynamic\":\"~12.0.2\",\"@angular/router\":\"~12.0.2\",\"@types/leaflet\":\"^1.5.21\",\"angular-plotly.js\":\"^3.0.0\",\"chroma-js\":\"^2.1.0\",\"leaflet\":\"^1.7.1\",\"plotly.js\":\"^1.58.4\",\"rxjs\":\"~6.6.0\",\"tslib\":\"^2.1.0\",\"zone.js\":\"~0.11.4\"},\"devDependencies\":{\"@angular-devkit/build-angular\":\"^0.901.15\",\"@angular/cli\":\"~12.0.2\",\"@angular/compiler-cli\":\"~12.0.2\",\"@types/jasmine\":\"~3.6.0\",\"@types/jasminewd2\":\"~2.0.3\",\"@types/node\":\"^12.19.14\",\"codelyzer\":\"^6.0.0\",\"jasmine-core\":\"~3.6.0\",\"jasmine-spec-reporter\":\"~5.0.0\",\"karma\":\"~6.3.2\",\"karma-chrome-launcher\":\"~3.1.0\",\"karma-coverage-istanbul-reporter\":\"~3.0.2\",\"karma-jasmine\":\"~4.0.0\",\"karma-jasmine-html-reporter\":\"^1.5.0\",\"protractor\":\"~7.0.0\",\"ts-node\":\"~8.3.0\",\"tslint\":\"~6.1.0\",\"typescript\":\"~4.2.4\"}}");
+module.exports = JSON.parse("{\"name\":\"ambulantenotfaelle\",\"version\":\"0.9.95\",\"scripts\":{\"ng\":\"ng\",\"start\":\"ng serve\",\"build\":\"ng build\",\"test\":\"ng test\",\"lint\":\"ng lint\",\"e2e\":\"ng e2e\"},\"private\":true,\"dependencies\":{\"@angular/animations\":\"~12.0.2\",\"@angular/cdk\":\"^12.0.2\",\"@angular/common\":\"~12.0.2\",\"@angular/compiler\":\"~12.0.2\",\"@angular/core\":\"~12.0.2\",\"@angular/flex-layout\":\"^10.0.0-beta.32\",\"@angular/forms\":\"~12.0.2\",\"@angular/material\":\"^12.0.2\",\"@angular/platform-browser\":\"~12.0.2\",\"@angular/platform-browser-dynamic\":\"~12.0.2\",\"@angular/router\":\"~12.0.2\",\"@types/leaflet\":\"^1.5.21\",\"angular-plotly.js\":\"^3.0.0\",\"chroma-js\":\"^2.1.0\",\"leaflet\":\"^1.7.1\",\"plotly.js\":\"^1.58.4\",\"rxjs\":\"~6.6.0\",\"tslib\":\"^2.1.0\",\"zone.js\":\"~0.11.4\"},\"devDependencies\":{\"@angular-devkit/build-angular\":\"^0.901.15\",\"@angular/cli\":\"~12.0.2\",\"@angular/compiler-cli\":\"~12.0.2\",\"@types/jasmine\":\"~3.6.0\",\"@types/jasminewd2\":\"~2.0.3\",\"@types/node\":\"^12.19.14\",\"codelyzer\":\"^6.0.0\",\"jasmine-core\":\"~3.6.0\",\"jasmine-spec-reporter\":\"~5.0.0\",\"karma\":\"~6.3.2\",\"karma-chrome-launcher\":\"~3.1.0\",\"karma-coverage-istanbul-reporter\":\"~3.0.2\",\"karma-jasmine\":\"~4.0.0\",\"karma-jasmine-html-reporter\":\"^1.5.0\",\"protractor\":\"~7.0.0\",\"ts-node\":\"~8.3.0\",\"tslint\":\"~6.1.0\",\"typescript\":\"~4.2.4\"}}");
 
 /***/ }),
 
@@ -2325,13 +2325,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_services_api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/services/api.service */ "./src/app/services/api.service.ts");
 /* harmony import */ var src_app_services_auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/services/auth.service */ "./src/app/services/auth.service.ts");
 /* harmony import */ var src_app_services_smed_aggregation_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/services/smed-aggregation.service */ "./src/app/services/smed-aggregation.service.ts");
+/* harmony import */ var src_app_services_csvexport_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/services/csvexport.service */ "./src/app/services/csvexport.service.ts");
+
 
 
 
 
 
 let StartComponent = class StartComponent {
-    constructor(api, auth, smed) {
+    constructor(csv, api, auth, smed) {
+        this.csv = csv;
         this.api = api;
         this.auth = auth;
         this.smed = smed;
@@ -2355,6 +2358,7 @@ let StartComponent = class StartComponent {
         this.updatemetadata();
         this.auth.currentUser.subscribe(data => { this.currentuser = data; });
         if (this.metadataok) {
+            this.progress = true;
             this.querydatasmed();
         }
         // Wait if no metadata and try again. Fixes logout behaviour
@@ -2362,6 +2366,7 @@ let StartComponent = class StartComponent {
             setTimeout(() => {
                 this.updatemetadata();
                 if (this.metadataok) {
+                    this.progress = true;
                     this.querydatasmed();
                 }
                 else {
@@ -2378,7 +2383,7 @@ let StartComponent = class StartComponent {
     setlevel(level, value) {
         this.progress = true;
         this.levelsettings[level] = value;
-        this.querydatasmed();
+        this.querydatasmed(level);
     }
     updatemetadata() {
         if (this.api.getmetadata("metadata")) {
@@ -2473,7 +2478,7 @@ let StartComponent = class StartComponent {
             }
         });
     }
-    querydatasmed() {
+    querydatasmed(changetype = "") {
         let query = {
             "client_id": this.api.REST_API_SERVER_CLIENTID,
             "groupinfo": {}
@@ -2481,11 +2486,15 @@ let StartComponent = class StartComponent {
         query["groupinfo"]["level"] = "KV";
         query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
         query["showfields"] = this.api.getValues(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname");
-        this.api.postTypeRequest('get_data/', query).subscribe(data => {
-            this.data = data["data"][0];
+        if (changetype != "zeitraum") {
+            this.api.postTypeRequest('get_data/', query).subscribe(data => {
+                this.data = data["data"][0];
+                this.makesmeditems();
+            }, error => { this.data = NaN; this.progress = false; });
+        }
+        else {
             this.makesmeditems();
-            this.progress = false;
-        }, error => { this.data = NaN; this.progress = false; });
+        }
     }
     querysmedts(groupvars = [], outcome = "", resultname, sort = false, topx = false, filtervar = "", filtervalues = [], topxvar = "") {
         if (!this.currentuser) {
@@ -2545,6 +2554,10 @@ let StartComponent = class StartComponent {
             this.ts_results[resultname] = [];
         }
         ;
+    }
+    exportascsv(name, data) {
+        this.csv.exportToCsv(name, data);
+        this.csv.exportToCsv(name + "_settings.csv", [this.levelsettings]);
     }
     makesmeditems() {
         this.summaryinfo["done"] = false;
@@ -2613,8 +2626,8 @@ let StartComponent = class StartComponent {
         }
         ;
         if (statswdate.length > 0) {
-            symptoms_list = this.smed.aggsymptoms(symptoms_list);
-            this.symptoms_list = symptoms_list.slice(0, 20);
+            this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
+            this.symptoms_list = this.symptoms_list_export.slice(0, 15);
             this.summaryinfo["Assessments Gesamt"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl"));
             this.summaryinfo["Assessments pro Woche"] = this.summaryinfo["Assessments Gesamt"] / this.api.getValues(this.stats_ts, "Anzahl").length;
             this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Dauer_sek")) / this.summaryinfo["Assessments Gesamt"];
@@ -2622,6 +2635,7 @@ let StartComponent = class StartComponent {
             this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts, "Datum")));
             this.summaryinfo["done"] = true;
         }
+        this.progress = false;
         if (this.levelsettings["anperioddays"] <= 64 && (this.levelsettings["zeitraum"] !== "Gesamt")) {
             // Query TS Data;
             // Keys:
@@ -2642,6 +2656,7 @@ let StartComponent = class StartComponent {
     }
 };
 StartComponent.ctorParameters = () => [
+    { type: src_app_services_csvexport_service__WEBPACK_IMPORTED_MODULE_5__["CsvexportService"] },
     { type: src_app_services_api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"] },
     { type: src_app_services_auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"] },
     { type: src_app_services_smed_aggregation_service__WEBPACK_IMPORTED_MODULE_4__["SmedAggregationService"] }
@@ -3018,6 +3033,73 @@ AuthService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
         providedIn: 'root'
     })
 ], AuthService);
+
+
+
+/***/ }),
+
+/***/ "./src/app/services/csvexport.service.ts":
+/*!***********************************************!*\
+  !*** ./src/app/services/csvexport.service.ts ***!
+  \***********************************************/
+/*! exports provided: CsvexportService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CsvexportService", function() { return CsvexportService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
+
+
+let CsvexportService = class CsvexportService {
+    exportToCsv(filename, rows) {
+        if (!rows) {
+            return;
+        }
+        if (rows && !rows.length) {
+            rows = [rows];
+        }
+        const separator = ',';
+        const keys = Object.keys(rows[0]);
+        const csvContent = keys.join(separator) +
+            '\n' +
+            rows.map(row => {
+                return keys.map(k => {
+                    let cell = row[k] === null || row[k] === undefined ? '' : row[k];
+                    cell = cell instanceof Date
+                        ? cell.toLocaleString()
+                        : cell.toString().replace(/"/g, '""');
+                    if (cell.search(/("|,|\n)/g) >= 0) {
+                        cell = `"${cell}"`;
+                    }
+                    return cell;
+                }).join(separator);
+            }).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        }
+        else {
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                // Browsers that support HTML5 download attribute
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+};
+CsvexportService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+        providedIn: 'root'
+    })
+], CsvexportService);
 
 
 
