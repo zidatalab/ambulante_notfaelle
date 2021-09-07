@@ -121,7 +121,7 @@ export class StartComponent implements OnInit {
   dometasettings(){
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
           this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];
-          this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.levelid)[0]["values"];
+          this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.levelid)[0]["values"].sort();
           this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
           if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
           this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
@@ -199,7 +199,7 @@ export class StartComponent implements OnInit {
       data => {
         let res = data["data"];
         // This step is crucial to combine multiple documents into one.
-        this.data = this.combinesmeddata(res);
+        this.data = this.combinesmeddata(res);        
       this.makesmeditems();},
       error => {this.data = NaN;this.progress=false;});
     }
@@ -275,12 +275,13 @@ export class StartComponent implements OnInit {
       startobject = array[0];  
     }
     if (array.length>1) {
-      let startobject = array[0];
+      startobject = array[0];
       const remainingarray = array;
       remainingarray.splice(0,1);
       for (let item of remainingarray){
         for (let field of fields){
-          startobject[field].concat(item[field]);
+            let combined = startobject[field].concat(item[field]);
+          startobject[field] = combined;
         }
       }
     }
