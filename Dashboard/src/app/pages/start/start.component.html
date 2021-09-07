@@ -58,6 +58,12 @@
         </p>
     </div>
     <div *ngIf="this.symptoms_list && this.stats_ts && this.summaryinfo['done']" fxLayout="row wrap">
+        <div class="lightgreycolor mat-caption" fxFlex=100 >
+            
+                <p><strong>Ersteinschätzung am Telefon</strong></p>
+                <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen entsprechende Auswertungen vor.</p>
+            
+        </div>
         <div fxFlex=100 >
             <mat-card >
                 <div  fxLayout="row wrap">
@@ -161,7 +167,7 @@
                         [legendbg]="'#00000020'"
                         [legendpos]="'right'"
                         [outcomes]="['count']" 
-                        [custommargins]="{ l: 0, r: 0, b: 200, t: 20 }"
+                        [custommargins]="{ l: 20, r: 0, b: 0, t: 20 }"
                         [colorby]="'POCsmed_text'" plottype="stackedbar"
                         ></app-plot>                       
                     </ng-container>                    
@@ -218,7 +224,7 @@
                         [xvalue]="'Hauptbeschwerde'"
                         [fontcolor]="'white'"  
                         [outcomes]="['Dauer_sek']" 
-                        [custommargins]="{ l: 200, r: 0, b: 20, t: 20 }"
+                        [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }"
                         plottype="hbar"
                         ></app-plot>            
                     </ng-container>                    
@@ -252,7 +258,7 @@
                     [legendbg]="'#00000020'"
                     [legendpos]="'right'"
                     [outcomes]="['count']" 
-                    [custommargins]="{ l: 0, r: 0, b: 200, t: 20 }"
+                    [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }"
                     [colorby]="'TTTsmed_text'" plottype="stackedbar"
                     ></app-plot>          
                     <!-- Ergebnis:

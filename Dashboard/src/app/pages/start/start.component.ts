@@ -113,12 +113,9 @@ export class StartComponent implements OnInit {
   }
 
   thereisdata() {
-    let res = false
-    res = this.data
-    // if (res) {
-    //   res = (this.data.length > 0) && (this.metadata.length > 0);
-    // }
-    return res
+    let res = []
+    res = res.concat(this.data);
+    return res.length>0
   }
 
   dometasettings(){
@@ -199,7 +196,10 @@ export class StartComponent implements OnInit {
     query["showfields"]=this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
     if (changetype!="zeitraum"){
     this.api.postTypeRequest('get_data/', query).subscribe(
-      data => {this.data = data["data"][0];
+      data => {
+        let res = data["data"];
+        // This step is crucial to combine multiple documents into one.
+        this.data = this.combinesmeddata(res);
       this.makesmeditems();},
       error => {this.data = NaN;this.progress=false;});
     }
@@ -267,6 +267,25 @@ export class StartComponent implements OnInit {
     };     
   }
 
+
+  combinesmeddata(array){
+    let startobject = {};
+    let fields = this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
+    if (array.length==1) {
+      startobject = array[0];  
+    }
+    if (array.length>1) {
+      let startobject = array[0];
+      const remainingarray = array;
+      remainingarray.splice(0,1);
+      for (let item of remainingarray){
+        for (let field of fields){
+          startobject[field].concat(item[field]);
+        }
+      }
+    }
+    return startobject;
+  }
 
   exportascsv(name, data) {
     this.csv.exportToCsv(name, data);
