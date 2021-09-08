@@ -118,6 +118,10 @@ export class StartComponent implements OnInit {
     return res.length>0
   }
 
+  handleklick(plot,event){
+    console.log("CLICK ON PLOT",plot,"\n",event);
+  }
+
   dometasettings(){
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
           this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];

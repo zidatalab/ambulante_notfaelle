@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, PLATFORM_INITIALIZER } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -41,13 +41,14 @@ export class PlotComponent implements OnInit {
   @Input() legendbg='ffffff20'; 
   @Input() legendposx='right'; 
   @Input() legendposy=1; 
+  @Output() clicked = new EventEmitter<string>();
 
   constructor(private api:ApiService) { }
   plotlayout: any;
   plotdata: any;
   mainconfig: any;
   plotlytype: string;
-
+  clickedvalue:any;
 
   ngOnInit(): void {
     if (this.divid==""){this.divid= "plotdiv" + Math.round(Math.random() * 1000).toString() + "_" + Math.round(Math.random() * 1000).toString();}
@@ -61,6 +62,11 @@ export class PlotComponent implements OnInit {
 
   ngOnChanges(changes: any) {
     setTimeout(()=>{this.make_plot()},0);
+  }
+
+  reportclick(input){
+    this.clicked.emit(input);
+    this.clickedvalue = input;    
   }
 
 
