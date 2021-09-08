@@ -120,7 +120,12 @@ public sortArray(array, key, order = "ascending") {
 }
 
 public sumArray(array) {
-  return array.reduce((a, b) => a + b, 0);
+  var total = 0;
+  for (var obj of array) {
+    if (obj){total += +obj;}
+    };
+
+  return total;
 }
 
 public getuniqueValues(array, key) {

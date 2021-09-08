@@ -46,6 +46,7 @@ export class StartComponent implements OnInit {
   zeitaumoptions=["Letztes Jahr","Aktuelles Jahr","Gesamt","Detailliert"];
   ts_results={};
   utiltimes = [];
+  decisions = [];
   ngOnInit(): void {
     this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Gesamt"};
     this.summaryinfo["done"]=false;
@@ -302,6 +303,7 @@ export class StartComponent implements OnInit {
     let statswdate = this.smed.adddate(this.data["stats"],"Jahr","KW");    
     let symptoms_list = this.smed.adddatemonth(this.data["mainsymptoms_ts"] ,"Jahr","Monat");  
     let utiltimes = this.smed.adddatemonth(this.data["timestats"],"Jahr","Monat");
+    let decisions = this.smed.adddate(this.data["decisions"],"Jahr","KW");
     // Appply date filters
     if (this.levelsettings["zeitraum"]!=="Gesamt"){
       this.levelsettings["anperioddays"]=65;
@@ -338,18 +340,27 @@ export class StartComponent implements OnInit {
       for (let item of utiltimes){
         item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
       }
+      for (let item of decisions){
+        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
+       }
 
       statswdate = this.api.filterArray(statswdate,"touse",true); 
       symptoms_list = this.api.filterArray(symptoms_list,"touse",true); 
       utiltimes = this.api.filterArray(utiltimes,"touse",true);
+      decisions = this.api.filterArray(decisions,"touse",true);
       
       this.levelsettings["anperioddays"]= Math.floor((enddate-startdate)/millisperday);
       this.levelsettings["start"]=startdate;
       this.levelsettings["end"]=enddate;
       this.progress=false;
     }
-
     utiltimes = this.api.groupbysum(utiltimes,"wd","h","Anzahl");
+    for (let item of decisions){
+      item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"]
+    }
+    decisions = this.api.sortArray(this.api.groupbysum(decisions,"Empfehlung","TTTdispo_text","Anzahl"),"TTTdispo_text");
+      
+    this.decisions = decisions;
     this.utiltimes = utiltimes;
     for (let item of this.utiltimes){
       item["Wochentag"]=this.api.getweekdayname(item["wd"]);
@@ -371,6 +382,11 @@ export class StartComponent implements OnInit {
     };
     if (statswdate.length>0){
     this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
+    let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export,"n"));
+    for (let item of this.symptoms_list_export){
+      item["Anteil"]= 100*item['n']/anzahl_symptome;
+    }
+
     this.symptoms_list = this.symptoms_list_export.slice(0,15);
     this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
     this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
