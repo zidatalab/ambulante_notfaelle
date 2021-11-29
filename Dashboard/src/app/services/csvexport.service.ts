@@ -31,9 +31,6 @@ export class CsvexportService {
       }).join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) { // IE 10+
-      navigator.msSaveBlob(blob, filename);
-    } else {
       const link = document.createElement('a');
       if (link.download !== undefined) {
         // Browsers that support HTML5 download attribute
@@ -44,7 +41,7 @@ export class CsvexportService {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      }
+      
     }
   }
 }

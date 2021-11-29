@@ -70,6 +70,6 @@ registerLocaleData(locales, 'de');
 
 export class AppModule { 
   constructor(private plotlyService: PlotlyService) {
-    this.plotlyService.getPlotly().register(SVLocale);
+    this.plotlyService.getPlotly();//.register(SVLocale);
   }
 }
