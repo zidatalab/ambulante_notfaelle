@@ -2647,7 +2647,10 @@ let StartComponent = class StartComponent {
         for (let item of decisions) {
             item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"];
         }
-        decisions = this.api.sortArray(this.api.groupbysum(decisions, "Empfehlung", "TTTdispo_text", "Anzahl"), "TTTdispo_text");
+        decisions = this.api.sortArray(this.api.groupbysum(decisions, "Empfehlung", "TTTdispo_text", "Anzahl"), "Empfehlung", "descending");
+        for (let item of decisions) {
+            item["Empfehlung"] = item["Empfehlung"].slice(2);
+        }
         this.decisions = decisions;
         this.utiltimes = utiltimes;
         for (let item of this.utiltimes) {
