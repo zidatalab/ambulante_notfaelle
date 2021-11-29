@@ -119,8 +119,7 @@ export class StartComponent implements OnInit {
     return res.length>0
   }
 
-  handleklick(plot,event){
-    console.log("CLICK ON PLOT",plot,"\n",event);
+  handleklick(plot,event){    
   }
 
   dometasettings(){
@@ -386,10 +385,11 @@ export class StartComponent implements OnInit {
     this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
     let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export,"n"));
     for (let item of this.symptoms_list_export){
-      item["Anteil"]= 100*item['n']/anzahl_symptome;
+      item["Anteil"]= Math.round(1000*item['n']/anzahl_symptome)/10;
     }
 
     this.symptoms_list = this.symptoms_list_export.slice(0,15);
+
     this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
     this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
     this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.summaryinfo["Assessments Gesamt"];
@@ -397,6 +397,7 @@ export class StartComponent implements OnInit {
     this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["done"]=true;    
     }
+
 
     this.progress=false;
 

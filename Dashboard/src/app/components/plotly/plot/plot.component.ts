@@ -223,7 +223,9 @@ export class PlotComponent implements OnInit {
     let outcomes = this.outcomes;
     if (this.colorby) {
       outcomes = this.api.getuniqueValues(plotdata, this.colorby);
-      this.colorscheme=this.api.makescale(outcomes.length);
+      if (outcomes.length>1){
+        this.colorscheme=this.api.makescale(outcomes.length);
+      }      
       plotdata = this.make_colorbyvalues();
     }
   

@@ -149,7 +149,8 @@
             <mat-card>
                 <h3>Anteil Hauptbeschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'name'" [percent]="true"
-                    [fontcolor]="'white'" [sort]="true" (clicked)="handleklick('Beschwerden',$event);"
+                    [fontcolor]="'white'" [sort]="true"
+                    (clicked)="handleklick('Beschwerden',$event);"
                     [outcomes]="['Anteil']" plottype="hbar"></app-plot>
                     <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
                         <mat-icon>file_download</mat-icon>
