@@ -10,8 +10,8 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
  
-  public REST_API_SERVER =  "https://zidashboardapi.azurewebsites.net/" ; // "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
-  public REST_API_SERVER_CLIENTID = "smed_reporting"; 
+  public REST_API_SERVER =  "http://127.0.0.1:8000/" ; // "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
+  public REST_API_SERVER_CLIENTID = "smed_reporting_lktest"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
   public warncolor = "#e1149b";
@@ -91,6 +91,26 @@ public  filterArray(array,key,value){
  }
  return result
 }
+
+public  filterNAArray(array,key){
+  let i =0
+  let result = []
+  for (let item of array){
+    if (item[key] && (item[key]!==null) && (!isNaN(item[key]))){
+      result.push(item)};
+    i = i+1
+  }
+  return result
+ }
+ 
+ public  filterNA(array){
+  let result = []
+  for (let item of array){
+    if (!isNaN(item)){
+      result.push(item)};  
+  }
+  return result
+ }
 
 public  filterArraybyList(array,key,list){
   let i =0
@@ -181,5 +201,27 @@ public splitarraybykey(array,splitkey){
 
 public makescale(bins=5){
   return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); }
+
+  public stringwrap(string,maxlength=30){
+    let newstring = "";
+    let wordsarray = string.split(" ");
+    let fulllength = string.length
+    let linelength = 0
+    for (let word of wordsarray){
+      let wordlen = word.length;
+      if ((linelength+wordlen)<maxlength){
+        newstring = newstring + " " + word;
+        linelength = linelength+wordlen;
+      }
+      else {
+        newstring = newstring + "<br>" + word;
+        linelength = wordlen;
+      };    
+    }
+    return newstring;
+  }
+
+
 }
+
 
