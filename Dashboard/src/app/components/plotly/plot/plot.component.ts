@@ -20,6 +20,7 @@ export class PlotComponent implements OnInit {
   @Input() linewidth: number;
   @Input() showlegend: boolean;
   @Input() sort: boolean;
+  @Input() sortx: boolean;
   @Input() percent: boolean;
   @Input() percentx: boolean;
   @Input() basecolor = "";
@@ -218,7 +219,9 @@ export class PlotComponent implements OnInit {
     if (this.sort){
       plotdata=this.api.sortArray(plotdata,this.outcomes[0]);
     }
-    
+    if (this.sortx){
+      plotdata=this.api.sortArray(plotdata,this.xvalue);
+    }
     
     let outcomes = this.outcomes;
     if (this.colorby) {

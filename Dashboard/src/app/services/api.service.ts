@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
  
-  public REST_API_SERVER =  "http://127.0.0.1:8000/" ; // "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
+  public REST_API_SERVER = "https://zidashboardapi.azurewebsites.net/" ; 
   public REST_API_SERVER_CLIENTID = "smed_reporting_lktest"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
@@ -75,6 +75,18 @@ public getValues(array, key) {
 }
 public  getKeys(array){
  return Object.keys(array[0]);
+}
+
+objectkeystocolumns(array,objectname){
+  for (let item of array){
+    let theobject = item[objectname];
+    for (let key of Object.keys(theobject)){
+      item[key]=theobject[key];      
+    }
+    theobject[objectname]=NaN;
+    delete theobject[objectname];
+  }
+  return array;
 }
 
 public  getOptions(array, key){

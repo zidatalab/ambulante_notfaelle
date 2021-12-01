@@ -57,7 +57,7 @@
             Keine Daten verfügbar
         </p>
     </div>
-    <div *ngIf="this.symptoms_list && this.stats_ts && this.summaryinfo['done']" fxLayout="row wrap">
+    <div *ngIf="true || (this.symptoms_list && this.stats_ts && this.summaryinfo['done'])" fxLayout="row wrap">
         <div class="lightgreycolor mat-caption" fxFlex=100 >
             
                 <p><strong>Ersteinschätzung am Telefon</strong></p>
@@ -79,47 +79,49 @@
                     description="pro Woche"></app-box>
                 </div>
                 <div fxFlex fxFlex.lt-md=100>
-                    <app-box [textbehind]="true"   title="min" [numberformat]="'1.1-1'"
-                    [value]="this.summaryinfo['Mittlere Dauer']/60" 
+                    <app-box [textbehind]="true"   title="Sek." [numberformat]="'1.1-1'"
+                    [value]="this.summaryinfo['Mittlere Dauer']" 
                     description="Dauer"></app-box>
                 </div> 
                 </div>            
             </mat-card>
 
         </div>
-        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts  ">
+        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Assessments pro Woche</h3>
-                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [outcomes]="['Anzahl']"
+                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" 
+                    [xvalue]="'Datum'" [outcomes]="['Assessments']" [sortx]="true"
                     [fontcolor]="'white'" plottype="area"></app-plot>
                     <p  *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
         </div>
-        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts ">
+        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']"
-                    [outcomes]="['Mittlere Dauer (Min.)']" plottype="tsline"></app-plot>
+                    [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']" [sortx]="true"
+                    [outcomes]="['Mittlere Dauer (Sek.)']" plottype="tsline"></app-plot>
                     <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
             
         </div>
-        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.symptoms_list && this.stats_ts ">
+        <div fxFlex=33 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Fragen pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [fontcolor]="'white'" [colorscheme]="['orange']"
+                    [fontcolor]="'white'" [colorscheme]="['orange']" [sortx]="true"
                     [outcomes]="['Mittlere Anzahl Fragen']" plottype="tsline"></app-plot>
                     <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
         </div>
+        <ng-container *ngIf="false">
         <div fxFlex=100>
             <mat-card>
                 <h3>Aufkommen nach Tag und Uhrzeit</h3>
@@ -132,6 +134,7 @@
                 </a></p>
             </mat-card>
         </div>
+        
         <div fxFlex=100>
             <mat-card>
                 <h3>Empfehlungen und Entscheidungen zur Dringlichkeit</h3>
@@ -288,6 +291,7 @@
         </mat-card>
     </div>      
     </ng-container>
+</ng-container>
 </div>
     
 

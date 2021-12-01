@@ -3,6 +3,9 @@ import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { SmedAggregationService } from 'src/app/services/smed-aggregation.service';
 import { CsvexportService } from 'src/app/services/csvexport.service';
+import { DBService } from 'src/app/services/dbservice.service';
+import { DataItem } from 'src/app/services/db';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -14,7 +17,7 @@ export class StartComponent implements OnInit {
 
 
 
-  constructor(private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
+  constructor(private db:DBService, private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
   metadata=[];
   progress:boolean;
   metadataok: boolean;
@@ -38,33 +41,34 @@ export class StartComponent implements OnInit {
   datakeystable:any;  
   
   // SMED
-  stats_ts:any;
+  stats_ts:any=[];
   symptoms_list:any;
   symptoms_list_export:any;
   summaryinfo={};
   smedrange={};
-  zeitaumoptions=["Letztes Jahr","Aktuelles Jahr","Gesamt","Detailliert"];
+  zeitaumoptions=["Aktuelles Jahr","Letztes Jahr","Gesamt","Detailliert"];
   ts_results={};
   utiltimes = [];
-  decisions = [];
+  decisions = [];  
+
   ngOnInit(): void {
-    this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Gesamt"};
+    // this.db.clean();
+    this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Aktuelles Jahr"};
     this.summaryinfo["done"]=false;
     this.progress=true;
     this.colorsscheme = ["#e91e63"];
     this.mapdatafor = "";
-    this.data=[];
     this.mapdata=[];
+    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
     this.updatemetadata();
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok && this.metadata.length>0) {this.progress=true;this.querydatasmed();}
+    if (this.metadataok && this.metadata.length>0) {this.progress=true;}
     // Wait if no metadata and try again. Fixes logout behaviour
     else {
       setTimeout(() => {
         this.updatemetadata();
         if (this.metadataok && this.metadata.length>0) {
           this.progress=true;
-          this.querydatasmed();
         }
         else {
           this.progress=false;
@@ -76,7 +80,6 @@ export class StartComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.data=[];
     this.mapdata=[];
     
     }
@@ -85,7 +88,15 @@ export class StartComponent implements OnInit {
   setlevel(level, value) {
     this.progress = true;
     this.levelsettings[level] = value;
-    this.querydatasmed(level);
+    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
+    this.querydatasmed('stats').then(() => {this.makesmeditems();});
+    // this.querydatasmed('timestats');
+    // this.querydatasmed('decisions');
+    // this.querydatasmed('mainsymptoms_ts');
+    //this.querydatasmed('timetotreat');  
+    this.makesmeditems();
+    this.progress=false; 
+
   }
 
   updatemetadata() {
@@ -111,12 +122,7 @@ export class StartComponent implements OnInit {
       }  
       
     }, 1500);    
-  }
-
-  thereisdata() {
-    let res = []
-    res = res.concat(this.data);
-    return res.length>0
+    this.querydatasmed("stats").finally(()=>this.makesmeditems());    
   }
 
   handleklick(plot,event){    
@@ -127,233 +133,82 @@ export class StartComponent implements OnInit {
           this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];
           this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.levelid)[0]["values"].sort();
           this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
-          if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
-          this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
-          this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
-          if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
+          //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
+          //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
+          //this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
+          //if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
           this.metadataok = true;
           this.progress=false;          
   }
-  thereismapdata() {
-    let res = this.thereisdata() && this.mapdata
-    return res
-  }
 
-  querydata() {
-    let query = {
-      "client_id": this.api.REST_API_SERVER_CLIENTID      
-    };
-    let outcomeinfo = this.api.filterArray(this.metadata, "varname", this.levelsettings["outcomes"])[0]['type'];
-    query["groupinfo"][this.level] = this.levelsettings["levelvalues"];
-    this.api.postTypeRequest('get_data/', query).subscribe(data => {
-      this.datakeys = Object.keys(data["data"][0]);
-      this.datakeystable = Object.keys(data["data"][0]);
-      this.data = data["data"] ;
-      const index = this.datakeys.indexOf(this.level);
-      if (index > -1) {
-        this.datakeys.splice(index, 1);
-      }
-      if (this.levelsettings['levelvalues']!=this.levelvalues[0]){
-        this.datakeys = [this.levelid,this.levelsettings["outcomes"]];
-      }
-      else {
-        this.datakeys = this.datakeys.filter(item => item!=this.levelid);
-      }
-
-      
-      // Remove unneeded fields
-      setTimeout(() => { 
-      if (outcomeinfo == 'rate') {
-        this.data_number = [];
-        this.data_rate = [(this.levelsettings["outcomes"])];
-      }
-      else {
-        this.data_number = [(this.levelsettings["outcomes"])];
-        this.data_rate = [];
-      };
-    }, 0);
-      
-      
-      if ((this.mapdatafor !== this.levelsettings['levelvalues']) && (this.levelsettings['levelvalues'] !== this.levelvalues[0]) && (this.geojson_available.indexOf(this.levelsettings['levelvalues']) >= 0)) {
-        this.api.getTypeRequest('get_geodata/?client_id=' + this.api.REST_API_SERVER_CLIENTID + '&levelname=' + this.levelsettings['levelvalues']).subscribe(
-          data => {
-            this.mapdata = data;
-            this.mapdatafor = this.levelsettings['levelvalues'];
-          },
-          error => {
-            this.mapdata=null;
-          });
-      }
-    });
-
- 
-  }
-
-  querydatasmed(changetype=""){
+  async querydatasmed(thefield){
+    console.log(this.levelsettings);
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID      ,
       "groupinfo":{}
     };
-
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
-    query["showfields"]=this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
-    if (changetype!="zeitraum"){
+    query["groupinfo"]["Jahr"] = {
+      "$gte": parseInt(this.levelsettings["start"].slice(0,4)),
+      "$lte": parseInt(this.levelsettings["stop"].slice(0,4))
+    };
+    query["showfields"]=[thefield];
+    this.db.listdata(thefield,'KV',this.levelsettings["levelvalues"],this.levelsettings["start"],this.levelsettings["stop"]).then(data=>console.log(data.length," values in db for",thefield));
+    let dbdaterange ;
+    dbdaterange = await this.db.querydatadates(thefield,'KV',
+    this.levelsettings["levelvalues"],this.levelsettings["start"],
+    this.levelsettings["stop"]);
+    console.log("Range here:",dbdaterange);
+    if (dbdaterange) {
+    if ((dbdaterange['min']>this.levelsettings["start"] && 
+    dbdaterange['max']<this.levelsettings["stop"]) || 
+    isNaN(dbdaterange['max']) || isNaN(dbdaterange['min']) ){
     this.api.postTypeRequest('get_data/', query).subscribe(
       data => {
         let res = data["data"];
-        // This step is crucial to combine multiple documents into one.
-        this.data = this.combinesmeddata(res);        
-      this.makesmeditems();},
-      error => {this.data = NaN;this.progress=false;});
+        this.db.deletewhere(thefield,'KV',this.levelsettings["levelvalues"],
+        this.levelsettings["start"].slice(0,4),this.levelsettings["stop"].slice(0,4)).then(()=>{
+          this.updatedb(res,thefield)});
+      },
+      error => {this.progress=false;});    
     }
+  }
     else {
-      this.makesmeditems();
-    }
+      this.api.postTypeRequest('get_data/', query).subscribe(
+        data => {
+          let res = data["data"];
+          this.db.deletewhere(thefield,'KV',this.levelsettings["levelvalues"],
+          this.levelsettings["start"].slice(0,4),this.levelsettings["stop"].slice(0,4)).then(()=>{this.updatedb(res,thefield)});
+        },
+        error => {this.progress=false;});    
+    };
+    
   }
 
-  querysmedts(groupvars=[],outcome="",resultname,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
-    if (!this.currentuser){
-      return;
-    }
-    if (this.levelsettings["zeitraum"]!=="Gesamt") {    
-    let query = {
-      "startdate": this.levelsettings['start'].toISOString().slice(0,10),
-      "stopdate": this.levelsettings['end'].toISOString().slice(0,10),
-      "subgroups": groupvars    ,
-      "filterlist": []
-    }
-    query["filterlist"].push({"level":"KV"});
-    if (this.levelsettings["levelvalues"]!=="Gesamt"){
-      query["filterlist"].push({"levelid":this.levelsettings["levelvalues"]});
-    }
-    if (outcome!=""){
-      query["outcome"]=outcome;
-    }
-    let tofilter = false;
-    if (filtervar!=="" && filtervalues.length>0){tofilter=true};    
-    return this.api.postTypeRequest('analytics/timeseries/', query).subscribe(
-      data => {
-        let res = data["result"];
-        if (sort){
-          res = this.api.sortArray(res,"count","descending");
-        }
-        if (topx && topxvar==''){
-          res = res.slice(0,topx);
-        }
-        if (tofilter){
-          res = this.api.filterArraybyList(res,filtervar,filtervalues);
-        }
-        if (topx && topxvar!==''){
-          let keycounts = {};
-          for (let item of res){
-            if (keycounts[item[topxvar]] && Math.round(item['count'])){
-              keycounts[item[topxvar]]=keycounts[item[topxvar]]+item['count'];
-            }
-            if (!keycounts[item[topxvar]] && Math.round(item['count'])) {
-              keycounts[item[topxvar]]=item['count'];
-            }
-          }
-          let keycountsarray= [];
-          for (let key of Object.keys(keycounts)){
-            keycountsarray.push({"name":key,"count":keycounts[key]})
-          }
-          let filterlist = this.api.getValues(this.api.sortArray(keycountsarray,'count',"descending").slice(0,topx),"name");
-          res= this.api.filterArraybyList(res,topxvar,filterlist);
-        }
-        this.ts_results[resultname]= res;
-        
-      },        
-      error => {this.ts_results[resultname]=[];});
-    }
-    else {
-      this.ts_results[resultname]=[];
-    };     
+  updatedb(data,thefield){
+    this.smed.newcombine(data,thefield);
   }
 
+  
 
-  combinesmeddata(array){
-    let startobject = {};
-    let fields = this.api.getValues(this.api.filterArray(this.metadata,"topic","outcomes"),"varname");
-    if (array.length==1) {
-      startobject = array[0];  
-    }
-    if (array.length>1) {
-      startobject = array[0];
-      const remainingarray = array;
-      remainingarray.splice(0,1);
-      for (let item of remainingarray){
-        for (let field of fields){
-            let combined = startobject[field].concat(item[field]);
-          startobject[field] = combined;
-        }
-      }
-    }
-    return startobject;
-  }
-
-  exportascsv(name, data) {
+ exportascsv(name, data) {
     this.csv.exportToCsv(name, data);
     this.csv.exportToCsv(name+"_settings.csv", [this.levelsettings] );
   }
 
-  makesmeditems(){
-    this.summaryinfo["done"]=false;
-    let statswdate = this.smed.adddate(this.data["stats"],"Jahr","KW");    
-    let symptoms_list = this.smed.adddatemonth(this.data["mainsymptoms_ts"] ,"Jahr","Monat");  
-    let utiltimes = this.smed.adddatemonth(this.data["timestats"],"Jahr","Monat");
-    let decisions = this.smed.adddate(this.data["decisions"],"Jahr","KW");
-    // Appply date filters
-    if (this.levelsettings["zeitraum"]!=="Gesamt"){
-      this.levelsettings["anperioddays"]=65;
-      let today = new Date();
-      today.setHours(0);
-      today.setMinutes(0);
-      today.setSeconds(0);
-      today.setMilliseconds(0);
-      let startdate = this.levelsettings["start"];
-      let enddate = this.levelsettings["end"];
-      if (this.levelsettings["zeitraum"]=="Aktuelles Jahr"){
-        startdate = new Date(today.getFullYear()+"-01-01")
-        enddate = new Date(today.getFullYear()+"-12-31")
-      }
-      if (this.levelsettings["zeitraum"]=="Letztes Jahr"){
-        startdate = new Date(today.getFullYear()-1+"-01-01")
-        enddate = new Date(today.getFullYear()-1+"-12-31")
-      }
-      let millisperday = 1000*60*60*24;
-      if (this.levelsettings["zeitraum"]=="Letzte 4 Wochen"){
-        enddate = new Date(today.getTime() - today.getDay()*millisperday);
-        startdate = new Date(enddate.getTime()-((4*7)-1)*millisperday);        
-      }
-      if (this.levelsettings["zeitraum"]=="Letzte Woche"){
-        enddate = new Date(today.getTime() - today.getDay()*millisperday);
-        startdate = new Date(enddate.getTime()-((6))*millisperday);        
-      }
-      for (let item of statswdate){
-        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);          
-      }
-      for (let item of symptoms_list){
-        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
-      }
-      for (let item of utiltimes){
-        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
-      }
-      for (let item of decisions){
-        item["touse"]=(item["Datum"]>=startdate) && (item["Datum"]<=enddate);                
-       }
 
-      statswdate = this.api.filterArray(statswdate,"touse",true); 
-      symptoms_list = this.api.filterArray(symptoms_list,"touse",true); 
-      utiltimes = this.api.filterArray(utiltimes,"touse",true);
-      decisions = this.api.filterArray(decisions,"touse",true);
-      
-      this.levelsettings["anperioddays"]= Math.floor((enddate-startdate)/millisperday);
-      this.levelsettings["start"]=startdate;
-      this.levelsettings["end"]=enddate;
-      this.progress=false;
-    }
-    utiltimes = this.api.groupbysum(utiltimes,"wd","h","Anzahl");
+  async makesmeditems(){
+    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
+    this.stats_ts=[];
+    let statswdate = await this.db.listdata('stats',"KV",this.levelsettings['levelvalues']);    
+    let symptoms_list = [];  
+    let utiltimes = [];
+    let decisions = [];
+    let startdate = this.levelsettings['startdate'];
+    let enddate = this.levelsettings['enddate'];
+     
+/*     utiltimes = this.api.groupbysum(utiltimes,"wd","h","Anzahl");
     for (let item of decisions){
       item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"]
     }
@@ -365,34 +220,32 @@ export class StartComponent implements OnInit {
     this.utiltimes = utiltimes;
     for (let item of this.utiltimes){
       item["Wochentag"]=this.api.getweekdayname(item["wd"]);
-    }
+    } 
     
-    
-    
-    
-    this.stats_ts=statswdate;
-    for (let item of this.stats_ts) {
-      item["Mittlere Dauer (Min.)"]=(item["Dauer_sek"]/item["Anzahl"])/60;                
+    this.symptoms_list = this.symptoms_list_export.slice(0,15);
+  */
+    for (let item of statswdate) {
+      item["Mittlere Dauer (Sek.)"]=(item["DAUERsmed"]/item["Assessments"]);                
       if (item["Dauer_sek"]==0){
-        item["Mittlere Dauer (Min.)"]=null;
+        item["Mittlere Dauer (Sek.)"]=null;
       }
-      item["Mittlere Anzahl Fragen"]=item["Anzahl_Fragen"]/item["Anzahl"];                
+      item["Mittlere Anzahl Fragen"]=item["Anzahl_Fragen"]/item["Assessments"];                
       if (item["Anzahl_Fragen"]==0){
         item["Mittlere Anzahl Fragen"]=null;
       }
     };
+    
     if (statswdate.length>0){
     this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
     let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export,"n"));
     for (let item of this.symptoms_list_export){
       item["Anteil"]= Math.round(1000*item['n']/anzahl_symptome)/10;
     }
-
-    this.symptoms_list = this.symptoms_list_export.slice(0,15);
-
-    this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl"));
-    this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Anzahl").length;
-    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Dauer_sek"))/this.summaryinfo["Assessments Gesamt"];
+    this.stats_ts=statswdate;
+    console.log("New stats ts",this.stats_ts);
+    this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Assessments"));
+    this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Assessments").length;
+    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"DAUERsmed"))/this.summaryinfo["Assessments Gesamt"];
     this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["done"]=true;    
@@ -417,8 +270,6 @@ export class StartComponent implements OnInit {
       }
 
   smeddetailquery(){
-    if (this.levelsettings["start"] && this.levelsettings["end"]){
-      this.querydatasmed();
-    }    
+   
   }
 }

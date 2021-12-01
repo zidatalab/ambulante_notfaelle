@@ -3,6 +3,7 @@ import { Component , OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
+import { DBService } from './services/dbservice.service';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class AppComponent {
   constructor(
     private _auth : AuthService,
     private _api : ApiService    ,
-    private router: Router
+    private router: Router,
+    private db : DBService
   ) { }
 
   ngOnInit() {
@@ -62,6 +64,8 @@ export class AppComponent {
 
   logout(){
     this._auth.logout();
+    this.db.clean();
+    localStorage.clear();    
     this.autorefreshdata();
     this.loginstatus = false;
     this.adminstatus = false;   
