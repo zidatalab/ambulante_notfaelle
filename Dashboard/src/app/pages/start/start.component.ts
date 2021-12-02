@@ -89,12 +89,13 @@ export class StartComponent implements OnInit {
     this.progress = true;
     this.levelsettings[level] = value;
     this.levelsettings=this.smed.updatestartstop(this.levelsettings);
-    this.querydatasmed('stats').then(() => {this.makesmeditems();});
+    this.makesmeditems();
+    this.querydatasmed('stats');    
     // this.querydatasmed('timestats');
     // this.querydatasmed('decisions');
     // this.querydatasmed('mainsymptoms_ts');
     //this.querydatasmed('timetotreat');  
-    this.makesmeditems();
+    
     this.progress=false; 
 
   }
@@ -122,7 +123,9 @@ export class StartComponent implements OnInit {
       }  
       
     }, 1500);    
-    this.querydatasmed("stats").finally(()=>this.makesmeditems());    
+    this.makesmeditems();
+    this.querydatasmed("stats");  
+
   }
 
   handleklick(plot,event){    
@@ -131,7 +134,24 @@ export class StartComponent implements OnInit {
   dometasettings(){
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
           this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];
-          this.levelvalues = this.api.filterArray(this.sortdata, "varname", this.levelid)[0]["values"].sort();
+          this.levelvalues = [
+          'Gesamt',
+          'Baden-Württemberg',
+          'Bayern',
+          'Berlin',
+          'Brandenburg',
+          'Bremen',         
+          'Hamburg',
+          'Hessen',
+          'Mecklenburg-Vorpommern',
+          'Niedersachsen',
+          'Nordrhein-Westfalen',
+          'Rheinland-Pfalz',
+          'Saarland',
+          'Sachsen',
+          'Sachsen-Anhalt',
+          'Schleswig-Holstein',
+          'Thüringen'];
           this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
           //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
           //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
@@ -141,8 +161,7 @@ export class StartComponent implements OnInit {
           this.progress=false;          
   }
 
-  async querydatasmed(thefield){
-    console.log(this.levelsettings);
+  querydatasmed(thefield){    
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID      ,
       "groupinfo":{}
@@ -153,15 +172,14 @@ export class StartComponent implements OnInit {
       "$gte": parseInt(this.levelsettings["start"].slice(0,4)),
       "$lte": parseInt(this.levelsettings["stop"].slice(0,4))
     };
-    query["showfields"]=[thefield];
+    query["showfields"]=[thefield,'KM6Versicherte','BEVSTAND'];
     this.db.listdata(thefield,'KV',this.levelsettings["levelvalues"],this.levelsettings["start"],this.levelsettings["stop"]).then(data=>console.log(data.length," values in db for",thefield));
     let dbdaterange ;
-    dbdaterange = await this.db.querydatadates(thefield,'KV',
+    this.db.querydatadates(thefield,'KV',
     this.levelsettings["levelvalues"],this.levelsettings["start"],
-    this.levelsettings["stop"]);
-    console.log("Range here:",dbdaterange);
+    this.levelsettings["stop"]).then(data=>{dbdaterange = data});    
     if (dbdaterange) {
-    if ((dbdaterange['min']>this.levelsettings["start"] && 
+    if ((dbdaterange['min']>this.levelsettings["start"] || 
     dbdaterange['max']<this.levelsettings["stop"]) || 
     isNaN(dbdaterange['max']) || isNaN(dbdaterange['min']) ){
     this.api.postTypeRequest('get_data/', query).subscribe(
@@ -169,7 +187,7 @@ export class StartComponent implements OnInit {
         let res = data["data"];
         this.db.deletewhere(thefield,'KV',this.levelsettings["levelvalues"],
         this.levelsettings["start"].slice(0,4),this.levelsettings["stop"].slice(0,4)).then(()=>{
-          this.updatedb(res,thefield)});
+        this.updatedb(res,thefield)});
       },
       error => {this.progress=false;});    
     }
@@ -188,6 +206,7 @@ export class StartComponent implements OnInit {
 
   updatedb(data,thefield){
     this.smed.newcombine(data,thefield);
+    this.makesmeditems();
   }
 
   
@@ -229,10 +248,11 @@ export class StartComponent implements OnInit {
       if (item["Dauer_sek"]==0){
         item["Mittlere Dauer (Sek.)"]=null;
       }
-      item["Mittlere Anzahl Fragen"]=item["Anzahl_Fragen"]/item["Assessments"];                
-      if (item["Anzahl_Fragen"]==0){
-        item["Mittlere Anzahl Fragen"]=null;
+      item["Mittlere Anzahl Beschwerden"]=item["Anzahl_Beschwerden"]/item["Assessments"];                
+      if (item["Anzahl_Beschwerden"]==0){
+        item["Mittlere Anzahl Beschwerden"]=null;
       }
+      item["Assessments pro 100 Tsd. Einw."]=item["Assessments"]/(item["BEVSTAND"]/1e5);                
     };
     
     if (statswdate.length>0){
@@ -242,10 +262,13 @@ export class StartComponent implements OnInit {
       item["Anteil"]= Math.round(1000*item['n']/anzahl_symptome)/10;
     }
     this.stats_ts=statswdate;
-    console.log("New stats ts",this.stats_ts);
+    let theid = this.stats_ts[0]['levelid'];
+    if (theid!="Gesamt"){this.summaryinfo["levelid"]=" in ".concat(theid);}
+    else {this.summaryinfo["levelid"]=" in Deutschland";};
     this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Assessments"));
     this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Assessments").length;
     this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"DAUERsmed"))/this.summaryinfo["Assessments Gesamt"];
+    this.summaryinfo["Anzahl Beschwerden"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl_Beschwerden"))/this.summaryinfo["Assessments Gesamt"];
     this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
     this.summaryinfo["done"]=true;    

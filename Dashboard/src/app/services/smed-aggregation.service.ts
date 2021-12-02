@@ -25,6 +25,8 @@ newcombine(array,fieldname){
       topush['levelid']=item['levelid'];
       topush['Jahr']=item['Jahr'];
       topush['Monat']=item['Monat'];
+      topush['KM6Versicherte']=item['KM6Versicherte'];
+      topush['BEVSTAND']=item['KM6Versicherte'];
       topush['KW']=fielditem['KW'];
       topush['Datum']=this.getDateOfISOWeek(topush['KW'],topush['Jahr']).toISOString().slice(0,10);
       delete fielditem['KW'];
@@ -34,8 +36,7 @@ newcombine(array,fieldname){
       dbarray.push(topush);    
     }
   }
-  this.db.adddatabulk(dbarray);
-  return newarray;
+  this.db.adddatabulk(dbarray).finally(()=>{return newarray;});  
 }
 
 querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
