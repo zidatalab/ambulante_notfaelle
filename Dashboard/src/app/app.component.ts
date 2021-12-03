@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component , OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,RouterEvent } from '@angular/router';
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
 import { DBService } from './services/dbservice.service';
@@ -14,17 +14,28 @@ import { DBService } from './services/dbservice.service';
 export class AppComponent {
   title = 'Test Dashboard';
   public currentuser : any;
+  public currentroute:string;
   loginoption = true;
   public loginstatus:boolean;
   public adminstatus:boolean;
   currentdate:any;
+  
 
   constructor(
     private _auth : AuthService,
     private _api : ApiService    ,
     private router: Router,
     private db : DBService
-  ) { }
+  ) { 
+
+    router.events.subscribe((event:RouterEvent) => {
+      if (event.url !== this.currentroute && event.url) {
+        this.currentroute = event.url;
+        this._api.countView(event.url);        
+      };
+    });  
+
+  }
 
   ngOnInit() {
     this.currentdate = new Date();
@@ -44,6 +55,8 @@ export class AppComponent {
       }
       );         
   }
+
+   
 
   public autorefreshdata(){    
     this.updatemetadata().subscribe(
@@ -90,5 +103,7 @@ export class AppComponent {
   setmetadata(name,data){
    localStorage.setItem(name,JSON.stringify(data));
   }
+
+  
 
 }
