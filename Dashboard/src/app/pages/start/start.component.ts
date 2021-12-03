@@ -17,13 +17,13 @@ export class StartComponent implements OnInit {
 
 
 
-  constructor(private db:DBService, private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed:SmedAggregationService) { }
-  metadata=[];
-  progress:boolean;
+  constructor(private db: DBService, private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed: SmedAggregationService) { }
+  metadata = [];
+  progress: boolean;
   metadataok: boolean;
   mapdata: any;
   mapdatafor: string;
-  sortdata=[];
+  sortdata = [];
   level: any;
   levelvalues: any;
   subgroups: any;
@@ -37,262 +37,258 @@ export class StartComponent implements OnInit {
   data_number: any;
   geojson_available: any;
   colorsscheme: any;
-  levelid:string;
-  datakeystable:any;  
-  
+  levelid: string;
+  datakeystable: any;
+
   // SMED
-  stats_ts:any=[];
-  symptoms_list:any;
-  symptoms_list_export:any;
-  summaryinfo={};
-  smedrange={};
-  zeitaumoptions=["Aktuelles Jahr","Letztes Jahr","Gesamt","Detailliert"];
-  ts_results={};
+  stats_ts: any = [];
+  symptoms_list: any;
+  symptoms_list_export: any;
+  summaryinfo = {};
+  smedrange = {};
+  zeitaumoptions = ["Aktuelles Jahr", "Letztes Jahr", "Gesamt", "Detailliert"];
+  ts_results = {};
   utiltimes = [];
-  decisions = [];  
+  decisions = [];
 
   ngOnInit(): void {
     // this.db.clean();
-    this.levelsettings = {"level":"KV","levelvalues":"Gesamt","zeitraum":"Aktuelles Jahr"};
-    this.summaryinfo["done"]=false;
-    this.progress=true;
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Aktuelles Jahr" };
+    this.summaryinfo["done"] = false;
+    this.progress = true;
     this.colorsscheme = ["#e91e63"];
     this.mapdatafor = "";
-    this.mapdata=[];
-    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
+    this.mapdata = [];
+    this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     this.updatemetadata();
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok && this.metadata.length>0) {this.progress=true;}
+    if (this.metadataok && this.metadata.length > 0) { this.progress = true; }
     // Wait if no metadata and try again. Fixes logout behaviour
     else {
       setTimeout(() => {
         this.updatemetadata();
-        if (this.metadataok && this.metadata.length>0) {
-          this.progress=true;
+        if (this.metadataok && this.metadata.length > 0) {
+          this.progress = true;
         }
         else {
-          this.progress=false;
-          
+          this.progress = false;
+
         };
       }, 1500);
-    }   
-    
+    }
+
   }
 
-  ngOnDestroy(){
-    this.mapdata=[];
-    
-    }
+  ngOnDestroy() {
+    this.mapdata = [];
+
+  }
 
 
   setlevel(level, value) {
     this.progress = true;
     this.levelsettings[level] = value;
-    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
+    this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     this.makesmeditems();
-    this.querydatasmed('stats');    
-    // this.querydatasmed('timestats');
-    // this.querydatasmed('decisions');
-    // this.querydatasmed('mainsymptoms_ts');
+    this.querydatasmed('stats');
+    this.querydatasmed('timestats');
+    this.querydatasmed('decisions');
+    this.querydatasmed('mainsymptoms_ts');
     //this.querydatasmed('timetotreat');  
-    
-    this.progress=false; 
+
+    this.progress = false;
 
   }
 
   updatemetadata() {
-    if (this.api.getmetadata("metadata")){
-    this.metadata = this.api.getmetadata("metadata");
-    this.sortdata = this.api.getmetadata("sortdata");
-    this.geojson_available = this.api.getmetadata("geodata");
+    if (this.api.getmetadata("metadata")) {
+      this.metadata = this.api.getmetadata("metadata");
+      this.sortdata = this.api.getmetadata("sortdata");
+      this.geojson_available = this.api.getmetadata("geodata");
     }
-    if(this.metadata!==undefined){
-      if (this.metadata.length>0){
+    if (this.metadata !== undefined) {
+      if (this.metadata.length > 0) {
         this.dometasettings();
-      }      
+      }
     }
     setTimeout(() => {
-      if ((this.metadata !==undefined ) && (this.sortdata !== undefined)) {
+      if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
         if (this.metadata.length > 0) {
           this.dometasettings();
         }
       }
       else {
         this.metadataok = false;
-        this.progress=false;
-      }  
-      
-    }, 1500);    
+        this.progress = false;
+      }
+
+    }, 1500);
     this.makesmeditems();
-    this.querydatasmed("stats");  
+    this.querydatasmed("stats");
 
   }
 
-  handleklick(plot,event){    
+  handleklick(plot, event) {
   }
 
-  dometasettings(){
+  dometasettings() {
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
-          this.levelid=this.api.filterArray(this.metadata,"type","levelid")[0]['varname'];
-          this.levelvalues = [
-          'Gesamt',
-          'Baden-Württemberg',
-          'Bayern',
-          'Berlin',
-          'Brandenburg',
-          'Bremen',         
-          'Hamburg',
-          'Hessen',
-          'Mecklenburg-Vorpommern',
-          'Niedersachsen',
-          'Nordrhein-Westfalen',
-          'Rheinland-Pfalz',
-          'Saarland',
-          'Sachsen',
-          'Sachsen-Anhalt',
-          'Schleswig-Holstein',
-          'Thüringen'];
-          this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
-          //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
-          //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
-          //this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
-          //if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
-          this.metadataok = true;
-          this.progress=false;          
+    this.levelid = this.api.filterArray(this.metadata, "type", "levelid")[0]['varname'];
+    this.levelvalues = [
+      'Gesamt',
+      'Baden-Württemberg',
+      'Bayern',
+      'Berlin',
+      'Brandenburg',
+      'Bremen',
+      'Hamburg',
+      'Hessen',
+      'Mecklenburg-Vorpommern',
+      'Niedersachsen',
+      'Nordrhein-Westfalen',
+      'Rheinland-Pfalz',
+      'Saarland',
+      'Sachsen',
+      'Sachsen-Anhalt',
+      'Schleswig-Holstein',
+      'Thüringen'];
+    this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
+    //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
+    //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
+    //this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
+    //if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
+    this.metadataok = true;
+    this.progress = false;
   }
 
-  querydatasmed(thefield){    
+  querydatasmed(thefield) {
     let query = {
-      "client_id": this.api.REST_API_SERVER_CLIENTID      ,
-      "groupinfo":{}
+      "client_id": this.api.REST_API_SERVER_CLIENTID,
+      "groupinfo": {}
     };
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["Jahr"] = {
-      "$gte": parseInt(this.levelsettings["start"].slice(0,4)),
-      "$lte": parseInt(this.levelsettings["stop"].slice(0,4))
+      "$gte": parseInt(this.levelsettings["start"].slice(0, 4)),
+      "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
     };
-    query["showfields"]=[thefield,'KM6Versicherte','BEVSTAND'];
-    this.db.listdata(thefield,'KV',this.levelsettings["levelvalues"],this.levelsettings["start"],this.levelsettings["stop"]).then(data=>console.log(data.length," values in db for",thefield));
-    let dbdaterange ;
-    this.db.querydatadates(thefield,'KV',
-    this.levelsettings["levelvalues"],this.levelsettings["start"],
-    this.levelsettings["stop"]).then(data=>{dbdaterange = data});    
+    query["showfields"] = [thefield, 'KM6Versicherte', 'BEVSTAND'];
+    this.db.listdata(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["start"], this.levelsettings["stop"]).then(data => console.log(data.length, " values in db for", thefield));
+    let dbdaterange;
+    this.db.querydatadates(thefield, 'KV',
+      this.levelsettings["levelvalues"], this.levelsettings["start"],
+      this.levelsettings["stop"]).then(data => { dbdaterange = data });
     if (dbdaterange) {
-    if ((dbdaterange['min']>this.levelsettings["start"] || 
-    dbdaterange['max']<this.levelsettings["stop"]) || 
-    isNaN(dbdaterange['max']) || isNaN(dbdaterange['min']) ){
-    this.api.postTypeRequest('get_data/', query).subscribe(
-      data => {
-        let res = data["data"];
-        this.db.deletewhere(thefield,'KV',this.levelsettings["levelvalues"],
-        this.levelsettings["start"].slice(0,4),this.levelsettings["stop"].slice(0,4)).then(()=>{
-        this.updatedb(res,thefield)});
-      },
-      error => {this.progress=false;});    
+      if ((dbdaterange['min'] > this.levelsettings["start"] ||
+        dbdaterange['max'] < this.levelsettings["stop"]) ||
+        isNaN(dbdaterange['max']) || isNaN(dbdaterange['min'])) {
+        this.api.postTypeRequest('get_data/', query).subscribe(
+          data => {
+            let res = data["data"];
+            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+              this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
+                this.updatedb(res, thefield)
+              });
+          },
+          error => { this.progress = false; });
+      }
     }
-  }
     else {
       this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
-          this.db.deletewhere(thefield,'KV',this.levelsettings["levelvalues"],
-          this.levelsettings["start"].slice(0,4),this.levelsettings["stop"].slice(0,4)).then(()=>{this.updatedb(res,thefield)});
+          this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { this.updatedb(res, thefield) });
         },
-        error => {this.progress=false;});    
+        error => { this.progress = false; });
     };
-    
+
   }
 
-  updatedb(data,thefield){
-    this.smed.newcombine(data,thefield);
-    this.makesmeditems();
+  updatedb(data, thefield) {
+    this.smed.newcombine(data, thefield);
+    this.makesmeditems(thefield);
   }
 
-  
 
- exportascsv(name, data) {
+
+  exportascsv(name, data) {
     this.csv.exportToCsv(name, data);
-    this.csv.exportToCsv(name+"_settings.csv", [this.levelsettings] );
+    this.csv.exportToCsv(name + "_settings.csv", [this.levelsettings]);
   }
 
 
-  async makesmeditems(){
-    this.levelsettings=this.smed.updatestartstop(this.levelsettings);
-    this.stats_ts=[];
-    let statswdate = await this.db.listdata('stats',"KV",this.levelsettings['levelvalues']);    
-    let symptoms_list = [];  
-    let utiltimes = [];
-    let decisions = [];
+  async makesmeditems(thefield = "") {
+    // this.querydatasmed('stats');    
+    // this.querydatasmed('timestats');
+    // this.querydatasmed('decisions');
+    // this.querydatasmed('mainsymptoms_ts');
+    this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
-     
-/*     utiltimes = this.api.groupbysum(utiltimes,"wd","h","Anzahl");
-    for (let item of decisions){
-      item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"]
-    }
-    decisions = this.api.sortArray(this.api.groupbysum(decisions,"Empfehlung","TTTdispo_text","Anzahl"),"Empfehlung","descending");
-    for (let item of decisions){
-      item["Empfehlung"] = item["Empfehlung"].slice(2)
-    }
-    this.decisions = decisions;
-    this.utiltimes = utiltimes;
-    for (let item of this.utiltimes){
-      item["Wochentag"]=this.api.getweekdayname(item["wd"]);
-    } 
-    
-    this.symptoms_list = this.symptoms_list_export.slice(0,15);
-  */
-    for (let item of statswdate) {
-      item["Mittlere Dauer (Sek.)"]=(item["DAUERsmed"]/item["Assessments"]);                
-      if (item["Dauer_sek"]==0){
-        item["Mittlere Dauer (Sek.)"]=null;
-      }
-      item["Mittlere Anzahl Beschwerden"]=item["Anzahl_Beschwerden"]/item["Assessments"];                
-      if (item["Anzahl_Beschwerden"]==0){
-        item["Mittlere Anzahl Beschwerden"]=null;
-      }
-      item["Assessments pro 100 Tsd. Einw."]=item["Assessments"]/(item["BEVSTAND"]/1e5);                
-    };
-    
-    if (statswdate.length>0){
-    this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
-    let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export,"n"));
-    for (let item of this.symptoms_list_export){
-      item["Anteil"]= Math.round(1000*item['n']/anzahl_symptome)/10;
-    }
-    this.stats_ts=statswdate;
-    let theid = this.stats_ts[0]['levelid'];
-    if (theid!="Gesamt"){this.summaryinfo["levelid"]=" in ".concat(theid);}
-    else {this.summaryinfo["levelid"]=" in Deutschland";};
-    this.summaryinfo["Assessments Gesamt"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Assessments"));
-    this.summaryinfo["Assessments pro Woche"]=this.summaryinfo["Assessments Gesamt"]/this.api.getValues(this.stats_ts,"Assessments").length;
-    this.summaryinfo["Mittlere Dauer"]=this.api.sumArray(this.api.getValues(this.stats_ts,"DAUERsmed"))/this.summaryinfo["Assessments Gesamt"];
-    this.summaryinfo["Anzahl Beschwerden"]=this.api.sumArray(this.api.getValues(this.stats_ts,"Anzahl_Beschwerden"))/this.summaryinfo["Assessments Gesamt"];
-    this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts,"Datum")));
-    this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts,"Datum")));
-    this.summaryinfo["done"]=true;    
-    }
 
-
-    this.progress=false;
-
-    if (this.levelsettings["anperioddays"]<=64 && (this.levelsettings["zeitraum"]!=="Gesamt")){
-    // Query TS Data;
-          // Keys:
-          // 'timestamp', 'Dauer_sek', 'Geschlecht', 'ALTER_text', 'ALTER_id', 'TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id', 'SMED_Level', 'levelid', 'Hauptbeschwerde', 'Nebenbeschwerden', 'level', 'client_id'
-          this.ts_results={};
-          //this.querysmedts(['TTTsmed_text', 'TTTsmed_id', 'POCsmed_text', 'POCsmed_id'],"","1_dingl_ort");
-          // HIER SPÄTER Abweichung zwischen Empfehlung und Entscheidung: 2_abweichung
-          // 3_dauer_sympt top 20         
-          //this.querysmedts(['Hauptbeschwerde'],"Dauer_sek",'3_dauer_sympt',true,20);
-          // 4_dringl_symp
-          //this.querysmedts(['Hauptbeschwerde','TTTsmed_text'],"",'4_dringl_symp',false,20,"",[],'Hauptbeschwerde');
-  
+    if (thefield == "" || thefield == "stats") {
+      this.stats_ts = [];
+      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues']);
+      for (let item of statswdate) {
+        item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["Assessments"]);
+        if (item["Dauer_sek"] == 0) {
+          item["Mittlere Dauer (Sek.)"] = null;
         }
-      }
+        item["Mittlere Anzahl Beschwerden"] = item["Anzahl_Beschwerden"] / item["Assessments"];
+        if (item["Anzahl_Beschwerden"] == 0) {
+          item["Mittlere Anzahl Beschwerden"] = null;
+        }
+        item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
+      };
 
-  smeddetailquery(){
-   
+      this.stats_ts = statswdate;
+      let theid = this.stats_ts[0]['levelid'];
+      if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
+      else { this.summaryinfo["levelid"] = " in Deutschland"; };
+      this.summaryinfo["Assessments Gesamt"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Assessments"));
+      this.summaryinfo["Assessments pro Woche"] = this.summaryinfo["Assessments Gesamt"] / this.api.getValues(this.stats_ts, "Assessments").length;
+      this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmed")) / this.summaryinfo["Assessments Gesamt"];
+      this.summaryinfo["Anzahl Beschwerden"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl_Beschwerden")) / this.summaryinfo["Assessments Gesamt"];
+      this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts, "Datum")));
+      this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts, "Datum")));
+      this.summaryinfo["done"] = true;
+
+    };
+    // hier weiter
+
+    if (thefield == "" || thefield == "mainsymptoms_ts") {
+      let symptoms_list = [];
+      this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
+      let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));
+      for (let item of this.symptoms_list_export) {
+        item["Anteil"] = Math.round(1000 * item['n'] / anzahl_symptome) / 10;
+      }
+      this.symptoms_list = this.symptoms_list_export.slice(0, 15);
+    };
+
+    if (thefield == "" || thefield == "timestats") {
+      let utiltimes = [];
+      utiltimes = this.api.groupbysum(utiltimes, "wd", "h", "Anzahl");
+      this.utiltimes = utiltimes;
+      for (let item of this.utiltimes) {
+        item["Wochentag"] = this.api.getweekdayname(item["wd"]);
+      }
+    };
+
+    if (thefield == "" || thefield == "decisions") {
+      let decisions = [];
+      for (let item of decisions) {
+        item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"]
+        decisions = this.api.sortArray(this.api.groupbysum(decisions, "Empfehlung", "TTTdispo_text", "Anzahl"), "Empfehlung", "descending");
+        for (let item of decisions) {
+          item["Empfehlung"] = item["Empfehlung"].slice(2)
+        }
+        this.decisions = decisions;
+      }
+      this.progress = false;
+
+    }
+
   }
 }
