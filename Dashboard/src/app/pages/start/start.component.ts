@@ -53,7 +53,7 @@ export class StartComponent implements OnInit {
 
   ngOnInit(): void {
     // this.db.clean();
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Aktuelles Jahr" };
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.progress = true;
     this.colorsscheme = ["#e91e63"];
@@ -89,11 +89,11 @@ export class StartComponent implements OnInit {
     this.progress = true;
     this.levelsettings[level] = value;
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-    this.makesmeditems();
     this.querydatasmed('stats');
-    this.querydatasmed('timestats');
-    this.querydatasmed('decisions');
-    this.querydatasmed('mainsymptoms_ts');
+    // REMOVED FOR DEBUG
+    //this.querydatasmed('timestats');
+    //this.querydatasmed('decisions');
+    //this.querydatasmed('mainsymptoms_ts');
     //this.querydatasmed('timetotreat');  
 
     this.progress = false;
@@ -185,10 +185,11 @@ export class StartComponent implements OnInit {
         this.api.postTypeRequest('get_data/', query).subscribe(
           data => {
             let res = data["data"];
-            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-              this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
-                this.updatedb(res, thefield)
-              });
+            this.updatedb(res, thefield);
+            // this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+            // this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
+            //   this.updatedb(res, thefield)
+            // });
           },
           error => { this.progress = false; });
       }
@@ -197,8 +198,10 @@ export class StartComponent implements OnInit {
       this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
-          this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { this.updatedb(res, thefield) });
+          this.updatedb(res, thefield);
+          // this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+          //   this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { 
+          //     this.updatedb(res, thefield) });
         },
         error => { this.progress = false; });
     };

@@ -148,7 +148,6 @@ aggsymptoms(symptomsobject){
 }
 
 updatestartstop(levelsettings){
-  console.log("Update Start/Stop");
   // Appply date filters
   let today = new Date();
   let startdate = "2019-04-01";

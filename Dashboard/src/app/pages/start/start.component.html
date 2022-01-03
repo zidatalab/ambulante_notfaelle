@@ -57,14 +57,14 @@
             Keine Daten verfügbar
         </p>
     </div>
-    <div *ngIf="true || (this.symptoms_list && this.stats_ts && this.summaryinfo['done'])" fxLayout="row wrap">
+    <div *ngIf="(this.symptoms_list && this.stats_ts && this.summaryinfo['done'])" fxLayout="row wrap">
         <div class="lightgreycolor mat-caption" fxFlex=100 >
             
                 <p><strong>Ersteinschätzung am Telefon</strong></p>
                 <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen entsprechende Auswertungen vor.</p>
             
         </div>
-        <div fxFlex=100 >
+        <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
             <mat-card >
                 <div  fxLayout="row wrap">
                 <div fxFlex  fxFlex.lt-md=100>
@@ -73,11 +73,6 @@
                     [maincolor]="this.api.primary" 
                     [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
                 </div>
-<!--                 <div fxFlex fxFlex.lt-md=100>
-                    <app-box  [numberformat]="'1.0-0'"
-                    [value]="this.summaryinfo['Assessments pro Woche']" 
-                    description="pro Woche"></app-box>
-                </div> -->
                 <div fxFlex fxFlex.lt-md=100>
                     <app-box [textbehind]="true"   title="Sek." [numberformat]="'1.1-1'"
                     [value]="this.summaryinfo['Mittlere Dauer']" 
@@ -104,7 +99,7 @@
                     </a></p>
             </mat-card>
         </div> -->
-        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
             <mat-card>
                 <h3>Assessments pro 100.000 Einwohner</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" 
@@ -115,7 +110,7 @@
                     </a></p>
             </mat-card>
         </div>
-        <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts">
+        <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
@@ -127,7 +122,7 @@
             </mat-card>
             
         </div>
-        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
             <mat-card>
                 <h3>Beschwerden pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
@@ -167,7 +162,7 @@
         </div>
     </ng-container>
 
-        <div fxFlex=100>
+        <div fxFlex=100 *ngIf="this.symptoms_list.length>0">
             <mat-card>
                 <h3>Anteil Hauptbeschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'name'" [percent]="true"
