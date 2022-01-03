@@ -63,16 +63,16 @@ export class AppComponent {
       data => {
         this.setmetadata("metadata",data["data"]);
       });
-    this.getsortdata().subscribe(data => {
-        this.setmetadata("sortdata",data["datalevels"]);  
-        if (data["geodata"]){
-          this.setmetadata("geodata",this._api.getValues(data["geodata"],'_id'));        
-        }
-        else {
-          this.setmetadata("geodata",[]); 
-        }
+    // this.getsortdata().subscribe(data => {
+    //     this.setmetadata("sortdata",data["datalevels"]);  
+    //     if (data["geodata"]){
+    //       this.setmetadata("geodata",this._api.getValues(data["geodata"],'_id'));        
+    //     }
+    //     else {
+    //       this.setmetadata("geodata",[]); 
+    //     }
         
-      });
+    //   });
   }
 
   logout(){

@@ -52,7 +52,7 @@ export class StartComponent implements OnInit {
   decisions = [];
 
   ngOnInit(): void {
-    // this.db.clean();
+    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.progress = true;
@@ -61,22 +61,8 @@ export class StartComponent implements OnInit {
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     this.updatemetadata();
-    this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    if (this.metadataok && this.metadata.length > 0) { this.progress = true; }
-    // Wait if no metadata and try again. Fixes logout behaviour
-    else {
-      setTimeout(() => {
-        this.updatemetadata();
-        if (this.metadataok && this.metadata.length > 0) {
-          this.progress = true;
-        }
-        else {
-          this.progress = false;
-
-        };
-      }, 1500);
-    }
-
+    this.auth.currentUser.subscribe(data => { this.currentuser = data; });   
+    this.setlevel("__init","");
   }
 
   ngOnDestroy() {
@@ -86,9 +72,12 @@ export class StartComponent implements OnInit {
 
 
   setlevel(level, value) {
+    if (level!=="__init"){
+      this.levelsettings[level] = value;
+      this.levelsettings = this.smed.updatestartstop(this.levelsettings);
+    };
     this.progress = true;
-    this.levelsettings[level] = value;
-    this.levelsettings = this.smed.updatestartstop(this.levelsettings);
+    
     this.querydatasmed('stats');
     // REMOVED FOR DEBUG
     //this.querydatasmed('timestats');
@@ -123,9 +112,7 @@ export class StartComponent implements OnInit {
       }
 
     }, 1500);
-    this.makesmeditems();
-    this.querydatasmed("stats");
-
+    this.makesmeditems();   
   }
 
   handleklick(plot, event) {
