@@ -17,11 +17,13 @@ export class DBService {
     }
     // Can be implemented later to restrict results
     if (start!=="" && stop!==""){
-      db.datadb
+      return db.datadb
       .where('[level+levelid+Indicator+Datum]').between([level,levelid,Indicator,start],[level,levelid,Indicator,stop]).toArray();
-    };
+    }
+    else {
     return db.datadb
       .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).toArray().then(data => this.api.objectkeystocolumns(data,'data'));
+    };
   }
 
   async querydatadates(Indicator,level, levelid, start="",stop="") {

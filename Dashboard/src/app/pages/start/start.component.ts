@@ -76,11 +76,15 @@ export class StartComponent implements OnInit {
     };
     this.progress = true;
     this.summaryinfo=[];
+    // Initial Loading
     this.makesmeditems('stats');
+    this.makesmeditems('timestats');
+
+    // Update (implement if-needed tbd.)
     this.querydatasmed('stats');
-    // REMOVED FOR DEBUG
-    //this.makesmeditems('timestats');
-    //this.querydatasmed('timestats');
+    this.querydatasmed('timestats');
+    
+    // Missing data
     //this.makesmeditems('decisions');
     //this.querydatasmed('decisions');
     //this.makesmeditems('mainsymptoms_ts');
@@ -247,25 +251,30 @@ export class StartComponent implements OnInit {
     }
 
     };
-    // hier weiter
+    
 
-    if (thefield == "" || thefield == "mainsymptoms_ts") {
+    if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
       this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
-      let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));
       for (let item of this.symptoms_list_export) {
+        let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));
         item["Anteil"] = Math.round(1000 * item['n'] / anzahl_symptome) / 10;
       }
       this.symptoms_list = this.symptoms_list_export.slice(0, 15);
     };
 
-    if (thefield == "" || thefield == "timestats") {
+    if (thefield == "timestats") {
       let utiltimes = [];
-      utiltimes = this.api.groupbysum(utiltimes, "wd", "h", "Anzahl");
+      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues']);
+      dbutiltimes = this.api.getValues(dbutiltimes,'data');
+      console.log("ut",dbutiltimes.slice(0,10));
+      utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "Anzahl");
+      dbutiltimes = [];
       this.utiltimes = utiltimes;
       for (let item of this.utiltimes) {
-        item["Wochentag"] = this.api.getweekdayname(item["wd"]);
+        item["Wochentag"] = this.api.getweekdayname(item["wt"]);
       }
+      console.log("Utiltimes:",this.utiltimes)
     };
 
     if (thefield == "" || thefield == "decisions") {
