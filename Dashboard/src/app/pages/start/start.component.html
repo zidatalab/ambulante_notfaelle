@@ -42,47 +42,50 @@
                 <mat-form-field appearance="fill">
                     <mat-label>Analysezeitraum</mat-label>
                     <mat-date-range-input [rangePicker]="picker">
-                      <input (dateChange)="smeddetailquery()" matStartDate placeholder="Start date" [(ngModel)]="this.levelsettings['start']">
-                      <input (dateChange)="smeddetailquery()" matEndDate placeholder="End date" [(ngModel)]="this.levelsettings['end']">
+                        <input (dateChange)="smeddetailquery()" matStartDate placeholder="Start date"
+                            [(ngModel)]="this.levelsettings['start']">
+                        <input (dateChange)="smeddetailquery()" matEndDate placeholder="End date"
+                            [(ngModel)]="this.levelsettings['end']">
                     </mat-date-range-input>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-date-range-picker #picker></mat-date-range-picker>
-                  </mat-form-field>
-            </p>            
+                </mat-form-field>
+            </p>
         </ng-container>
-    </div>    
+    </div>
     <div *ngIf="!this.summaryinfo && !this.progress">
         <p>
             Keine Daten verfügbar
         </p>
     </div>
     <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
-        <div class="lightgreycolor mat-caption" fxFlex=100 >
-            
-                <p><strong>Ersteinschätzung am Telefon</strong></p>
-                <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten basieren auf dem Zeitraum {{this.summaryinfo["Beginn"] | date}} bis {{this.summaryinfo["Ende"] | date}}.</span></p>
-            
+        <div class="lightgreycolor mat-caption" fxFlex=100>
+
+            <p><strong>Ersteinschätzung am Telefon</strong></p>
+            <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die
+                Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen
+                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten basieren auf dem Zeitraum
+                    {{this.summaryinfo["Beginn"] | date}} bis {{this.summaryinfo["Ende"] | date}}.</span></p>
+
         </div>
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
-            <mat-card >
-                <div  fxLayout="row wrap">
-                <div fxFlex  fxFlex.lt-md=100>
-                    <app-box 
-                    [value]="this.summaryinfo['Assessments Gesamt']"  [numberformat]="'1.0-0'"
-                    [maincolor]="this.api.primary" 
-                    [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
+            <mat-card>
+                <div fxLayout="row wrap">
+                    <div fxFlex fxFlex.lt-md=100>
+                        <app-box [value]="this.summaryinfo['Assessments Gesamt']" [numberformat]="'1.0-0'"
+                            [maincolor]="this.api.primary"
+                            [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
+                    </div>
+                    <div fxFlex fxFlex.lt-md=100>
+                        <app-box [textbehind]="true" title="Sek." [numberformat]="'1.1-1'"
+                            [value]="this.summaryinfo['Mittlere Dauer']" description="Dauer"></app-box>
+                    </div>
+                    <div fxFlex fxFlex.lt-md=100>
+                        <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
+                            [value]="this.summaryinfo['Anzahl Beschwerden']" description="Beschwerden pro Assessment">
+                        </app-box>
+                    </div>
                 </div>
-                <div fxFlex fxFlex.lt-md=100>
-                    <app-box [textbehind]="true"   title="Sek." [numberformat]="'1.1-1'"
-                    [value]="this.summaryinfo['Mittlere Dauer']" 
-                    description="Dauer"></app-box>
-                </div> 
-                <div fxFlex fxFlex.lt-md=100>
-                    <app-box [textbehind]="true"   title="" [numberformat]="'1.1-1'"
-                    [value]="this.summaryinfo['Anzahl Beschwerden']" 
-                    description="Beschwerden pro Assessment"></app-box>
-                </div> 
-                </div>            
             </mat-card>
 
         </div>
@@ -101,10 +104,11 @@
         <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Assessments pro 100.000 Einwohner</h3>
-                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" 
-                    [xvalue]="'Datum'" [outcomes]="['Assessments pro 100 Tsd. Einw.']" [sortx]="true"
-                    [fontcolor]="'white'" plottype="area"></app-plot>
-                    <p  *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
+                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
+                    [outcomes]="['Assessments pro 100 Tsd. Einw.']" [sortx]="true" [fontcolor]="'white'"
+                    plottype="area"></app-plot>
+                <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                        (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
@@ -112,22 +116,24 @@
         <div fxFlex=32 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
-                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']" [sortx]="true"
-                    [outcomes]="['Mittlere Dauer (Sek.)']" plottype="tsline"></app-plot>
-                    <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
+                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
+                    [colorscheme]="['rgb(183,205,0)']" [sortx]="true" [outcomes]="['Mittlere Dauer (Sek.)']"
+                    plottype="tsline"></app-plot>
+                <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                        (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
-            
+
         </div>
         <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Beschwerden pro Assessment</h3>
-                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [fontcolor]="'white'" [colorscheme]="['orange']" [sortx]="true"
-                    [outcomes]="['Mittlere Anzahl Beschwerden']" plottype="tsline"></app-plot>
-                    <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
+                <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
+                    [colorscheme]="['orange']" [sortx]="true" [outcomes]="['Mittlere Anzahl Beschwerden']"
+                    plottype="tsline"></app-plot>
+                <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                        (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
             </mat-card>
@@ -135,82 +141,77 @@
         <div fxFlex=100 *ngIf="this.utiltimes['z']">
             <mat-card>
                 <h3>Aufkommen nach Tag und Uhrzeit</h3>
-                <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" 
-                    [colorby]="'h'" plottype="heatmap">
+                <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" [colorby]="'h'" plottype="heatmap">
                 </app-plot>
-                <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeiten.csv',this.utiltimes)">
-                    <mat-icon>file_download</mat-icon>
-                </a></p>
-            </mat-card>
-        </div>
- 
-        <ng-container *ngIf="false">
-        <div fxFlex=100>
-            <mat-card>
-                <h3>Empfehlungen und Entscheidungen zur Dringlichkeit</h3>
-                <app-plot [(data)]="this.decisions" [xvalue]="'Empfehlung'"
-                    [fontcolor]="'white'" [showlegend]="true" 
-                    [outcomes]="['Anzahl']"  [colorby]="'TTTdispo_text'" plottype="hbar">
-                </app-plot>
-                <p *ngIf="this.currentuser"><a class="lightgreycolor" 
-                    (click)="this.exportascsv('entscheidungen.csv',this.decisions)">
-                    <mat-icon>file_download</mat-icon>
-                </a></p>
-            </mat-card>
-        </div>
-    </ng-container>
-
-        <div fxFlex=100 *ngIf="this.symptoms_list">
-            <mat-card>
-                <h3>Anteil Hauptbeschwerden</h3>
-                <app-plot [(data)]="this.symptoms_list" [xvalue]="'name'" [percent]="true"
-                    [fontcolor]="'white'" [sort]="true"
-                    (clicked)="handleklick('Beschwerden',$event);"
-                    [outcomes]="['Anteil']" plottype="hbar"></app-plot>
-                    <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
+                <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                        (click)="this.exportascsv('zeiten.csv',this.utiltimes)">
                         <mat-icon>file_download</mat-icon>
                     </a></p>
-                    <p class="mat-caption lightgreycolor">Hinweis: Dieser Anteil wird monatsweise bestimmt.</p>
+            </mat-card>
+        </div>
+
+        
+        <div fxFlex=100>
+                <mat-card>
+                    <h3>Empfehlung zur Dringlichkeit der Behandlung</h3>
+                    <app-plot [(data)]="this.decisions" [xvalue]="'Empfehlung'" [fontcolor]="'white'"
+                        [showlegend]="true" [outcomes]="['Anzahl']" [colorby]="'TTTdispo_text'" plottype="hbar">
+                    </app-plot>
+                    <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                            (click)="this.exportascsv('entscheidungen.csv',this.decisions)">
+                            <mat-icon>file_download</mat-icon>
+                        </a></p>
+                </mat-card>
+        </div>
+        
+
+        <div fxFlex=100>
+            <mat-card>
+                <h3>Häufigste Beschwerden</h3>
+                <app-plot [(data)]="this.symptoms_list" [xvalue]="'Sympt'" [percent]="true" [fontcolor]="'white'"
+                    [sort]="true" (clicked)="handleklick('Beschwerden',$event);" [outcomes]="['Anteil']"
+                    plottype="hbar"></app-plot>
+                <p *ngIf="this.currentuser"><a class="lightgreycolor"
+                        (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
+                        <mat-icon>file_download</mat-icon>
+                    </a></p>
+                <p class="mat-caption lightgreycolor">Hinweis: Dieser Anteil wird monatsweise bestimmt.</p>
             </mat-card>
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->
         <ng-container *ngIf="false && this.levelsettings['zeitraum']!=='Gesamt' && 
         this.currentuser && (this.levelsettings['anperioddays']<=64)">
-        <div fxFlex=100 fxFlex.lt-md=100>
-            <mat-card>
-                <h3>Dringlichkeit der Behandlung</h3>
-                <div *ngIf="!this.ts_results['1_dingl_ort']">
-                    <mat-card class="fakecontent">
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <div>
-                                <h1><mat-icon>insights</mat-icon></h1>
-                               <mat-spinner [diameter]="30"></mat-spinner>
+            <div fxFlex=100 fxFlex.lt-md=100>
+                <mat-card>
+                    <h3>Dringlichkeit der Behandlung</h3>
+                    <div *ngIf="!this.ts_results['1_dingl_ort']">
+                        <mat-card class="fakecontent">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div>
+                                    <h1>
+                                        <mat-icon>insights</mat-icon>
+                                    </h1>
+                                    <mat-spinner [diameter]="30"></mat-spinner>
+                                </div>
                             </div>
-                        </div>
-                    </mat-card>                                        
-                </div>
-                <div  *ngIf="this.ts_results['1_dingl_ort']">
-                    <ng-container *ngIf="this.ts_results['1_dingl_ort'].length>0">
-                        <app-plot
-                        [(data)]="this.ts_results['1_dingl_ort']" 
-                        [xvalue]="'TTTsmed_text'"
-                        [fontcolor]="'white'"  
-                        [legendbg]="'#00000020'"
-                        [legendpos]="'right'"
-                        [outcomes]="['count']" 
-                        [custommargins]="{ l: 20, r: 0, b: 0, t: 20 }"
-                        [colorby]="'POCsmed_text'" plottype="stackedbar"
-                        ></app-plot>                       
-                    </ng-container>                    
-                    <ng-container *ngIf="!(this.ts_results['1_dingl_ort'].length>0)">
-                        <p>Keine Daten</p>
-                    </ng-container>                    
-                </div>
-                <p class="mat-caption greycolor">Ergebnis zu empfohlenem Behandlungsort und -zeitpunkt.</p>
-              
-            </mat-card>
-        </div>
-       <!--  <div fxFlex=50 fxFlex.lt-md=100         *ngIf="this.currentuser">
+                        </mat-card>
+                    </div>
+                    <div *ngIf="this.ts_results['1_dingl_ort']">
+                        <ng-container *ngIf="this.ts_results['1_dingl_ort'].length>0">
+                            <app-plot [(data)]="this.ts_results['1_dingl_ort']" [xvalue]="'TTTsmed_text'"
+                                [fontcolor]="'white'" [legendbg]="'#00000020'" [legendpos]="'right'"
+                                [outcomes]="['count']" [custommargins]="{ l: 20, r: 0, b: 0, t: 20 }"
+                                [colorby]="'POCsmed_text'" plottype="stackedbar"></app-plot>
+                        </ng-container>
+                        <ng-container *ngIf="!(this.ts_results['1_dingl_ort'].length>0)">
+                            <p>Keine Daten</p>
+                        </ng-container>
+                    </div>
+                    <p class="mat-caption greycolor">Ergebnis zu empfohlenem Behandlungsort und -zeitpunkt.</p>
+
+                </mat-card>
+            </div>
+            <!--  <div fxFlex=50 fxFlex.lt-md=100         *ngIf="this.currentuser">
             <mat-card>
                 <h3>Abweichung zwischen Empfehlung und Entscheidung</h3>
                 <div *ngIf="!this.ts_results['2_abweichung']">
@@ -235,77 +236,72 @@
                 <p class="mat-caption greycolor">Nur für den internen Gebrauch.</p>              
             </mat-card>
         </div> -->
-        <div fxFlex=100 fxFlex.lt-md=100>
-            <mat-card>
-                <h3>Dauer nach Hauptbeschwerde</h3>
-                <div *ngIf="!this.ts_results['3_dauer_sympt']">
-                    <mat-card class="fakecontent">
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <div>
-                                <h1><mat-icon>insights</mat-icon></h1>
-                               <mat-spinner [diameter]="30"></mat-spinner>
+            <div fxFlex=100 fxFlex.lt-md=100>
+                <mat-card>
+                    <h3>Dauer nach Hauptbeschwerde</h3>
+                    <div *ngIf="!this.ts_results['3_dauer_sympt']">
+                        <mat-card class="fakecontent">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div>
+                                    <h1>
+                                        <mat-icon>insights</mat-icon>
+                                    </h1>
+                                    <mat-spinner [diameter]="30"></mat-spinner>
+                                </div>
                             </div>
-                        </div>
-                    </mat-card>                                        
-                </div>
-                <div  *ngIf="this.ts_results['3_dauer_sympt']">
-                    <ng-container *ngIf="this.ts_results['3_dauer_sympt'].length>0">
-                        <app-plot
-                        [(data)]="this.ts_results['3_dauer_sympt']" 
-                        [xvalue]="'Hauptbeschwerde'"
-                        [fontcolor]="'white'"  
-                        [outcomes]="['Dauer_sek']" 
-                        [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }"
-                        plottype="hbar"
-                        ></app-plot>            
-                    </ng-container>                    
-                    <ng-container *ngIf="!(this.ts_results['3_dauer_sympt'].length>0)">
-                        <p>Keine Daten</p>
-                    </ng-container>                    
-                </div>
-                <p class="mat-caption greycolor">Dauer der Ersteinschätzung nach den häufigsten Hauptbeschwerden.</p>              
-            </mat-card>
-        </div>
-    
-    <div fxFlex fxFlex.lt-md=100>
-        <mat-card>
-            <h3>Dringlichkeit nach Hauptbeschwerde</h3>
-            <div *ngIf="!this.ts_results['4_dringl_symp']">
-                <mat-card class="fakecontent">
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <div>
-                            <h1><mat-icon>insights</mat-icon></h1>
-                           <mat-spinner [diameter]="30"></mat-spinner>
-                        </div>
+                        </mat-card>
                     </div>
-                </mat-card>                                        
+                    <div *ngIf="this.ts_results['3_dauer_sympt']">
+                        <ng-container *ngIf="this.ts_results['3_dauer_sympt'].length>0">
+                            <app-plot [(data)]="this.ts_results['3_dauer_sympt']" [xvalue]="'Hauptbeschwerde'"
+                                [fontcolor]="'white'" [outcomes]="['Dauer_sek']"
+                                [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }" plottype="hbar"></app-plot>
+                        </ng-container>
+                        <ng-container *ngIf="!(this.ts_results['3_dauer_sympt'].length>0)">
+                            <p>Keine Daten</p>
+                        </ng-container>
+                    </div>
+                    <p class="mat-caption greycolor">Dauer der Ersteinschätzung nach den häufigsten Hauptbeschwerden.
+                    </p>
+                </mat-card>
             </div>
-            <div  *ngIf="this.ts_results['4_dringl_symp']">
-                <ng-container *ngIf="this.ts_results['4_dringl_symp'].length>0">
-                    <app-plot
-                    [data]="this.ts_results['4_dringl_symp']" 
-                    [xvalue]="'Hauptbeschwerde'"
-                    [fontcolor]="'white'"  
-                    [legendbg]="'#00000020'"
-                    [legendpos]="'right'"
-                    [outcomes]="['count']" 
-                    [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }"
-                    [colorby]="'TTTsmed_text'" plottype="stackedbar"
-                    ></app-plot>          
-                    <!-- Ergebnis:
-                    {{this.ts_results['4_dringl_symp'] | json}} -->
-                </ng-container>                    
-                <ng-container *ngIf="!(this.ts_results['4_dringl_symp'].length>0)">
-                    <p>Keine Daten</p>
-                </ng-container>                    
-            </div>
-            <p class="mat-caption greycolor">Dinglichkeit der Behandlung nach den häufigsten Hauptbeschwerden.</p>
-          
-        </mat-card>
-    </div>      
-    </ng-container>
 
-</div>
-    
+            <div fxFlex fxFlex.lt-md=100>
+                <mat-card>
+                    <h3>Dringlichkeit nach Hauptbeschwerde</h3>
+                    <div *ngIf="!this.ts_results['4_dringl_symp']">
+                        <mat-card class="fakecontent">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div>
+                                    <h1>
+                                        <mat-icon>insights</mat-icon>
+                                    </h1>
+                                    <mat-spinner [diameter]="30"></mat-spinner>
+                                </div>
+                            </div>
+                        </mat-card>
+                    </div>
+                    <div *ngIf="this.ts_results['4_dringl_symp']">
+                        <ng-container *ngIf="this.ts_results['4_dringl_symp'].length>0">
+                            <app-plot [data]="this.ts_results['4_dringl_symp']" [xvalue]="'Hauptbeschwerde'"
+                                [fontcolor]="'white'" [legendbg]="'#00000020'" [legendpos]="'right'"
+                                [outcomes]="['count']" [custommargins]="{ l: 20, r: 20, b: 20, t: 20 }"
+                                [colorby]="'TTTsmed_text'" plottype="stackedbar"></app-plot>
+                            <!-- Ergebnis:
+                    {{this.ts_results['4_dringl_symp'] | json}} -->
+                        </ng-container>
+                        <ng-container *ngIf="!(this.ts_results['4_dringl_symp'].length>0)">
+                            <p>Keine Daten</p>
+                        </ng-container>
+                    </div>
+                    <p class="mat-caption greycolor">Dinglichkeit der Behandlung nach den häufigsten Hauptbeschwerden.
+                    </p>
+
+                </mat-card>
+            </div>
+        </ng-container>
+
+    </div>
+
 
 </div>

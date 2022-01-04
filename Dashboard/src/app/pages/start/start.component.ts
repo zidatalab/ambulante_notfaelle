@@ -81,17 +81,15 @@ export class StartComponent implements OnInit {
     // Initial Loading
     this.querydatasmed('stats');
     await this.makesmeditems('stats');
-    this.makesmeditems('timestats');
     this.progress = false;
 
     // Update (implement if-needed tbd.)
-    this.querydatasmed('timestats');
+    //this.makesmeditems('timestats');
+    //this.querydatasmed('timestats');    
+    this.makesmeditems('mainsymptoms_ts');
+    this.querydatasmed('mainsymptoms_ts');
     
     // Missing data
-    //this.makesmeditems('decisions');
-    //this.querydatasmed('decisions');
-    //this.makesmeditems('mainsymptoms_ts');
-    //this.querydatasmed('mainsymptoms_ts');
     //this.makesmeditems('timetotreat');
     //this.querydatasmed('timetotreat');  
 
@@ -221,7 +219,7 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {      
       this.stats_ts = [];
       this.summaryinfo = [];
-      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues']);
+      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
       if (statswdate.length>0){
 
       for (let item of statswdate) {
@@ -255,13 +253,19 @@ export class StartComponent implements OnInit {
     
 
     if (thefield == "mainsymptoms_ts") {
+      console.log("Mainsymptoms!");
+      console.log(this.levelsettings);
       let symptoms_list = [];
-      this.symptoms_list_export = this.smed.aggsymptoms(symptoms_list);
+      symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      symptoms_list = this.api.getValues(symptoms_list,'data');
+      this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list,'Sympt','','n'),'n',"descending");
+      console.log(this.symptoms_list_export);
       for (let item of this.symptoms_list_export) {
         let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));
         item["Anteil"] = Math.round(1000 * item['n'] / anzahl_symptome) / 10;
       }
       this.symptoms_list = this.symptoms_list_export.slice(0, 15);
+      
     };
 
     if (thefield == "timestats") {
