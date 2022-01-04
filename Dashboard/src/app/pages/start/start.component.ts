@@ -45,10 +45,10 @@ export class StartComponent implements OnInit {
   smedrange = {};
   zeitaumoptions = ["Aktuelles Jahr", "Letztes Jahr", "Gesamt", "Detailliert"];
   ts_results = {};
-  utiltimes = [];
+  utiltimes = {};
   decisions = [];
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     // uncomment for db debug
     // this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
@@ -211,7 +211,7 @@ export class StartComponent implements OnInit {
   }
 
 
-  async makesmeditems(thefield) {
+  async makesmeditems(thefield) {    
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
@@ -224,24 +224,25 @@ export class StartComponent implements OnInit {
       if (statswdate.length>0){
 
       for (let item of statswdate) {
-        item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["Assessments"]);
+        item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["DAUERsmedFaelle"]);
         if (item["Dauer_sek"] == 0) {
           item["Mittlere Dauer (Sek.)"] = null;
         }
         item["Mittlere Anzahl Beschwerden"] = item["Anzahl_Beschwerden"] / item["Assessments"];
+        item["Mittlere Anzahl Fragen"] = item["Anzahl_Fragen"] / item["Assessments"];        
         if (item["Anzahl_Beschwerden"] == 0) {
           item["Mittlere Anzahl Beschwerden"] = null;
         }
         item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
       };
-
+      //console.log("Sample Stat Entry:",statswdate[0]);
       this.stats_ts = statswdate;
       let theid = this.stats_ts[0]['levelid'];
       if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
       else { this.summaryinfo["levelid"] = " in Deutschland"; };
       this.summaryinfo["Assessments Gesamt"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Assessments"));
       this.summaryinfo["Assessments pro Woche"] = this.summaryinfo["Assessments Gesamt"] / this.api.getValues(this.stats_ts, "Assessments").length;
-      this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmed")) / this.summaryinfo["Assessments Gesamt"];
+      this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmed")) / this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmedFaelle"));
       this.summaryinfo["Anzahl Beschwerden"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl_Beschwerden")) / this.summaryinfo["Assessments Gesamt"];
       let sorteddates = this.api.getValues(this.stats_ts, "Datum").sort();
       this.summaryinfo["Beginn"] =new Date(sorteddates[0]);
@@ -265,16 +266,17 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues']);
+      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],null,null,false);
       dbutiltimes = this.api.getValues(dbutiltimes,'data');
-      console.log("ut",dbutiltimes.slice(0,10));
-      utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "Anzahl");
+      utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       dbutiltimes = [];
-      this.utiltimes = utiltimes;
-      for (let item of this.utiltimes) {
+      for (let item of utiltimes) {
         item["Wochentag"] = this.api.getweekdayname(item["wt"]);
+        item['Anzahl']=item['n'];
+        delete item['n'];
       }
-      console.log("Utiltimes:",this.utiltimes)
+      this.utiltimes = this.api.makeheatmapdata(utiltimes,"wt","h",'Anzahl','Wochentag');
+      //console.log("Utiltimes:",this.utiltimes)      
     };
 
     if (thefield == "" || thefield == "decisions") {

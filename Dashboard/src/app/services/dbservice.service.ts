@@ -9,21 +9,28 @@ export class DBService {
 
   constructor(private api:ApiService) { }
 
-  listdata(Indicator,level, levelid, start="",stop="") {
+  listdata(Indicator,level, levelid, start="",stop="",expand=true) {
     let tosearch = {
       Indicator: Indicator,
       level: level,
       levelid:levelid
     }
     // Can be implemented later to restrict results
-    if (start!=="" && stop!==""){
+    if (start!=="" && stop!=="" && expand==true){
       return db.datadb
-      .where('[level+levelid+Indicator+Datum]').between([level,levelid,Indicator,start],[level,levelid,Indicator,stop]).toArray();
+      .where('[level+levelid+Indicator+Datum]')
+      .between([level,levelid,Indicator,start],[level,levelid,Indicator,stop])
+      .toArray()
+      .then(data => this.api.objectkeystocolumns(data,'data'));
     }
-    else {
+    if (expand==true) {
     return db.datadb
       .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).toArray().then(data => this.api.objectkeystocolumns(data,'data'));
-    };
+    }
+    if (expand==false) {
+      return db.datadb
+        .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).toArray();
+      };
   }
 
   async querydatadates(Indicator,level, levelid, start="",stop="") {

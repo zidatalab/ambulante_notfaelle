@@ -216,9 +216,10 @@ public splitarraybykey(array,splitkey){
 }
 
 public makescale(bins=5){
-  return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); }
+  return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); 
+};
 
-  public stringwrap(string,maxlength=30){
+public stringwrap(string,maxlength=30){
     let newstring = "";
     let wordsarray = string.split(" ");
     let fulllength = string.length
@@ -235,8 +236,44 @@ public makescale(bins=5){
       };    
     }
     return newstring;
-  }
+};
 
+public makeheatmapdata(array,xname,yname,valuename,xlabel="",ylabel=""){
+    let res = {};
+    res['x']=this.getuniqueValues(array,xname).sort(function(a, b){return a-b});
+    res['y']=this.getuniqueValues(array,yname).sort(function(a, b){return a-b});
+    res['z']=[];
+    for (let yitem of res['y']){
+      let topush=[];
+      for (let xitem of res['x']){
+        try {
+          topush.push(this.filterArray(this.filterArray(array,xname,xitem),yname,yitem)[0][valuename]);
+        }
+        catch {
+          topush.push(NaN);
+        };
+      }
+      res['z'].push(topush);    
+    }
+    if (xlabel!=""){
+      let xlab=[];
+      for (let item of res['x']){
+        try {xlab.push(this.filterArray(array,xname,item)[0][xlabel])}
+        catch{xlab.push("")};       
+      }
+      res['x']=xlab;
+    };
+    if (ylabel!=""){
+      let ylab=[];
+      for (let item of res['y']){
+        try {ylab.push(this.filterArray(array,yname,item)[0][ylabel])}
+        catch{ylab.push("")};       
+      }
+      res['y']=ylab;
+    };
+ 
+    return res;
+};
 
 }
 

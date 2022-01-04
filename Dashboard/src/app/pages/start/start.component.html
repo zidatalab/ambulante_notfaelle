@@ -109,7 +109,7 @@
                     </a></p>
             </mat-card>
         </div>
-        <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts">
+        <div fxFlex=32 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
@@ -132,20 +132,19 @@
                     </a></p>
             </mat-card>
         </div>
-        <ng-container *ngIf="false">
-        <div fxFlex=100>
+        <div fxFlex=100 *ngIf="this.utiltimes['z']">
             <mat-card>
                 <h3>Aufkommen nach Tag und Uhrzeit</h3>
-                <app-plot [(data)]="this.utiltimes" [xvalue]="'Wochentag'"
-                    [fontcolor]="'white'" 
-                    [outcomes]="['Anzahl']"  [colorby]="'h'" plottype="stackedbar">
+                <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" 
+                    [colorby]="'h'" plottype="heatmap">
                 </app-plot>
                 <p *ngIf="this.currentuser"><a class="lightgreycolor" (click)="this.exportascsv('zeiten.csv',this.utiltimes)">
                     <mat-icon>file_download</mat-icon>
                 </a></p>
             </mat-card>
         </div>
-        
+ 
+        <ng-container *ngIf="false">
         <div fxFlex=100>
             <mat-card>
                 <h3>Empfehlungen und Entscheidungen zur Dringlichkeit</h3>

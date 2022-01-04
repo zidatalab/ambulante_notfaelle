@@ -98,6 +98,28 @@ export class PlotComponent implements OnInit {
       }
     }
 
+    if (this.plottype == "heatmap") {
+      this.plotlytype = 'heatmap';
+      this.plotlayout = {
+        xaxis: {   side: 'top'},        
+        yaxis: {          autosize: true        },
+        autosize: false, padding: 0,
+        //legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
+        margin: { l: 50, r: 50, b: 0, t: 25 }, 
+        paper_bgcolor: "transparent", plot_bgcolor: "transparent",
+        //annotations: this.annotations
+      };
+      let plotdata = this.data;
+      plotdata['type']="heatmap";
+      let colors = this.api.makescale(2);
+      plotdata['colorscale']= [
+        [0,colors[1].concat('CC')],
+        [1, colors[0].concat('CC')]
+      ];
+      plotdata['showscale']=false;
+      this.plotdata=[plotdata];      
+    }
+
     if (this.plottype == "violin") {
       this.plotlytype = "violin";
       this.plotlayout = {
@@ -211,8 +233,10 @@ export class PlotComponent implements OnInit {
       };
 
     }
-
+    if (this.plottype!="heatmap"){
     let plotdata = []
+    
+      
     for (let item of this.data){
       plotdata.push(item);
     }
@@ -232,7 +256,9 @@ export class PlotComponent implements OnInit {
       plotdata = this.make_colorbyvalues();
     }
   
-   this.plotdata = this.make_plotdata(plotdata, this.xvalue, outcomes, this.plotlytype);    
+   this.plotdata = this.make_plotdata(plotdata, this.xvalue, outcomes, this.plotlytype);  
+  };
+
    // DEBUG
    
   }
