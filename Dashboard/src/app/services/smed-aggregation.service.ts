@@ -36,7 +36,7 @@ async newcombine(array,fieldname){
       dbarray.push(topush);    
     }
   }  
-  this.db.adddatabulk(dbarray);    
+  await this.db.adddatabulk(dbarray);    
 }
 
 querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){

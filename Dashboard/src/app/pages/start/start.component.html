@@ -51,8 +51,7 @@
             </p>            
         </ng-container>
     </div>    
-    <div *ngIf="!this.summaryinfo['done'] && !this.progress && (this.metadata.length>0) && 
-    (this.levelsettings['zeitraum']!=='Detailliert' || (this.levelsettings['start'] && this.levelsettings['end']))">
+    <div *ngIf="!this.summaryinfo && !this.progress">
         <p>
             Keine Daten verfügbar
         </p>
@@ -61,7 +60,7 @@
         <div class="lightgreycolor mat-caption" fxFlex=100 >
             
                 <p><strong>Ersteinschätzung am Telefon</strong></p>
-                <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen entsprechende Auswertungen vor.</p>
+                <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten basieren auf dem Zeitraum {{this.summaryinfo["Beginn"] | date}} bis {{this.summaryinfo["Ende"] | date}}.</span></p>
             
         </div>
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">

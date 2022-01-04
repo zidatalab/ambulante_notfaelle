@@ -49,7 +49,8 @@ export class StartComponent implements OnInit {
   decisions = [];
 
   ngOnInit(): void {
-    this.db.clean();
+    // uncomment for db debug
+    // this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.progress = true;
@@ -74,11 +75,12 @@ export class StartComponent implements OnInit {
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
     this.progress = true;
+    this.summaryinfo=[];
     this.makesmeditems('stats');
     this.querydatasmed('stats');
     // REMOVED FOR DEBUG
-    this.makesmeditems('timestats');
-    this.querydatasmed('timestats');
+    //this.makesmeditems('timestats');
+    //this.querydatasmed('timestats');
     //this.makesmeditems('decisions');
     //this.querydatasmed('decisions');
     //this.makesmeditems('mainsymptoms_ts');
@@ -160,8 +162,7 @@ export class StartComponent implements OnInit {
       "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
     };
     query["showfields"] = [thefield, 'KM6Versicherte', 'BEVSTAND'];
-    this.db.listdata(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["start"], this.levelsettings["stop"]).then(data => console.log(data.length, " values in db for", thefield));
-    let dbdaterange;
+        let dbdaterange;
     this.db.querydatadates(thefield, 'KV',
       this.levelsettings["levelvalues"], this.levelsettings["start"],
       this.levelsettings["stop"]).then(data => { dbdaterange = data });
@@ -193,9 +194,9 @@ export class StartComponent implements OnInit {
 
   }
 
-  updatedb(data, thefield) {
-    console.log("New data for:",thefield);
-    this.smed.newcombine(data, thefield);    
+  async updatedb(data, thefield) {
+    await this.smed.newcombine(data, thefield); 
+    this.makesmeditems(thefield);
   }
 
 
@@ -212,7 +213,9 @@ export class StartComponent implements OnInit {
     let enddate = this.levelsettings['enddate'];
 
     if (thefield == "stats") {
+      this.progress = true;
       this.stats_ts = [];
+      this.summaryinfo = [];
       let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues']);
       if (statswdate.length>0){
 
@@ -229,7 +232,6 @@ export class StartComponent implements OnInit {
       };
 
       this.stats_ts = statswdate;
-      console.log("READ stats",statswdate, this.stats_ts[0]);
       let theid = this.stats_ts[0]['levelid'];
       if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
       else { this.summaryinfo["levelid"] = " in Deutschland"; };
@@ -241,7 +243,7 @@ export class StartComponent implements OnInit {
       this.summaryinfo["Beginn"] =new Date(sorteddates[0]);
       this.summaryinfo["Ende"] = new Date(sorteddates.pop());
       this.summaryinfo["done"] = true;
-      console.log("Summaryinfo:",this.summaryinfo);
+      this.progress = false;
     }
 
     };
@@ -276,7 +278,7 @@ export class StartComponent implements OnInit {
         }
         this.decisions = decisions;
       }
-      this.progress = false;
+      
 
     }
 

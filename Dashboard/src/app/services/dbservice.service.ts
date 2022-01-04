@@ -41,7 +41,6 @@ export class DBService {
       .sortBy('Datum').then(data => {
         dbpointer=data;
         if (dbpointer && (dbpointer.length>1)){
-        console.log("RES:",dbpointer[0]['Datum'],dbpointer[dbpointer.length-1]['Datum']);
         return {'min':dbpointer[0],'max':dbpointer[dbpointer.length-1]['Datum']}}
         else {
           return {'min':NaN,'max':NaN}
@@ -54,8 +53,7 @@ export class DBService {
       .equals([level,levelid,Indicator])
       .sortBy('Datum').then(data => {
         dbpointer=data;
-        if (dbpointer.length>1){
-          console.log("RES:",dbpointer[0]['Datum'],dbpointer[dbpointer.length-1]['Datum']);
+        if (dbpointer.length>1){          
           return {'min':dbpointer[0],'max':dbpointer[dbpointer.length-1]['Datum']}}
           else {
             return {'min':NaN,'max':NaN}
@@ -84,7 +82,6 @@ export class DBService {
   }
 
   adddatabulk(array) {
-    console.log("BULK PUT");
     return db.datadb.bulkPut(array);
   };
 
