@@ -69,7 +69,7 @@ export class StartComponent implements OnInit {
   }
 
 
-  setlevel(level, value) {
+  async setlevel(level, value) {
     if (level!=="__init"){
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -79,11 +79,12 @@ export class StartComponent implements OnInit {
     this.stats_ts=[];
     this.utiltimes = {};
     // Initial Loading
-    this.makesmeditems('stats');
+    this.querydatasmed('stats');
+    await this.makesmeditems('stats');
     this.makesmeditems('timestats');
+    this.progress = false;
 
     // Update (implement if-needed tbd.)
-    this.querydatasmed('stats');
     this.querydatasmed('timestats');
     
     // Missing data
@@ -152,8 +153,7 @@ export class StartComponent implements OnInit {
     //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
     //this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
     //if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
-    this.metadataok = true;
-    this.progress = false;
+    this.metadataok = true;    
   }
 
   querydatasmed(thefield) {
@@ -184,7 +184,7 @@ export class StartComponent implements OnInit {
               this.updatedb(res, thefield)
             });
           },
-          error => { this.progress = false; });
+          error => {  });
       }
     }
     else {
@@ -218,8 +218,7 @@ export class StartComponent implements OnInit {
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
 
-    if (thefield == "stats") {
-      this.progress = true;
+    if (thefield == "stats") {      
       this.stats_ts = [];
       this.summaryinfo = [];
       let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues']);
@@ -250,7 +249,6 @@ export class StartComponent implements OnInit {
       this.summaryinfo["Beginn"] =new Date(sorteddates[0]);
       this.summaryinfo["Ende"] = new Date(sorteddates.pop());
       this.summaryinfo["done"] = true;
-      this.progress = false;
     }
 
     };
