@@ -4,9 +4,6 @@ import { AuthService } from 'src/app/services/auth.service';
 import { SmedAggregationService } from 'src/app/services/smed-aggregation.service';
 import { CsvexportService } from 'src/app/services/csvexport.service';
 import { DBService } from 'src/app/services/dbservice.service';
-import { DataItem } from 'src/app/services/db';
-import { Subscription } from 'rxjs';
-
 
 @Component({
   selector: 'app-start',
@@ -77,12 +74,16 @@ export class StartComponent implements OnInit {
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
     this.progress = true;
-    
+    this.makesmeditems('stats');
     this.querydatasmed('stats');
     // REMOVED FOR DEBUG
-    //this.querydatasmed('timestats');
+    this.makesmeditems('timestats');
+    this.querydatasmed('timestats');
+    //this.makesmeditems('decisions');
     //this.querydatasmed('decisions');
+    //this.makesmeditems('mainsymptoms_ts');
     //this.querydatasmed('mainsymptoms_ts');
+    //this.makesmeditems('timetotreat');
     //this.querydatasmed('timetotreat');  
 
     this.progress = false;
@@ -111,8 +112,7 @@ export class StartComponent implements OnInit {
         this.progress = false;
       }
 
-    }, 1500);
-    this.makesmeditems();   
+    }, 1500);    
   }
 
   handleklick(plot, event) {
@@ -172,11 +172,10 @@ export class StartComponent implements OnInit {
         this.api.postTypeRequest('get_data/', query).subscribe(
           data => {
             let res = data["data"];
-            this.updatedb(res, thefield);
-            // this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            // this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
-            //   this.updatedb(res, thefield)
-            // });
+            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
+              this.updatedb(res, thefield)
+            });
           },
           error => { this.progress = false; });
       }
@@ -184,11 +183,10 @@ export class StartComponent implements OnInit {
     else {
       this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
-          let res = data["data"];
-          this.updatedb(res, thefield);
-          // this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-          //   this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { 
-          //     this.updatedb(res, thefield) });
+          let res = data["data"];          
+          this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
+            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { 
+              this.updatedb(res, thefield) });
         },
         error => { this.progress = false; });
     };
@@ -196,8 +194,8 @@ export class StartComponent implements OnInit {
   }
 
   updatedb(data, thefield) {
-    this.smed.newcombine(data, thefield);
-    this.makesmeditems(thefield);
+    console.log("New data for:",thefield);
+    this.smed.newcombine(data, thefield);    
   }
 
 
@@ -208,18 +206,16 @@ export class StartComponent implements OnInit {
   }
 
 
-  async makesmeditems(thefield = "") {
-    // this.querydatasmed('stats');    
-    // this.querydatasmed('timestats');
-    // this.querydatasmed('decisions');
-    // this.querydatasmed('mainsymptoms_ts');
+  async makesmeditems(thefield) {
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
 
-    if (thefield == "" || thefield == "stats") {
+    if (thefield == "stats") {
       this.stats_ts = [];
       let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues']);
+      if (statswdate.length>0){
+
       for (let item of statswdate) {
         item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["Assessments"]);
         if (item["Dauer_sek"] == 0) {
@@ -233,6 +229,7 @@ export class StartComponent implements OnInit {
       };
 
       this.stats_ts = statswdate;
+      console.log("READ stats",statswdate, this.stats_ts[0]);
       let theid = this.stats_ts[0]['levelid'];
       if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
       else { this.summaryinfo["levelid"] = " in Deutschland"; };
@@ -240,9 +237,12 @@ export class StartComponent implements OnInit {
       this.summaryinfo["Assessments pro Woche"] = this.summaryinfo["Assessments Gesamt"] / this.api.getValues(this.stats_ts, "Assessments").length;
       this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmed")) / this.summaryinfo["Assessments Gesamt"];
       this.summaryinfo["Anzahl Beschwerden"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl_Beschwerden")) / this.summaryinfo["Assessments Gesamt"];
-      this.summaryinfo["Beginn"] = new Date(Math.min(...this.api.getValues(this.stats_ts, "Datum")));
-      this.summaryinfo["Ende"] = new Date(Math.max(...this.api.getValues(this.stats_ts, "Datum")));
+      let sorteddates = this.api.getValues(this.stats_ts, "Datum").sort();
+      this.summaryinfo["Beginn"] =new Date(sorteddates[0]);
+      this.summaryinfo["Ende"] = new Date(sorteddates.pop());
       this.summaryinfo["done"] = true;
+      console.log("Summaryinfo:",this.summaryinfo);
+    }
 
     };
     // hier weiter

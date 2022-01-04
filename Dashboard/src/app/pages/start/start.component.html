@@ -57,7 +57,7 @@
             Keine Daten verfügbar
         </p>
     </div>
-    <div *ngIf="(this.symptoms_list && this.stats_ts && this.summaryinfo['done'])" fxLayout="row wrap">
+    <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
         <div class="lightgreycolor mat-caption" fxFlex=100 >
             
                 <p><strong>Ersteinschätzung am Telefon</strong></p>
@@ -99,7 +99,7 @@
                     </a></p>
             </mat-card>
         </div> -->
-        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
+        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Assessments pro 100.000 Einwohner</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" 
@@ -110,7 +110,7 @@
                     </a></p>
             </mat-card>
         </div>
-        <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
+        <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Mittlere Dauer pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
@@ -122,7 +122,7 @@
             </mat-card>
             
         </div>
-        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts.length>0">
+        <div fxFlex=34 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
                 <h3>Beschwerden pro Assessment</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
@@ -162,7 +162,7 @@
         </div>
     </ng-container>
 
-        <div fxFlex=100 *ngIf="this.symptoms_list.length>0">
+        <div fxFlex=100 *ngIf="this.symptoms_list">
             <mat-card>
                 <h3>Anteil Hauptbeschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'name'" [percent]="true"
@@ -176,7 +176,8 @@
             </mat-card>
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->
-        <ng-container *ngIf="false && this.levelsettings['zeitraum']!=='Gesamt' && this.currentuser && (this.levelsettings['anperioddays']<=64)">
+        <ng-container *ngIf="false && this.levelsettings['zeitraum']!=='Gesamt' && 
+        this.currentuser && (this.levelsettings['anperioddays']<=64)">
         <div fxFlex=100 fxFlex.lt-md=100>
             <mat-card>
                 <h3>Dringlichkeit der Behandlung</h3>

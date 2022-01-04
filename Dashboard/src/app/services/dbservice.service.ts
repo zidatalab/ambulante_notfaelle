@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import {db,DataItem} from './db';
+import {db} from './db';
 
 @Injectable({
   providedIn: 'root'
@@ -83,13 +83,12 @@ export class DBService {
       .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).delete();
   }
 
-  async adddatabulk(array) {
-    return await db.datadb.
-    bulkPut(array);
+  adddatabulk(array) {
+    console.log("BULK PUT");
+    return db.datadb.bulkPut(array);
   };
 
-
-  async adddata({level, levelid,Jahr,Monat,KW,Datum,Indicator,data}) {
+  async adddata({level, levelid,Jahr,Monat,KW,Datum,Indicator,data,KM6Versicherte,BEVSTAND}) {
     return await db.datadb
       .put({
         Indicator: Indicator,

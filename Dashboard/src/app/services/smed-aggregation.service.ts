@@ -14,7 +14,7 @@ export class SmedAggregationService {
 
 
 
-newcombine(array,fieldname){
+async newcombine(array,fieldname){
   let newarray = [];
   let dbarray=[];
   if (array.length==0){return []};
@@ -35,8 +35,8 @@ newcombine(array,fieldname){
       topush['Indicator']=fieldname;
       dbarray.push(topush);    
     }
-  }
-  this.db.adddatabulk(dbarray).finally(()=>{return newarray;});  
+  }  
+  this.db.adddatabulk(dbarray);    
 }
 
 querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
