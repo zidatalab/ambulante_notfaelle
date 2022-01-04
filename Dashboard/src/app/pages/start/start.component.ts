@@ -76,6 +76,8 @@ export class StartComponent implements OnInit {
     };
     this.progress = true;
     this.summaryinfo=[];
+    this.stats_ts=[];
+    this.utiltimes = {};
     // Initial Loading
     this.makesmeditems('stats');
     this.makesmeditems('timestats');
