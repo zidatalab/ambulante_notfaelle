@@ -151,22 +151,22 @@
         </div>
 
         
-        <div fxFlex=100>
+        <div fxFlex=100 *ngIf="this.timetotreat">
                 <mat-card>
                     <h3>Empfehlung zur Dringlichkeit der Behandlung</h3>
-                    <app-plot [(data)]="this.decisions" [xvalue]="'Empfehlung'" [fontcolor]="'white'"
-                        [showlegend]="true" [outcomes]="['Anzahl']" [colorby]="'TTTdispo_text'" plottype="hbar">
+                    <app-plot [(data)]="this.timetotreat" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
+                        [showlegend]="false" [outcomes]="['Anzahl']"  plottype="hbar">
                     </app-plot>
                     <p *ngIf="this.currentuser"><a class="lightgreycolor"
-                            (click)="this.exportascsv('entscheidungen.csv',this.decisions)">
+                            (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
                             <mat-icon>file_download</mat-icon>
                         </a></p>
                 </mat-card>
         </div>
         
 
-        <div fxFlex=100>
-            <mat-card>
+        <div fxFlex=100 *ngIf="this.symptoms_list">
+            <mat-card *ngIf="this.symptoms_list.length>0">
                 <h3>Häufigste Beschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'Sympt'" [percent]="true" [fontcolor]="'white'"
                     [sort]="true" (clicked)="handleklick('Beschwerden',$event);" [outcomes]="['Anteil']"
@@ -174,8 +174,7 @@
                 <p *ngIf="this.currentuser"><a class="lightgreycolor"
                         (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
                         <mat-icon>file_download</mat-icon>
-                    </a></p>
-                <p class="mat-caption lightgreycolor">Hinweis: Dieser Anteil wird monatsweise bestimmt.</p>
+                    </a></p>                
             </mat-card>
         </div>
         <!-- Detailergebnisse für kleine Zeiträume -->

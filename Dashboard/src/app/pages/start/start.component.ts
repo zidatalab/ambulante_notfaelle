@@ -46,7 +46,7 @@ export class StartComponent implements OnInit {
   zeitaumoptions = ["Aktuelles Jahr", "Letztes Jahr", "Gesamt", "Detailliert"];
   ts_results = {};
   utiltimes = {};
-  decisions = [];
+  timetotreat :any;
 
   ngOnInit(): void {    
     // uncomment for db debug
@@ -59,8 +59,10 @@ export class StartComponent implements OnInit {
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     this.updatemetadata();
-    this.auth.currentUser.subscribe(data => { this.currentuser = data; });   
+    this.auth.currentUser.subscribe(data => { this.currentuser = data; });
+    window.scroll(0,0);   
     this.setlevel("__init","");
+    window.scroll(0,0);
   }
 
   ngOnDestroy() {
@@ -78,24 +80,21 @@ export class StartComponent implements OnInit {
     this.summaryinfo=[];
     this.stats_ts=[];
     this.utiltimes = {};
+    this.timetotreat=NaN;
     // Initial Loading
-    this.querydatasmed('stats');
     await this.makesmeditems('stats');
     this.progress = false;
-
-    // Update (implement if-needed tbd.)
-    //this.makesmeditems('timestats');
-    //this.querydatasmed('timestats');    
-    this.makesmeditems('mainsymptoms_ts');
-    this.querydatasmed('mainsymptoms_ts');
+    await this.makesmeditems('mainsymptoms_ts');
+    await this.makesmeditems('timetotreat');
+    await this.makesmeditems('timestats');
     
-    // Missing data
-    //this.makesmeditems('timetotreat');
-    //this.querydatasmed('timetotreat');  
-
-    this.progress = false;
-
+    // Update (implement if-needed tbd.)
+    await this.querydatasmed('stats');
+    await this.querydatasmed('mainsymptoms_ts');
+    await this.querydatasmed('timetotreat');  
+    await this.querydatasmed('timestats');      
   }
+
 
   updatemetadata() {
     if (this.api.getmetadata("metadata")) {
@@ -253,13 +252,10 @@ export class StartComponent implements OnInit {
     
 
     if (thefield == "mainsymptoms_ts") {
-      console.log("Mainsymptoms!");
-      console.log(this.levelsettings);
       let symptoms_list = [];
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
       symptoms_list = this.api.getValues(symptoms_list,'data');
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list,'Sympt','','n'),'n',"descending");
-      console.log(this.symptoms_list_export);
       for (let item of this.symptoms_list_export) {
         let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));
         item["Anteil"] = Math.round(1000 * item['n'] / anzahl_symptome) / 10;
@@ -270,7 +266,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],null,null,false);
+      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],false);
       dbutiltimes = this.api.getValues(dbutiltimes,'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       dbutiltimes = [];
@@ -283,18 +279,11 @@ export class StartComponent implements OnInit {
       //console.log("Utiltimes:",this.utiltimes)      
     };
 
-    if (thefield == "" || thefield == "decisions") {
-      let decisions = [];
-      for (let item of decisions) {
-        item["Empfehlung"] = item["TTTsmed_id"] + ": " + item["TTTsmed_text"]
-        decisions = this.api.sortArray(this.api.groupbysum(decisions, "Empfehlung", "TTTdispo_text", "Anzahl"), "Empfehlung", "descending");
-        for (let item of decisions) {
-          item["Empfehlung"] = item["Empfehlung"].slice(2)
-        }
-        this.decisions = decisions;
-      }
-      
-
+    if (thefield == "timetotreat") {
+      let ttt = [];     
+      ttt = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      ttt = this.api.groupbysum(ttt,'TTTsmed_text','','Anzahl');
+      this.timetotreat = ttt;            
     }
 
   }
