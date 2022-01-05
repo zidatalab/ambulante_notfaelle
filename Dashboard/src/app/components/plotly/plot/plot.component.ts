@@ -86,8 +86,16 @@ export class PlotComponent implements OnInit {
       this.plotlytype = "bar";
       this.plotlayout = {
         xaxis: { fixedrange: false, type: 'category', automargin: false },
-        yaxis: { fixedrange: true, showgrid: false, title: '', 
-        automargin: true, rangemode: 'tozero',ticksuffix:" " , nticks:this.n_yticks},
+        yaxis: {
+          fixedrange: true, title: '', automargin: true, rangemode: 'tozero',
+          gridcolor: "lightgrey",
+          gridpattern: "dot",
+          gridwidth: 1,
+          zerolinecolor: this.fontcolor,
+          zerolinewidth: 2,
+          annotations: this.annotations,
+          ticksuffix:" ",
+          nticks:this.n_yticks },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
@@ -153,7 +161,8 @@ export class PlotComponent implements OnInit {
     
     }
 
-    if (this.plottype == "tsline" || this.plottype == "lines" || this.plottype == "area" || this.plottype == "stackedarea" || this.plottype == 'scatter') {
+    if (this.plottype == "tsline" || this.plottype == "lines" || this.plottype == "area" || 
+    this.plottype == "stackedarea" || this.plottype == 'scatter' ) {
       this.plotlytype = "lines";
       this.plotlayout = {
         xaxis: { fixedrange: false, showgrid: false, automargin: false ,zeroline: false},
@@ -257,9 +266,11 @@ export class PlotComponent implements OnInit {
     }
   
    this.plotdata = this.make_plotdata(plotdata, this.xvalue, outcomes, this.plotlytype);  
+   
+   // DEBUG
+   // console.log("Make Plotdata:","\ndf:",plotdata,"\nx:", this.xvalue,"\nout:", outcomes,"\ntype:", this.plotlytype)
   };
 
-   // DEBUG
    
   }
 
@@ -280,6 +291,7 @@ export class PlotComponent implements OnInit {
       }
       newdata.push(topush);
     }
+    // console.log("DEBUG make_colorbyvalues:",'df',inputdata,"colorvals",thecolorvalues,"xvals",thexvalues,"outcome",theoutcome,"newdf",newdata);
     return newdata;
 
   }

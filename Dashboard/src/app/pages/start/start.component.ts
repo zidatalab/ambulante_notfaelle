@@ -54,7 +54,7 @@ export class StartComponent implements OnInit {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.progress = true;
-    this.colorsscheme = ["#e91e63"];
+    this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -283,7 +283,19 @@ export class StartComponent implements OnInit {
       let ttt = [];     
       ttt = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
       ttt = this.api.groupbysum(ttt,'TTTsmed_text','','Anzahl');
-      this.timetotreat = ttt;            
+      let total = this.api.sumArray(this.api.getValues(ttt,'Anzahl'));
+      for (let item of ttt){
+        item['Anteil']=Math.round(1000*item['Anzahl']/total)/10;
+        item['rank']=0;
+        if (item['TTTsmed_text'] =='Ärztliche Behandlung nicht innerhalb von 24h erforderlich'){item['rank']=1;};
+        if (item['TTTsmed_text'] =='Ärztliche Behandlung innerhalb von 24h'){item['rank']=2;};
+        if (item['TTTsmed_text'] =='schnellstmögliche ärztliche Behandlung'){item['rank']=3;};
+        if (item['TTTsmed_text'] =='Notfall'){item['rank']=4;};
+      }
+      ttt= this.api.sortArray(ttt,'rank');
+      this.timetotreat = ttt;  
+      //console.log("TTT",ttt);
+                
     }
 
   }

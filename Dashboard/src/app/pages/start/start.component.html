@@ -153,10 +153,13 @@
         
         <div fxFlex=100 *ngIf="this.timetotreat">
                 <mat-card>
-                    <h3>Empfehlung zur Dringlichkeit der Behandlung</h3>
+                    <h3>Anteil Empfehlungen zur Dringlichkeit der Behandlung</h3>
                     <app-plot [(data)]="this.timetotreat" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
-                        [showlegend]="false" [outcomes]="['Anzahl']"  plottype="hbar">
+                    [showlegend]="false" [outcomes]="['Anteil']"  
+                    [custommargins]="{ l: 0, r: 50, b: 200, t: 0 }"
+                        plottype="bar" [colorscheme]="[this.colorsscheme[0]]" >
                     </app-plot>
+                    <!-- [colorby]="'rank'" not working due to bug -->
                     <p *ngIf="this.currentuser"><a class="lightgreycolor"
                             (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
                             <mat-icon>file_download</mat-icon>
@@ -169,7 +172,7 @@
             <mat-card *ngIf="this.symptoms_list.length>0">
                 <h3>Häufigste Beschwerden</h3>
                 <app-plot [(data)]="this.symptoms_list" [xvalue]="'Sympt'" [percent]="true" [fontcolor]="'white'"
-                    [sort]="true" (clicked)="handleklick('Beschwerden',$event);" [outcomes]="['Anteil']"
+                  (clicked)="handleklick('Beschwerden',$event);" [outcomes]="['Anteil']" [sort]="true"
                     plottype="hbar"></app-plot>
                 <p *ngIf="this.currentuser"><a class="lightgreycolor"
                         (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
