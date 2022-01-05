@@ -52,11 +52,11 @@ export class StartComponent implements OnInit {
   decisions_pocvsttt :any;
 
   ngOnInit(): void {    
+    console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
     this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
-    this.progress = true;
     this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
     this.mapdata = [];
@@ -64,7 +64,6 @@ export class StartComponent implements OnInit {
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
     window.scroll(0,0);
     this.updatemetadata();
-
     this.setlevel("__init","");
     window.scroll(0,0);
   }
@@ -80,23 +79,25 @@ export class StartComponent implements OnInit {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
-    this.progress = true;
+    //this.progress = true;
     this.summaryinfo=[];
     this.stats_ts=[];
     this.utiltimes = {};
     this.timetotreat=NaN;
     // Initial Loading
     await this.makesmeditems('stats');
-    this.progress = false;
+    //this.progress = false;
     await this.makesmeditems('mainsymptoms_ts');
     await this.makesmeditems('timetotreat');
     await this.makesmeditems('timestats');
+    await this.makesmeditems('decisions');
     
     // Update (implement if-needed tbd.)
     await this.querydatasmed('stats');
     await this.querydatasmed('mainsymptoms_ts');
     await this.querydatasmed('timetotreat');  
-    await this.querydatasmed('timestats');      
+    await this.querydatasmed('timestats');
+    await this.querydatasmed('decisions');      
   }
 
 
