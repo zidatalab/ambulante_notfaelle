@@ -47,20 +47,24 @@ export class StartComponent implements OnInit {
   ts_results = {};
   utiltimes = {};
   timetotreat :any;
+  decisions_ttt :any;
+  decisions_poc :any;
+  decisions_pocvsttt :any;
 
   ngOnInit(): void {    
     // uncomment for db debug
-    // this.db.clean();
+    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.progress = true;
     this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
     this.mapdata = [];
-    this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-    this.updatemetadata();
+    this.levelsettings = this.smed.updatestartstop(this.levelsettings);    
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
-    window.scroll(0,0);   
+    window.scroll(0,0);
+    this.updatemetadata();
+
     this.setlevel("__init","");
     window.scroll(0,0);
   }
@@ -99,18 +103,21 @@ export class StartComponent implements OnInit {
   updatemetadata() {
     if (this.api.getmetadata("metadata")) {
       this.metadata = this.api.getmetadata("metadata");
-      this.sortdata = this.api.getmetadata("sortdata");
-      this.geojson_available = this.api.getmetadata("geodata");
+      // Performance optimization - use only if needed
+      // this.sortdata = this.api.getmetadata("sortdata");
+      // this.geojson_available = this.api.getmetadata("geodata");
     }
-    if (this.metadata !== undefined) {
+    if (this.metadata) {
       if (this.metadata.length > 0) {
         this.dometasettings();
       }
     }
+    else {
     setTimeout(() => {
       if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
         if (this.metadata.length > 0) {
           this.dometasettings();
+          this.setlevel("__init","");
         }
       }
       else {
@@ -118,8 +125,8 @@ export class StartComponent implements OnInit {
         this.progress = false;
       }
 
-    }, 1500);    
-  }
+    }, 1500);};    
+    }
 
   handleklick(plot, event) {
   }
@@ -286,14 +293,20 @@ export class StartComponent implements OnInit {
       let total = this.api.sumArray(this.api.getValues(ttt,'Anzahl'));
       for (let item of ttt){
         item['Anteil']=Math.round(1000*item['Anzahl']/total)/10;
-        item['rank']=0;
-        if (item['TTTsmed_text'] =='Ärztliche Behandlung nicht innerhalb von 24h erforderlich'){item['rank']=1;};
-        if (item['TTTsmed_text'] =='Ärztliche Behandlung innerhalb von 24h'){item['rank']=2;};
-        if (item['TTTsmed_text'] =='schnellstmögliche ärztliche Behandlung'){item['rank']=3;};
-        if (item['TTTsmed_text'] =='Notfall'){item['rank']=4;};
       }
-      ttt= this.api.sortArray(ttt,'rank');
       this.timetotreat = ttt;  
+      //console.log("TTT",ttt);
+                
+    }
+
+    if (thefield == "decisions") {
+      let decisions = [];     
+      decisions = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      let total = this.api.sumArray(this.api.getValues(decisions,'Anzahl'));
+      console.log("decisions",decisions.slice(0,10));
+      this.decisions_ttt;
+      this.decisions_poc;
+      this.decisions_pocvsttt;
       //console.log("TTT",ttt);
                 
     }
