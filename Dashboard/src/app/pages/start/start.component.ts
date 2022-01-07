@@ -84,6 +84,10 @@ export class StartComponent implements OnInit {
     this.summaryinfo=[];
     this.stats_ts=[];
     this.utiltimes = {};
+    this.decisions_ttt = [];
+    this.decisions_poc  = [];
+    this.decisions_pocvsttt  = [];
+
     this.timetotreat=NaN;
     // Initial Loading
     //console.log("Init");

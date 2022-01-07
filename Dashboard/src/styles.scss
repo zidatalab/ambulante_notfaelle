@@ -52,45 +52,6 @@ $apptheme:   mat.define-dark-theme($primary, $accent);
 // Include the default theme styles.
 @include mat.all-component-themes($apptheme);
 
-// // @import url('https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap');
-// // Use lokal for DSGVO compliance
-// /* nunito-regular - latin */
-// @font-face {
-//   font-family: 'Nunito';
-//   font-style: normal;
-//   font-weight: 400;
-//   src: local('Nunito Regular'), local('Nunito-Regular'),
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-// }
-// /* nunito-italic - latin */
-// @font-face {
-//   font-family: 'Nunito';
-//   font-style: italic;
-//   font-weight: 400;
-//   src: local('Nunito Italic'), local('Nunito-Italic'),
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-// }
-// /* nunito-700 - latin */
-// @font-face {
-//   font-family: 'Nunito';
-//   font-style: bold;
-//   font-weight: 700;
-//   src: local('Nunito Bold'), local('Nunito-Bold'),
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-// }
-// /* nunito-700italic - latin */
-// @font-face {
-//   font-family: 'Nunito';
-//   font-style: italic;
-//   font-weight: 700;
-//   src: local('Nunito Bold Italic'), local('Nunito-BoldItalic'),
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-//        url('assets/fonts/nunito-v13-latin/nunito-v13-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-// }
-
 @font-face {
   font-family: 'Lato';
   font-style: italic;
@@ -202,9 +163,8 @@ body {
 
 .mat-card {
   border-color: black;
-  margin: 5px;  
-   
-  
+  margin: 5px;    
+  @include mat.elevation(8); 
 }
 
 .label {
