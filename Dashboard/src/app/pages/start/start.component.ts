@@ -57,6 +57,7 @@ export class StartComponent implements OnInit {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
+    //console.log("Colors",this.colorsscheme);
     this.mapdatafor = "";
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);    
@@ -327,7 +328,7 @@ export class StartComponent implements OnInit {
     if (thefield == "decisions") {
       let decisions = [];     
       decisions = await this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
-      console.log("decicions",decisions.slice(0,20));
+      //console.log("decicions",decisions.slice(0,20));
       let total = this.api.sumArray(this.api.getValues(decisions,'Anzahl'));
       this.decisions_ttt=this.api.replacemissing(this.api.groupbysum(decisions,'TTTsmed_text',"TTTdispo_text",'Anzahl'),'TTTdispo_text',"Keine Daten");
       this.decisions_poc=this.api.replacemissing(this.api.groupbysum(decisions,'POCsmed_text',"POCdispo_text",'Anzahl'),'POCdispo_text',"Keine Daten");;
