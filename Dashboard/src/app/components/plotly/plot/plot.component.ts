@@ -113,7 +113,7 @@ export class PlotComponent implements OnInit {
         yaxis: {          autosize: true        },
         autosize: false, padding: 0,
         //legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
-        margin: { l: 50, r: 50, b: 0, t: 25 }, 
+        margin: { l: 50, r: 50, b: 0, t: 50 }, 
         paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         //annotations: this.annotations
       };
