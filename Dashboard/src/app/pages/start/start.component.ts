@@ -52,6 +52,7 @@ export class StartComponent implements OnInit {
   decisions_pocvsttt :any;
 
   ngOnInit(): void {    
+    this.updatemetadata();
     console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
     this.db.clean();
@@ -63,8 +64,10 @@ export class StartComponent implements OnInit {
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);    
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
     window.scroll(0,0);
-    this.updatemetadata();
     this.setlevel("__init","");
+    setTimeout(() => {
+      this.updatemetadata();
+    }, 1500);     
     window.scroll(0,0);
   }
 
@@ -75,29 +78,42 @@ export class StartComponent implements OnInit {
 
 
   async setlevel(level, value) {
+    this.progress = true;
     if (level!=="__init"){
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-    };
-    //this.progress = true;
+    };    
     this.summaryinfo=[];
     this.stats_ts=[];
     this.utiltimes = {};
     this.timetotreat=NaN;
     // Initial Loading
-    await this.makesmeditems('stats');
-    //this.progress = false;
+    console.log("Init");
+    await this.makesmeditems('stats'); 
+    console.log("make...");
     await this.makesmeditems('mainsymptoms_ts');
+    console.log("make...");
     await this.makesmeditems('timetotreat');
+    console.log("make...");
     await this.makesmeditems('timestats');
+    console.log("make...");
     await this.makesmeditems('decisions');
+    console.log("make...");
     
     // Update (implement if-needed tbd.)
     await this.querydatasmed('stats');
+    console.log("update...");
     await this.querydatasmed('mainsymptoms_ts');
+    console.log("update...");
     await this.querydatasmed('timetotreat');  
+    console.log("update...");
     await this.querydatasmed('timestats');
-    await this.querydatasmed('decisions');      
+    console.log("update...");
+    await this.querydatasmed('decisions');     
+    console.log("update...");
+    
+    // Show loading is over
+    this.progress = false;
   }
 
 
@@ -161,7 +177,7 @@ export class StartComponent implements OnInit {
     this.metadataok = true;    
   }
 
-  querydatasmed(thefield) {
+  async querydatasmed(thefield) {
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
@@ -186,7 +202,7 @@ export class StartComponent implements OnInit {
             let res = data["data"];
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
             this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
-              this.updatedb(res, thefield)
+              this.updatedb(res, thefield);
             });
           },
           error => {  });
@@ -202,6 +218,7 @@ export class StartComponent implements OnInit {
         },
         error => { this.progress = false; });
     };
+    
 
   }
 
@@ -218,7 +235,8 @@ export class StartComponent implements OnInit {
   }
 
 
-  async makesmeditems(thefield) {    
+  async makesmeditems(thefield) { 
+    console.log("Start",thefield,new Date());
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
@@ -250,6 +268,7 @@ export class StartComponent implements OnInit {
       this.summaryinfo["Assessments pro Woche"] = this.summaryinfo["Assessments Gesamt"] / this.api.getValues(this.stats_ts, "Assessments").length;
       this.summaryinfo["Mittlere Dauer"] = this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmed")) / this.api.sumArray(this.api.getValues(this.stats_ts, "DAUERsmedFaelle"));
       this.summaryinfo["Anzahl Beschwerden"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl_Beschwerden")) / this.summaryinfo["Assessments Gesamt"];
+      this.summaryinfo["Anzahl Fragen"] = this.api.sumArray(this.api.getValues(this.stats_ts, "Anzahl_Fragen")) / this.summaryinfo["Assessments Gesamt"];
       let sorteddates = this.api.getValues(this.stats_ts, "Datum").sort();
       this.summaryinfo["Beginn"] =new Date(sorteddates[0]);
       this.summaryinfo["Ende"] = new Date(sorteddates.pop());
@@ -304,7 +323,6 @@ export class StartComponent implements OnInit {
       let decisions = [];     
       decisions = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
       let total = this.api.sumArray(this.api.getValues(decisions,'Anzahl'));
-      console.log("decisions",decisions.slice(0,10));
       this.decisions_ttt;
       this.decisions_poc;
       this.decisions_pocvsttt;
