@@ -375,3 +375,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   .no-padding {
     padding:0px !important;
   }
+
+  .overlayinfobox {
+    position: absolute;
+    background-color: #444444;
+    margin-bottom: 1rem;
+    z-index: 100;
+    padding: 2rem;
+    margin: 2rem!important;
+    border-radius: 10px;
+    border: 1px;
+    border-color: #262626;
+    border-style: solid;
+  }
