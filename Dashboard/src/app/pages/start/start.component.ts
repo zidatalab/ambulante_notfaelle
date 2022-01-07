@@ -200,7 +200,7 @@ export class StartComponent implements OnInit {
       if ((dbdaterange['min'] > this.levelsettings["start"] ||
         dbdaterange['max'] < this.levelsettings["stop"]) ||
         isNaN(dbdaterange['max']) || isNaN(dbdaterange['min'])) {
-        this.api.postTypeRequest('get_data/', query).subscribe(
+        this.api.postTypeRequestnotimeout('get_data/', query).subscribe(
           data => {
             let res = data["data"];
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
