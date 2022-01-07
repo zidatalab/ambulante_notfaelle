@@ -275,6 +275,15 @@ public makeheatmapdata(array,xname,yname,valuename,xlabel="",ylabel=""){
     return res;
 };
 
+public replacemissing(array,key,replacement="Fehlend"){
+  for (let item of array){
+    if (!item[key]){
+      item[key]=replacement;
+    }
+  }
+  return array;
+}
+
 }
 
 

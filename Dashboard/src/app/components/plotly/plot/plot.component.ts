@@ -12,7 +12,7 @@ export class PlotComponent implements OnInit {
   @Input() colorby: string;
   @Input() outcomes: any;
   @Input() outcomelabels = [];
-  @Input() plottype: String; // ["bar","hbar","tsline"]; 
+  @Input() plottype: String;
   @Input() customdata: any;
   @Input() customconfig: any;
   @Input() customlayout: any;
@@ -205,6 +205,9 @@ export class PlotComponent implements OnInit {
 
       };
     }
+
+   
+
     if (this.custommargins) {
       this.plotlayout['margin'] = this.custommargins;
     }

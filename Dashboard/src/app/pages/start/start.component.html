@@ -136,6 +136,7 @@
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                        <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
                                 <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
@@ -146,6 +147,7 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                        </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
@@ -162,6 +164,7 @@
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                        <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
                                 <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
@@ -172,6 +175,7 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
@@ -188,6 +192,7 @@
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                        <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
                                 <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
@@ -198,6 +203,7 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                        </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
@@ -206,7 +212,8 @@
             <ng-container *ngIf="this.utiltimes['z'].length>0">
                 <mat-card>
                     <h3>Aufkommen nach Tag und Uhrzeit in Prozent</h3>
-                    <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" [colorby]="'h'" plottype="heatmap">
+                    <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" 
+                    plottype="heatmap">
                     </app-plot>
                     <div>
                         <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
@@ -214,6 +221,7 @@
                             <mat-expansion-panel-header>
                                 <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                             </mat-expansion-panel-header>
+                            <mat-panel-description>
                             <div class="mat-caption">
                                 <p *ngIf="this.currentuser">
                                     <a (click)="this.exportascsv('zeiten.csv',this.utiltimes)">
@@ -224,6 +232,7 @@
                                 <h3> Weitere Informationen zum Indikator</h3>
                                 <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                             </div>
+                        </mat-panel-description>
                         </mat-expansion-panel>
                     </div>
                 </mat-card>
@@ -232,7 +241,7 @@
 
 
         <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat">
-            <mat-card>
+            <mat-card *ngIf="this.timetotreat.length>0">
                 <h3>Empfehlungen zur Dringlichkeit der Behandlung in Prozent</h3>
                 <app-plot [(data)]="this.timetotreat" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
                     [showlegend]="false" [outcomes]="['Anteil']" [custommargins]="{ l: 50, r: 0, b: 0, t: 0 }"
@@ -244,6 +253,7 @@
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                    <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
                                 <a (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
@@ -254,23 +264,29 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
         </div>
 
-        <div fxFlex=50 fxFlex.lt-md=100>
-            <mat-card>
+        <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_pocvsttt">
+            <mat-card  *ngIf="this.decisions_pocvsttt.length>0">
                 <h3>Empfehlung Behandlungsort nach Dringlichkeit</h3>
-                <div>
+                <div >
+                    <app-plot [(data)]="this.decisions_pocvsttt" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
+                    [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
+                    plottype="stackedbar" [colorby]="'POCsmed_text'">
+                </app-plot>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
                         (closed)="panelOpenState = false">
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                    <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
-                                <a (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
+                                <a (click)="this.exportascsv('timetotreat.csv',this.timetotreat)">
                                     <mat-icon inline=true>file_download</mat-icon>
                                     Angezeigte Daten als CSV-Datei herunterladen &nbsp;
                                 </a>
@@ -278,23 +294,29 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
         </div>
 
-        <div fxFlex=50 fxFlex.lt-md=100>
-            <mat-card>
+        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_ttt">
+            <mat-card  *ngIf="this.decisions_ttt.length>0">
                 <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit</h3>
                 <div>
+                    <app-plot [(data)]="this.decisions_ttt" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
+                    [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
+                    plottype="stackedbar" [colorby]="'TTTdispo_text'">
+                </app-plot>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
                         (closed)="panelOpenState = false">
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                    <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
-                                <a (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
+                                <a (click)="this.exportascsv('decisions_ttt.csv',this.decisions_ttt)">
                                     <mat-icon inline=true>file_download</mat-icon>
                                     Angezeigte Daten als CSV-Datei herunterladen &nbsp;
                                 </a>
@@ -302,23 +324,29 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
         </div>
 
-        <div fxFlex=50 fxFlex.lt-md=100>
-            <mat-card>
+        <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.decisions_poc && this.currentuser">
+            <mat-card  *ngIf="this.decisions_poc.length>0">
                 <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort</h3>
                 <div>
+                    <app-plot [(data)]="this.decisions_poc" [xvalue]="'POCsmed_text'" [fontcolor]="'white'"
+                    [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
+                    plottype="stackedbar" [colorby]="'POCdispo_text'">
+                </app-plot>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
                         (closed)="panelOpenState = false">
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                    <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
-                                <a (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
+                                <a (click)="this.exportascsv('decisions_poc.csv',this.decisions_poc)">
                                     <mat-icon inline=true>file_download</mat-icon>
                                     Angezeigte Daten als CSV-Datei herunterladen &nbsp;
                                 </a>
@@ -326,6 +354,7 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>
@@ -345,6 +374,7 @@
                         <mat-expansion-panel-header>
                             <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
                         </mat-expansion-panel-header>
+                    <mat-panel-description>
                         <div class="mat-caption">
                             <p *ngIf="this.currentuser">
                                 <a (click)="this.exportascsv('symptome.csv',this.symptoms_list_export)">
@@ -355,6 +385,7 @@
                             <h3> Weitere Informationen zum Indikator</h3>
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
+                    </mat-panel-description>
                     </mat-expansion-panel>
                 </div>
             </mat-card>

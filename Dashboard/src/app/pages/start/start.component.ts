@@ -326,12 +326,15 @@ export class StartComponent implements OnInit {
 
     if (thefield == "decisions") {
       let decisions = [];     
-      decisions = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      decisions = await this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      console.log("decicions",decisions.slice(0,20));
       let total = this.api.sumArray(this.api.getValues(decisions,'Anzahl'));
-      this.decisions_ttt;
-      this.decisions_poc;
-      this.decisions_pocvsttt;
-      //console.log("TTT",ttt);
+      this.decisions_ttt=this.api.replacemissing(this.api.groupbysum(decisions,'TTTsmed_text',"TTTdispo_text",'Anzahl'),'TTTdispo_text',"Keine Daten");
+      this.decisions_poc=this.api.replacemissing(this.api.groupbysum(decisions,'POCsmed_text',"POCdispo_text",'Anzahl'),'POCdispo_text',"Keine Daten");;
+      this.decisions_pocvsttt=this.api.groupbysum(decisions,'TTTsmed_text',"POCsmed_text",'Anzahl');
+      //console.log("Decisions","decisions_ttt",this.decisions_ttt);
+      //console.log("Decisions","decisions_poc",this.decisions_poc);
+      //console.log("Decisions","pocvsttt",this.decisions_pocvsttt);
                 
     }
 
