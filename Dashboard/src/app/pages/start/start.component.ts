@@ -36,7 +36,7 @@ export class StartComponent implements OnInit {
   colorsscheme: any;
   levelid: string;
   datakeystable: any;
-
+  debug=false;
   // SMED
   stats_ts: any = [];
   symptoms_list: any;
@@ -52,10 +52,8 @@ export class StartComponent implements OnInit {
   decisions_pocvsttt :any;
 
   ngOnInit(): void {    
-    this.updatemetadata();
-    console.log("USER", this.auth.currentUserValue);
+    //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
-    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
@@ -88,29 +86,29 @@ export class StartComponent implements OnInit {
     this.utiltimes = {};
     this.timetotreat=NaN;
     // Initial Loading
-    console.log("Init");
+    //console.log("Init");
     await this.makesmeditems('stats'); 
-    console.log("make...");
+    //console.log("update...");
+    await this.querydatasmed('stats');    
+    //console.log("make...");
     await this.makesmeditems('mainsymptoms_ts');
-    console.log("make...");
+    //console.log("make...");
     await this.makesmeditems('timetotreat');
-    console.log("make...");
+    //console.log("make...");
     await this.makesmeditems('timestats');
-    console.log("make...");
+    //console.log("make...");
     await this.makesmeditems('decisions');
-    console.log("make...");
-    
+    //console.log("make...");
+    this.progress = false;
     // Update (implement if-needed tbd.)
-    await this.querydatasmed('stats');
-    console.log("update...");
     await this.querydatasmed('mainsymptoms_ts');
-    console.log("update...");
+    //console.log("update...");
     await this.querydatasmed('timetotreat');  
-    console.log("update...");
+    //console.log("update...");
     await this.querydatasmed('timestats');
-    console.log("update...");
+    //console.log("update...");
     await this.querydatasmed('decisions');     
-    console.log("update...");
+    //console.log("update...");
     
     // Show loading is over
     this.progress = false;
@@ -236,7 +234,7 @@ export class StartComponent implements OnInit {
 
 
   async makesmeditems(thefield) { 
-    console.log("Start",thefield,new Date());
+    //console.log("Start",thefield,new Date());
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     let startdate = this.levelsettings['startdate'];
     let enddate = this.levelsettings['enddate'];
@@ -296,13 +294,16 @@ export class StartComponent implements OnInit {
       let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],false);
       dbutiltimes = this.api.getValues(dbutiltimes,'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
+      let ntotal = this.api.sumArray(this.api.getValues(utiltimes,'n'));
       dbutiltimes = [];
       for (let item of utiltimes) {
         item["Wochentag"] = this.api.getweekdayname(item["wt"]);
         item['Anzahl']=item['n'];
+        item['Anteil']=0.1*Math.round(1000*item['n']/ntotal);
+        item['TimeLabel']=item['h']+"-"+(item['h']+2)+'h';
         delete item['n'];
       }
-      this.utiltimes = this.api.makeheatmapdata(utiltimes,"wt","h",'Anzahl','Wochentag');
+      this.utiltimes = this.api.makeheatmapdata(utiltimes,"wt","h",'Anteil','Wochentag','TimeLabel');
       //console.log("Utiltimes:",this.utiltimes)      
     };
 
@@ -312,7 +313,7 @@ export class StartComponent implements OnInit {
       ttt = this.api.groupbysum(ttt,'TTTsmed_text','','Anzahl');
       let total = this.api.sumArray(this.api.getValues(ttt,'Anzahl'));
       for (let item of ttt){
-        item['Anteil']=Math.round(1000*item['Anzahl']/total)/10;
+        item['Anteil']=Math.round(1000*item['Anzahl']/total)/10;        
       }
       this.timetotreat = ttt;  
       //console.log("TTT",ttt);

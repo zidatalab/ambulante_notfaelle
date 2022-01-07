@@ -179,7 +179,7 @@ export class PlotComponent implements OnInit {
         },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
-        margin: { l: 0, r: 20, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
+        margin: { l: 0, r: 20, b: 50, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
       };
       if (this.percent){
         this.plotlayout.yaxis.tickformat = ',.1%';

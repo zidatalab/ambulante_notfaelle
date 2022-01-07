@@ -202,7 +202,7 @@ public groupbysum(array,key1,key2="",outcome){
 }
 
 public getweekdayname(dayofweek){
-  let days = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+  let days = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
   return days[dayofweek-1];
 }
 
