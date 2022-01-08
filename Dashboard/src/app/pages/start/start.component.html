@@ -305,9 +305,8 @@
                 <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit</h3>
                 <div>
                     <app-plot [(data)]="this.decisions_ttt" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
-                    [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
+                    [showlegend]="true" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
                     plottype="stackedbar" [colorby]="'TTTdispo_text'"
-                    [colorscheme]="['#d0f321', '#a4dc56', '#79c58a', '#4dadbf', '#7b7b7b']"
                     >
                 </app-plot>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
@@ -337,9 +336,8 @@
                 <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort</h3>
                 <div>
                     <app-plot [(data)]="this.decisions_poc" [xvalue]="'POCsmed_text'" [fontcolor]="'white'"
-                    [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
-                    plottype="stackedbar" [colorby]="'POCdispo_text'"
-                    [colorscheme]="['#d0f321', '#a4dc56', '#79c58a', '#4dadbf', '#2196f3','#7b7b7b']"
+                    [showlegend]="true" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
+                    plottype="stackedbar" [colorby]="'POCdispo_text'"                    
                     >
                 </app-plot>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"

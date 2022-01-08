@@ -54,6 +54,7 @@ export class StartComponent implements OnInit {
   ngOnInit(): void {    
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
+    //this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
@@ -181,6 +182,7 @@ export class StartComponent implements OnInit {
   }
 
   async querydatasmed(thefield) {
+    // implement check for local data status here if ok -> do nothing 
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
