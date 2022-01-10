@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import {db} from './db';
+import {db, StandItem} from './db';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,32 @@ import {db} from './db';
 export class DBService {
 
   constructor(private api:ApiService) { }
+
+  async storestand(Indicator,level,levelid,Stand,mindate,maxdate){
+    console.log("Stand speichern!");
+    await db.standdb
+          .where('[level+levelid+Indicator]')
+          .equals([level,levelid,Indicator])
+          .delete();
+    db.standdb.put({
+              'level':level,
+              'levelid':levelid,
+              'Stand':Stand,
+              'Indicator':Indicator,
+              'startdate':mindate,
+              'stopdate':maxdate
+            });    
+        };   
+
+getstand(Indicator,level,levelid){
+    return db.standdb
+    .where('[level+levelid+Indicator]')
+    .equals([level,levelid,Indicator]).first();
+
+  }
+
+  
+
 
   listdata(Indicator,level, levelid, start="",stop="",expand=true) {
     let tosearch = {

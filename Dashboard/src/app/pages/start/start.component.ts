@@ -182,7 +182,20 @@ export class StartComponent implements OnInit {
   }
 
   async querydatasmed(thefield) {
+    let now:Date = new Date();    
     // implement check for local data status here if ok -> do nothing 
+    let stand = await this.db.getstand(thefield,"KV",this.levelsettings["levelvalues"]);
+    //console.log("Stand testen:",thefield,stand,this.levelsettings["start"],this.levelsettings["stop"]);
+    if (stand){
+    if (stand['startdate']<=this.levelsettings["start"] && 
+    stand['stopdate']>=this.levelsettings["stop"]){
+      let oldstand:Date = new Date(stand['Stand']);
+      let dataage = Math.round((now.getTime()-oldstand.getTime())/(100*60*60))/10;
+      // console.log('data already in DB',dataage,"hours old");
+      if (dataage<=24){return [];};
+    };
+  };
+    // Proceed if data is not available or too old    
     let query = {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
@@ -203,11 +216,12 @@ export class StartComponent implements OnInit {
         dbdaterange['max'] < this.levelsettings["stop"]) ||
         isNaN(dbdaterange['max']) || isNaN(dbdaterange['min'])) {
         this.api.postTypeRequestnotimeout('get_data/', query).subscribe(
-          data => {
+          data => {            
             let res = data["data"];
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
             this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
               this.updatedb(res, thefield);
+              this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"]);
             });
           },
           error => {  });
@@ -220,6 +234,7 @@ export class StartComponent implements OnInit {
           this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
             this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { 
               this.updatedb(res, thefield) });
+              this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"]);
         },
         error => { this.progress = false; });
     };

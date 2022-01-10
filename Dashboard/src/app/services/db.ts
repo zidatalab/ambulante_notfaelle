@@ -11,16 +11,32 @@ export class DataItem {
   data:any;
 }
 
+export class StandItem {
+  level: string;
+  levelid: string;
+  Stand:string;
+  Indicator:string;
+  startdate:string;
+  stopdate:string;
+}
+
 export class AppDB extends Dexie {
   public datadb: Table<DataItem, number>;
+  public standdb: Table<StandItem, number>;
 
   constructor() { 
     super('smeddb');
     var db = this;
-    db.version(1).stores({
+    db.on("versionchange", function (event) {
+      db.delete();
+      db.open();
+    });
+    db.version(4).stores({
       datadb: 'id++,[level+levelid+Indicator+Datum],[level+levelid+Indicator]',
+      standdb: 'id++,[level+levelid+Indicator]',
     }); 
     db.datadb.mapToClass(DataItem); 
+    db.standdb.mapToClass(StandItem); 
   }
 
   
