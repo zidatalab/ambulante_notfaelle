@@ -71,8 +71,15 @@
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
             <mat-card>
                 <div fxLayout="row wrap">
-                    <div fxFlex fxFlex.lt-md=50>
+                    <div fxFlex fxHide.lt-md="true">
                         <app-box [value]="this.summaryinfo['Assessments Gesamt']" [numberformat]="'1.0-0'"
+                            [maincolor]="this.colorsscheme[4].concat('80')"
+                            [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
+                    </div>
+                    <div fxFlex=50 fxHide="true" fxShow.lt-md="true">
+                        <app-box [value]="this.summaryinfo['Assessments Gesamt']/1000000" 
+                        [textbehind]="true" title="Mio."
+                        [numberformat]="'1.2-2'"
                             [maincolor]="this.colorsscheme[4].concat('80')"
                             [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
                     </div>
