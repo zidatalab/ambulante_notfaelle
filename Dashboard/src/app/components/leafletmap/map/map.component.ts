@@ -14,6 +14,8 @@ import * as chroma from "chroma-js";
 })
 export class MapComponent implements OnInit {
   @Input() data = [];
+  @Input() nacolor = "white";
+  @Input() debug :boolean = false;
   @Input() Outcome: String;
   @Input() Zoom: number;
   @Input() basemap: any; // geojson
@@ -28,14 +30,14 @@ export class MapComponent implements OnInit {
   @Input() bins: number;
   @Input() id: string; // feature id
   @Input() percent: boolean;
+  @Input() containername: string;
   @Output() clicked = new EventEmitter<string>();
-
   mapok:boolean;
   clickedvalue: string;
   legend: any;
   map: any;
-  @Input() containername: string;
   useprovider = 0;
+  firstload = true;
   providers = ['https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png']
   attributions = ['Kartenmaterial &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -44,15 +46,25 @@ export class MapComponent implements OnInit {
   
   
   ngOnInit(): void {
+    // Debug
+    if (this.debug){
+      console.log("ID:",this.id);
+      console.log("Map:",this.api.getValues(this.basemap['features'],'properties'));  
+    }
+
+    // Sort data
+    this.data = this.api.sortArray(this.data,this.Outcome);
+    
     // Init vars
     this.resetprops();
     this.clickedvalue = "";
+    if (!this.binmethod){
+      this.binmethod='equalint';
+    };
   }
   ngAfterViewInit(): void {
     // Import Map data
-    if (this.checkallok()) {
-      this.initMap(this.containername);
-    }
+    this.initMap(this.containername);
   }
 
   
@@ -77,14 +89,14 @@ export class MapComponent implements OnInit {
 
   ngOnDestroy(){
     this.map = null;
-    
+    this.data = null;
     }
 
 
   resetprops() {
     if (!this.containername) { this.containername = "mapdiv" + Math.round(Math.random() * 1000).toString() + "_" + Math.round(Math.random() * 1000).toString(); };
     if (!this.Zoom) { this.Zoom = 4; };
-    if (!this.center) { this.center = this.getcenter(); };// [51.948, 10.265]; };
+    if (!this.center) { this.center = this.getcenter(); };//  DOES NOT WORK FOR TYPE MULTIPOLYGON!
     if (!this.opacity) { this.opacity = .1; };
     if (!this.customlabels) { this.customlabels = []; };
     if (!this.binmethod) { this.binmethod = "equalint" };
@@ -110,15 +122,16 @@ export class MapComponent implements OnInit {
     return res;
   }
   preparedom(divid) {
-    if (document.getElementById(divid)) { document.getElementById(divid).remove() };
+    if (document.getElementById(divid)) { document.getElementById(divid).remove();};
     let mapcontainer = this.renderer.createElement("div");
     this.renderer.setProperty(mapcontainer, 'id', divid);
-    this.renderer.addClass(mapcontainer, "mapdiv");
-    this.renderer.appendChild(document.getElementById("map-frame"), mapcontainer);
+    this.renderer.addClass(mapcontainer, "mapdiv");    
+    if (document.getElementById("map-frame")!==null){
+      this.renderer.appendChild(document.getElementById("map-frame"), mapcontainer);}
     return true;
   }
 
-  initMap(divid): void {
+  async initMap(divid) {
     // Init
     let mymap;
     this.mapok = false;
@@ -132,18 +145,38 @@ export class MapComponent implements OnInit {
     let theid = this.id;
     let theopacity = this.opacity;
     let basestyle = {
-      weight: 2,
+      weight: 1,
       dashArray: '',
       "color": "grey",
       "fillOpacity": theopacity,
       "Opacity": theopacity
     };
 
-    // Prepare dom
-    this.preparedom(divid);
+    // If to many regions set weight to 0
+    if (thedata.length > 30 ){
+      basestyle.weight=0;
+    };
 
+    // Prepare dom
+    this.firstload= false;
+    let removed = false;
+    await this.preparedom(divid);
     // Load Map
-    mymap = L.map(divid, { center: this.center, zoom: this.Zoom });
+
+    if (this.debug){
+      console.log('center: ',this.center );
+    }
+    try {
+    mymap = await L.map(divid, { center: this.center, zoom: this.Zoom });
+    }
+    catch(e){
+      document.getElementById(divid).remove();
+      await this.preparedom(divid);
+      mymap = await L.map(divid, { center: this.center, zoom: this.Zoom });
+    };
+    if (this.debug){
+      console.log('Map created');
+    }
 
     // Fix Icons see https://stackoverflow.com/questions/41144319/leaflet-marker-not-found-production-env
     const iconRetinaUrl = 'assets/marker-icon-2x.png';
@@ -179,12 +212,22 @@ export class MapComponent implements OnInit {
       const geojsonFeature: FeatureCollection = Object.assign(this.basemap);
       if (this.percent) {
         for (let item of thedata) {
-          item['___thevalue'] = Math.round(item[this.feature] * 1000) / 10;
+          if (item[this.feature]){
+            item['___thevalue'] = Math.round(item[this.feature] * 10000) / 100;
+          }
+          else {
+            item['___thevalue']=null;
+          }
         }
       }
       else {
-        for (let item of thedata) {
-          item['___thevalue'] = item[this.feature];
+        for (let item of thedata) {         
+          if (item[this.feature]){
+            item['___thevalue'] = item[this.feature];
+          }
+          else {
+            item['___thevalue']=null;
+          }
         }
       }
       for (let item of geojsonFeature.features) {
@@ -196,6 +239,11 @@ export class MapComponent implements OnInit {
           item['properties'][propname] = null;
         }
       }
+      if (this.debug){
+        console.log('Map Features',geojsonFeature.features);
+        console.log("Data:",this.data);
+      }
+      
 
 
       if (!cutoffs) {
@@ -216,7 +264,10 @@ export class MapComponent implements OnInit {
           };
           i = i + 1;
         }
-        if (thevalue != null) { result['color'] = thecolor; };
+        if (thevalue != null) { result['color'] = thecolor; } 
+        else {
+          result['color'] = 'grey';
+        };
         return result
       };
       // Infobox
@@ -262,11 +313,12 @@ export class MapComponent implements OnInit {
 
       let legend;
       legend = L.control.layers({}, {}, { position: 'topright' });
+      let legendtitle = this.api.stringwrap(propname);
 
       legend.onAdd = function (map) {
 
         this._ldiv = L.DomUtil.create('div', 'customlegend');
-        this._ldiv.innerHTML = '<p><strong>' + propname + '</strong></p>';
+        this._ldiv.innerHTML = '<p><strong>' + legendtitle + '</strong></p>';
         if (this.percent == true) {
           this._ldiv.innerHTML += '<p><em>Anteil in %</em></p>';
         }
@@ -355,7 +407,7 @@ export class MapComponent implements OnInit {
     const layer = e.target;
     layer.setStyle({
       opacity: 1,
-      fillOpacity: this.opacity * 1.2
+      fillOpacity: this.opacity * 1.1
     });
     info.update(layer.feature.properties);
   }
@@ -368,19 +420,46 @@ export class MapComponent implements OnInit {
     });
     info.update();
   }
-  makecutoffs(array, method = "equalint", bins) {
+
+  makecutoffs(array, method = "equalint", bins) { 
     let result = [];
     let minv = Math.min(...array);
     let maxv = Math.max(...array);
+
+    // equalint    
+    if (method=='equalint'){
     let steps = Math.round((maxv - minv) / bins);
     let i = 0;
     while (i < bins) {
       result.push((i + 1) * steps + minv);
       i = i + 1;
+    };
+    if (this.debug){
+      console.log("CUTOFF RESULT",result,"\ninputarray",array);
     }
+    };
+
+   // equal group size 
+   if (method=='equalgroupsize'){    
+    let sortedarray = this.api.filterNA(array.sort((a,b)=>parseFloat(a)-parseFloat(b)));
+    let arraylength = sortedarray.length;
+    let groupsize= Math.floor(arraylength/bins);    
+    for (let thebin of Array.apply(null, {length: bins}).map(Number.call, Number)){
+      if (thebin==0){
+        result.push(sortedarray[0])
+      }
+      else {
+        result.push(sortedarray[groupsize*thebin]);
+      }
+    }
+    if (this.debug){
+      console.log("CUTOFF RESULT",result.sort(),"\ninputarray",sortedarray,"Group Size",groupsize);
+    }     
+    };
+   
     return result;
 
-  }
+  };
 
 
   newclick(e){
@@ -420,11 +499,16 @@ export class MapComponent implements OnInit {
     let coords = { 'a': [], 'b': [] };
     for (let item of features) {
       for (let area of item.geometry.coordinates) {
-        for (let subarea of area) {
+        for (let subarea of area) {          
           coords['a'].push(subarea[0])
           coords['b'].push(subarea[1])
+          
         }
       }
+    }
+    if (this.debug){
+      console.log("CENTER FEATURES:",this.basemap.features);
+      console.log("CENTER COORDS:",coords);
     }
     let a = coords['a'].reduce((pv, cv) => pv + cv, 0) / coords['a'].length;
     let b = coords['b'].reduce((pv, cv) => pv + cv, 0) / coords['b'].length;
@@ -432,6 +516,8 @@ export class MapComponent implements OnInit {
     return [b, a]
   }
 
-
+donothing(e){
+  return null;
+};
 }
 

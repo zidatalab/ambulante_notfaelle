@@ -1,8 +1,9 @@
 import { HttpParams } from '@angular/common/http';
 import { Component , OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,RouterEvent } from '@angular/router';
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
+import { DBService } from './services/dbservice.service';
 
 
 @Component({
@@ -13,16 +14,28 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Test Dashboard';
   public currentuser : any;
+  public currentroute:string;
   loginoption = true;
   public loginstatus:boolean;
   public adminstatus:boolean;
   currentdate:any;
+  
 
   constructor(
     private _auth : AuthService,
     private _api : ApiService    ,
-    private router: Router
-  ) { }
+    private router: Router,
+    private db : DBService
+  ) { 
+
+    router.events.subscribe((event:RouterEvent) => {
+      if (event.url !== this.currentroute && event.url) {
+        this.currentroute = event.url;
+        this._api.countView(event.url);        
+      };
+    });  
+
+  }
 
   ngOnInit() {
     this.currentdate = new Date();
@@ -32,7 +45,7 @@ export class AppComponent {
         this.loginstatus = true;
         this.adminstatus = this.currentuser["is_admin"] || this.currentuser["is_superadmin"];      
         setTimeout(()=>{this.autorefreshdata();},1000);    
-        setInterval(()=>{this._auth.refreshToken();},1000*60*5);
+        setInterval(()=>{this._auth.refreshToken();},1000*60*10);
       }
       else {
         this.loginstatus = false;
@@ -43,25 +56,29 @@ export class AppComponent {
       );         
   }
 
+   
+
   public autorefreshdata(){    
     this.updatemetadata().subscribe(
       data => {
         this.setmetadata("metadata",data["data"]);
       });
-    this.getsortdata().subscribe(data => {
-        this.setmetadata("sortdata",data["datalevels"]);  
-        if (data["geodata"]){
-          this.setmetadata("geodata",this._api.getValues(data["geodata"],'_id'));        
-        }
-        else {
-          this.setmetadata("geodata",[]); 
-        }
+    // this.getsortdata().subscribe(data => {
+    //     this.setmetadata("sortdata",data["datalevels"]);  
+    //     if (data["geodata"]){
+    //       this.setmetadata("geodata",this._api.getValues(data["geodata"],'_id'));        
+    //     }
+    //     else {
+    //       this.setmetadata("geodata",[]); 
+    //     }
         
-      });
+    //   });
   }
 
   logout(){
     this._auth.logout();
+    this.db.clean();
+    localStorage.clear();    
     this.autorefreshdata();
     this.loginstatus = false;
     this.adminstatus = false;   
@@ -86,5 +103,7 @@ export class AppComponent {
   setmetadata(name,data){
    localStorage.setItem(name,JSON.stringify(data));
   }
+
+  
 
 }

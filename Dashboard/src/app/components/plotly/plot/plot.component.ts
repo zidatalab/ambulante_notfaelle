@@ -12,7 +12,7 @@ export class PlotComponent implements OnInit {
   @Input() colorby: string;
   @Input() outcomes: any;
   @Input() outcomelabels = [];
-  @Input() plottype: String; // ["bar","hbar","tsline"]; 
+  @Input() plottype: String;
   @Input() customdata: any;
   @Input() customconfig: any;
   @Input() customlayout: any;
@@ -20,6 +20,7 @@ export class PlotComponent implements OnInit {
   @Input() linewidth: number;
   @Input() showlegend: boolean;
   @Input() sort: boolean;
+  @Input() sortx: boolean;
   @Input() percent: boolean;
   @Input() percentx: boolean;
   @Input() basecolor = "";
@@ -85,8 +86,16 @@ export class PlotComponent implements OnInit {
       this.plotlytype = "bar";
       this.plotlayout = {
         xaxis: { fixedrange: false, type: 'category', automargin: false },
-        yaxis: { fixedrange: true, showgrid: false, title: '', 
-        automargin: true, rangemode: 'tozero',ticksuffix:" " , nticks:this.n_yticks},
+        yaxis: {
+          fixedrange: true, title: '', automargin: true, rangemode: 'tozero',
+          gridcolor: "lightgrey",
+          gridpattern: "dot",
+          gridwidth: 1,
+          zerolinecolor: this.fontcolor,
+          zerolinewidth: 2,
+          annotations: this.annotations,
+          ticksuffix:" ",
+          nticks:this.n_yticks },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
@@ -95,6 +104,28 @@ export class PlotComponent implements OnInit {
       if (this.percent){
         this.plotlayout.yaxis.tickformat = ',.1%';
       }
+    }
+
+    if (this.plottype == "heatmap") {
+      this.plotlytype = 'heatmap';
+      this.plotlayout = {
+        xaxis: {   side: 'top'},        
+        yaxis: {          autosize: true        },
+        autosize: false, padding: 0,
+        //legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
+        margin: { l: 50, r: 50, b: 0, t: 50 }, 
+        paper_bgcolor: "transparent", plot_bgcolor: "transparent",
+        //annotations: this.annotations
+      };
+      let plotdata = this.data;
+      plotdata['type']="heatmap";
+      let colors = this.api.makescale(2);
+      plotdata['colorscale']= [
+        [0,colors[1].concat('CC')],
+        [1, colors[0].concat('CC')]
+      ];
+      plotdata['showscale']=false;
+      this.plotdata=[plotdata];      
     }
 
     if (this.plottype == "violin") {
@@ -130,7 +161,8 @@ export class PlotComponent implements OnInit {
     
     }
 
-    if (this.plottype == "tsline" || this.plottype == "lines" || this.plottype == "area" || this.plottype == "stackedarea" || this.plottype == 'scatter') {
+    if (this.plottype == "tsline" || this.plottype == "lines" || this.plottype == "area" || 
+    this.plottype == "stackedarea" || this.plottype == 'scatter' ) {
       this.plotlytype = "lines";
       this.plotlayout = {
         xaxis: { fixedrange: false, showgrid: false, automargin: false ,zeroline: false},
@@ -147,7 +179,7 @@ export class PlotComponent implements OnInit {
         },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
-        margin: { l: 0, r: 20, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
+        margin: { l: 0, r: 20, b: 50, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
       };
       if (this.percent){
         this.plotlayout.yaxis.tickformat = ',.1%';
@@ -173,6 +205,9 @@ export class PlotComponent implements OnInit {
 
       };
     }
+
+   
+
     if (this.custommargins) {
       this.plotlayout['margin'] = this.custommargins;
     }
@@ -210,15 +245,19 @@ export class PlotComponent implements OnInit {
       };
 
     }
-
+    if (this.plottype!="heatmap"){
     let plotdata = []
+    
+      
     for (let item of this.data){
       plotdata.push(item);
     }
     if (this.sort){
       plotdata=this.api.sortArray(plotdata,this.outcomes[0]);
     }
-    
+    if (this.sortx){
+      plotdata=this.api.sortArray(plotdata,this.xvalue);
+    }
     
     let outcomes = this.outcomes;
     if (this.colorby) {
@@ -229,8 +268,12 @@ export class PlotComponent implements OnInit {
       plotdata = this.make_colorbyvalues();
     }
   
-   this.plotdata = this.make_plotdata(plotdata, this.xvalue, outcomes, this.plotlytype);    
+   this.plotdata = this.make_plotdata(plotdata, this.xvalue, outcomes, this.plotlytype);  
+   
    // DEBUG
+   // console.log("Make Plotdata:","\ndf:",plotdata,"\nx:", this.xvalue,"\nout:", outcomes,"\ntype:", this.plotlytype)
+  };
+
    
   }
 
@@ -251,6 +294,7 @@ export class PlotComponent implements OnInit {
       }
       newdata.push(topush);
     }
+    // console.log("DEBUG make_colorbyvalues:",'df',inputdata,"colorvals",thecolorvalues,"xvals",thexvalues,"outcome",theoutcome,"newdf",newdata);
     return newdata;
 
   }

@@ -27,6 +27,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [],
@@ -58,8 +59,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatChipsModule,
     MatBadgeModule,
     MatStepperModule,
-    MatProgressBarModule
-
+    MatProgressBarModule,
+    MatExpansionModule
 
     
   ],
@@ -91,6 +92,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatBadgeModule,
     MatStepperModule,
     MatProgressBarModule,
+    MatExpansionModule
   
     
   ]

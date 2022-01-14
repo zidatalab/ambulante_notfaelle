@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
  
-  public REST_API_SERVER =  "https://zidashboardapi.azurewebsites.net/" ; // "http://localhost:8000/" //  "https://zidashboardapi.azurewebsites.net/" 
+  public REST_API_SERVER = "https://zidashboardapi.azurewebsites.net/" ; 
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
@@ -64,6 +64,10 @@ public changeuserpwd(user,newpwd,oldpwd=""){
   return this.postTypeRequest('changepwd', payload);
 }
 
+countView(url){
+  // Privacy preserving Webcounter, see Documentation here https://github.com/zidatalab/ziwebcounter
+  this.httpClient.get('https://analytics.ziapp.de/view/ambulante_notfaelle/data?pageid='+url+'&cookiedissent='+true, {withCredentials:false}).subscribe();
+}
 
 // Data APIs
 public getValues(array, key) {
@@ -75,6 +79,18 @@ public getValues(array, key) {
 }
 public  getKeys(array){
  return Object.keys(array[0]);
+}
+
+objectkeystocolumns(array,objectname){
+  for (let item of array){
+    let theobject = item[objectname];
+    for (let key of Object.keys(theobject)){
+      item[key]=theobject[key];      
+    }
+    theobject[objectname]=NaN;
+    delete theobject[objectname];
+  }
+  return array;
 }
 
 public  getOptions(array, key){
@@ -91,6 +107,26 @@ public  filterArray(array,key,value){
  }
  return result
 }
+
+public  filterNAArray(array,key){
+  let i =0
+  let result = []
+  for (let item of array){
+    if (item[key] && (item[key]!==null) && (!isNaN(item[key]))){
+      result.push(item)};
+    i = i+1
+  }
+  return result
+ }
+ 
+ public  filterNA(array){
+  let result = []
+  for (let item of array){
+    if (!isNaN(item)){
+      result.push(item)};  
+  }
+  return result
+ }
 
 public  filterArraybyList(array,key,list){
   let i =0
@@ -180,6 +216,74 @@ public splitarraybykey(array,splitkey){
 }
 
 public makescale(bins=5){
-  return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); }
+  return chroma.scale([chroma(this.primarycolor).set('hsl.h', +70),this.primarycolor]).colors(bins); 
+};
+
+public stringwrap(string,maxlength=30){
+    let newstring = "";
+    let wordsarray = string.split(" ");
+    let fulllength = string.length
+    let linelength = 0
+    for (let word of wordsarray){
+      let wordlen = word.length;
+      if ((linelength+wordlen)<maxlength){
+        newstring = newstring + " " + word;
+        linelength = linelength+wordlen;
+      }
+      else {
+        newstring = newstring + "<br>" + word;
+        linelength = wordlen;
+      };    
+    }
+    return newstring;
+};
+
+public makeheatmapdata(array,xname,yname,valuename,xlabel="",ylabel=""){
+    let res = {};
+    res['x']=this.getuniqueValues(array,xname).sort(function(a, b){return a-b});
+    res['y']=this.getuniqueValues(array,yname).sort(function(a, b){return a-b});
+    res['z']=[];
+    for (let yitem of res['y']){
+      let topush=[];
+      for (let xitem of res['x']){
+        try {
+          topush.push(this.filterArray(this.filterArray(array,xname,xitem),yname,yitem)[0][valuename]);
+        }
+        catch {
+          topush.push(NaN);
+        };
+      }
+      res['z'].push(topush);    
+    }
+    if (xlabel!=""){
+      let xlab=[];
+      for (let item of res['x']){
+        try {xlab.push(this.filterArray(array,xname,item)[0][xlabel])}
+        catch{xlab.push("")};       
+      }
+      res['x']=xlab;
+    };
+    if (ylabel!=""){
+      let ylab=[];
+      for (let item of res['y']){
+        try {ylab.push(this.filterArray(array,yname,item)[0][ylabel])}
+        catch{ylab.push("")};       
+      }
+      res['y']=ylab;
+    };
+ 
+    return res;
+};
+
+public replacemissing(array,key,replacement="Fehlend"){
+  for (let item of array){
+    if (!item[key]){
+      item[key]=replacement;
+    }
+  }
+  return array;
 }
+
+}
+
 

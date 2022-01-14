@@ -47,9 +47,8 @@ export class InterceptorService {
       catchError((error: HttpErrorResponse) => {
 
         // Refresh if token has expired and Userdetails not null
-        if (request.url.includes(this.apiurl) && this._auth.getUserDetails() &&
-          error.status == 401 && !this.refreshTokenInProgress) {
-          this.refreshTokenInProgress = true;
+        if (request.url.includes(this.apiurl) && (this._auth.getUserDetails()["username"].length>0) &&
+          error.status == 401) {
           this._auth.refreshToken();
         }
 
@@ -59,6 +58,9 @@ export class InterceptorService {
           this._auth.logout();
           this.router.navigate(["/"]);
         }
+        else {
+          this.refreshTokenInProgress = false;
+        };
 
         return throwError(error);
       }
