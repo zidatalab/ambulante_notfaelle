@@ -54,7 +54,7 @@ export class StartComponent implements OnInit {
   ngOnInit(): void {    
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
-    //this.db.clean();
+    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
@@ -77,8 +77,7 @@ export class StartComponent implements OnInit {
   }
 
 
-  async setlevel(level, value) {
-    this.progress = true;
+  async setlevel(level, value) {    
     if (level!=="__init"){
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -91,6 +90,8 @@ export class StartComponent implements OnInit {
     this.decisions_pocvsttt  = [];
 
     this.timetotreat=NaN;
+    if (this.levelsettings['start'] && this.levelsettings['stop']){
+    this.progress = true;
     // Initial Loading
     //console.log("Init");
     await this.makesmeditems('stats'); 
@@ -115,7 +116,7 @@ export class StartComponent implements OnInit {
     //console.log("update...");
     await this.querydatasmed('decisions');     
     //console.log("update...");
-    
+    }
     // Show loading is over
     this.progress = false;
   }

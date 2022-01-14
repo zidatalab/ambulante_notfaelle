@@ -5,6 +5,9 @@
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
             <h1>Ambulante Akut- und Notfälle in Deutschland</h1>
+            <p style="color:lightslategrey" *ngIf="this.currentuser">
+                Interner Testbetrieb<br>Informationen zu Problemen bitte per <strong><a style="color:white;"href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
+            </p>
         </div>
         <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
@@ -41,8 +44,10 @@
                 <mat-form-field appearance="fill">
                     <mat-label>Analysezeitraum</mat-label>
                     <mat-date-range-input [rangePicker]="picker">
-                        <input matStartDate placeholder="Start date" [(ngModel)]="this.levelsettings['start']">
-                        <input matEndDate placeholder="End date" [(ngModel)]="this.levelsettings['end']">
+                        <input matStartDate (dateChange)="this.setlevel('__init','');"
+                        placeholder="Beginn" [(ngModel)]="this.levelsettings['start_picker']">
+                        <input matEndDate (dateChange)="this.setlevel('__init','');"
+                        placeholder="Ende" [(ngModel)]="this.levelsettings['stop_picker']">
                     </mat-date-range-input>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-date-range-picker #picker></mat-date-range-picker>
@@ -64,8 +69,7 @@
             <p><strong>Ersteinschätzung am Telefon</strong></p>
             <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die
                 Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen
-                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten basieren auf dem Zeitraum
-                    {{this.summaryinfo["Beginn"] | date}} bis {{this.summaryinfo["Ende"] | date}}.</span></p>
+                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
 
         </div>
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
@@ -161,7 +165,7 @@
         </div>
         <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts && this.currentuser">
             <mat-card>
-                <h3>Anzahl Fragen pro Assessment <mat-icon style="color:#303030;">lock_open</mat-icon> </h3>
+                <h3>Anzahl Fragen pro Assessment <mat-icon class="backgroundicon">lock_open</mat-icon> </h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
                     [colorscheme]="[this.colorsscheme[2]]" [sortx]="true" [outcomes]="['Mittlere Anzahl Fragen']"
                     plottype="tsline"></app-plot>
@@ -279,7 +283,7 @@
 
         <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_pocvsttt">
             <mat-card  *ngIf="this.decisions_pocvsttt.length>0">
-                <h3>Empfehlung Behandlungsort nach Dringlichkeit <mat-icon style="color:#303030;">lock_open</mat-icon> </h3>
+                <h3>Empfehlung Behandlungsort nach Dringlichkeit <mat-icon class="backgroundicon">lock_open</mat-icon> </h3>
                 <div >
                     <app-plot [(data)]="this.decisions_pocvsttt" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
                     [showlegend]="false" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
@@ -309,7 +313,7 @@
 
         <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_ttt">
             <mat-card  *ngIf="this.decisions_ttt.length>0">
-                <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<mat-icon style="color:#303030;">lock_open</mat-icon> </h3>
+                <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<mat-icon class="backgroundicon">lock_open</mat-icon> </h3>
                 <div>
                     <app-plot [(data)]="this.decisions_ttt" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'"
                     [showlegend]="true" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"
@@ -340,7 +344,7 @@
 
         <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.decisions_poc && this.currentuser">
             <mat-card  *ngIf="this.decisions_poc.length>0">
-                <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <mat-icon style="color:#303030;">lock_open</mat-icon></h3>
+                <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <mat-icon class="backgroundicon">lock_open</mat-icon></h3>
                 <div>
                     <app-plot [(data)]="this.decisions_poc" [xvalue]="'POCsmed_text'" [fontcolor]="'white'"
                     [showlegend]="true" [outcomes]="['Anzahl']" [custommargins]="{ l: 50, r: 50, b: 150, t: 0 }"

@@ -19,6 +19,8 @@ async newcombine(array,fieldname){
   let dbarray=[];
   if (array.length==0){return []};
   for (let item of array){
+    if (!item[fieldname]){return [];}
+    else {
     for (let fielditem of item[fieldname]){
       let topush = new DataItem;
       topush['level']=item['level'];
@@ -28,13 +30,16 @@ async newcombine(array,fieldname){
       topush['KM6Versicherte']=item['KM6Versicherte'];
       topush['BEVSTAND']=item['KM6Versicherte'];
       topush['KW']=fielditem['KW'];
-      topush['Datum']=this.getDateOfISOWeek(topush['KW'],topush['Jahr']).toISOString().slice(0,10);
+      if (topush['KW']>0 && topush['Jahr']>0){
+        topush['Datum']=this.getDateOfISOWeek(topush['KW'],topush['Jahr']).toISOString().slice(0,10);
+      }      
       delete fielditem['KW'];
       topush['data']=fielditem;
       newarray.push(topush); 
       topush['Indicator']=fieldname;
       dbarray.push(topush);    
     }
+  };
   }  
   await this.db.adddatabulk(dbarray);    
 }
@@ -149,6 +154,7 @@ aggsymptoms(symptomsobject){
 
 updatestartstop(levelsettings){
   // Appply date filters
+  let tzoffset = (new Date()).getTimezoneOffset() * 60000;
   let today = new Date();
   let startdate = "2019-04-01";
   let enddate = today.getFullYear()+"-12-31";
@@ -169,12 +175,19 @@ updatestartstop(levelsettings){
       enddate = new Date(today.getTime() - today.getDay()*millisperday).toISOString().slice(0,10);
       startdate = new Date(today.getTime()-((6))*millisperday).toISOString().slice(0,10);        
     };
+    if (levelsettings["zeitraum"]=="Detailliert"){
+      let newstart= (new Date(levelsettings['start_picker'] - tzoffset)).toISOString().slice(0,10);
+      let newstop = (new Date(levelsettings['stop_picker'] - tzoffset)).toISOString().slice(0,10);
+      //console.log("Detailliert",levelsettings['start_picker'],newstart,levelsettings['stop_picker'],newstop);
+      levelsettings["start"]=newstart;
+      levelsettings["stop"]=newstop;
+    } 
     if (levelsettings["zeitraum"]!="Detailliert"){
       levelsettings["start"]=startdate;
       levelsettings["stop"]=enddate;
     }
     else {
-      // Do nothing, start / stop have been set.
+     
       
     };
     return levelsettings;

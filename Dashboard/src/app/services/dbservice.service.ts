@@ -10,7 +10,7 @@ export class DBService {
   constructor(private api:ApiService) { }
 
   async storestand(Indicator,level,levelid,Stand,mindate,maxdate){
-    console.log("Stand speichern!");
+    //console.log("Stand speichern!");
     await db.standdb
           .where('[level+levelid+Indicator]')
           .equals([level,levelid,Indicator])

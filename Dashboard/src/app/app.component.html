@@ -68,6 +68,14 @@
                 </a>
 
               </div>
+              <div *ngIf="this.currentuser">
+
+                <a mat-icon-button (click)="drawer.toggle();" routerLink="/private">
+                  <mat-icon class="icon">dashboard</mat-icon>
+                  <span>Erweiterte Analysen</span>
+                </a>
+
+              </div>
               <div *ngIf="this.adminstatus">
 
                 <a mat-icon-button (click)="drawer.toggle();" routerLink="/admin">
