@@ -48,8 +48,6 @@ export class AdminComponent implements OnInit {
     this.buildForm();
     this.allmetadata = this.api.getmetadata("metadata");
     let currentmetadata = this.api.filterArray(this.allmetadata, 'type', 'level')[0];
-
-    setTimeout(() => { this.areavalues = this.api.filterArray(this.api.getmetadata("sortdata"), 'varname', currentmetadata["varname"])[0]['values']; }, 0);
     this.api.getTypeRequest('openapi.json').subscribe(
       data=>{this.backenddoc=data;});
     

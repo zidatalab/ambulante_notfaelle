@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { CsvexportService } from 'src/app/services/csvexport.service';
 
 @Component({
   selector: 'app-private',
@@ -10,9 +11,12 @@ import { AuthService } from 'src/app/services/auth.service';
 export class PrivateComponent implements OnInit {
 
 
-  constructor(private api: ApiService, private auth: AuthService) { }
+  constructor(private api: ApiService, private auth: AuthService, private csv:CsvexportService) { }
   tsquery={};
   tsqueryresult={};
+  bevrefdata={};
+  colorsscheme ;
+  restablecols=[]; 
   settings: any;
   duration:number;
   levelvalues = [
@@ -36,14 +40,15 @@ export class PrivateComponent implements OnInit {
   outcomes = [
     'Anteil Assessments', 
     'Anzahl Assessments',
-    'Anzahl Assessments je 100 Tsd. Einw.',
+    //'Anzahl Assessments je 100 Tsd. Einw.', ## Not possible due to missing reference data
     'Anzahl Beschwerden pro Assessment',
     'Anzahl Fragen je Assessment',
     'Mittlere Dauer je Assessment',
     'Mittlere Dauer Disposition',
-    'Anteil Assessment an Disposition',
-    'Häufigste Beschwerden',
-    'Häufigste Hauptbeschwerden']
+    //'Anteil Assessment an Disposition',
+    //'Häufigste Beschwerden',
+    //'Häufigste Hauptbeschwerden'
+  ]
 
   diffmerkmale = [
     'KV', 
@@ -72,7 +77,13 @@ diffvars = {
 }
 
   ngOnInit(): void {
+    this.colorsscheme = this.api.makescale(5);
+    //console.log('colors',this.colorsscheme);
     this.settings = { 'analyzeall': true, 'level': 'KV', 'levelid': 'Gesamt', 'diffmerkmale': [] };
+    //testesttings
+    this.settings = { "analyzeall": true, "level": "KV", "levelid": "Bremen", "diffmerkmale": [ "Geschlecht" ], "start": new Date("2021-09-30"), "end": new Date("2021-10-30"), "outcome": "Anzahl Assessments" };
+    this.timeseriesquery();
+    
   }
 
 
@@ -81,12 +92,16 @@ diffvars = {
     //console.log("Settings changed");
     if (key != "__change" && key != "diffmerkmale") { this.settings[key] = value };
     if (key == "levelid" && value == "Gesamt") { this.settings['analyzeall'] = true; };
+    if (key=='outcome' && value=='Anzahl Assessments je 100 Tsd. Einw.'){
+      this.settings['diffmerkmale']=[];
+    }
     if (key == 'diffmerkmale') {
       if (this.settings['diffmerkmale'].includes(value)) {
         this.settings['diffmerkmale'] = this.settings['diffmerkmale'].filter(function (item) { return item !== value });
       }
       else {
       if (!this.settings['diffmerkmale'].includes(value) && this.settings['diffmerkmale'].length < 2) {
+        if (!((this.settings['outcome']=='Anzahl Assessments je 100 Tsd. Einw.') && ['Alter','Geschlecht'].includes(value)))
         this.settings['diffmerkmale'].push(value);
       };  
     };    
@@ -112,12 +127,14 @@ diffvars = {
   }
 
   timeseriesquery(){
+    this.tsqueryresult = [];
     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
     let start ="";
     if (this.settings['start']){start= (new Date(this.settings['start'] - tzoffset)).toISOString();};
     let end = "";
     if (this.settings['end']){end= (new Date(this.settings['end'] - tzoffset)).toISOString();};
     this.tsqueryresult={};
+    this.bevrefdata={};
     this.tsquery= {
         "startdate": start.slice(0,10),
         "stopdate": end.slice(0,10),
@@ -126,9 +143,10 @@ diffvars = {
         "filterlist": [
           {'level':'KV'}                      
         ],
-        "subgroups": []     
+        "subgroups": [] ,
+        "client_id":this.api.REST_API_SERVER_CLIENTID    
     };   
-    if (this.settings['levelid']!="Gesamt"){this.tsquery['filterlist'].push({'levelid':this.settings['levelid']})};
+    if (this.settings['levelid']!="Gesamt"){this.tsquery['filterlist'].push({'levelid':this.settings['levelid']})};    
     for (let item of this.settings['diffmerkmale']){
       this.tsquery['subgroups']=this.tsquery['subgroups'].concat(this.diffvars[item]);
     };
@@ -156,8 +174,67 @@ diffvars = {
     };
     if ('Häufigste Hauptbeschwerden'==this.settings['outcome']){
       this.tsquery['outcome']="Hauptbeschwerde";
-    };
-    this.api.postTypeRequest('analytics/timeseries/',this.tsquery).subscribe(data => {this.tsqueryresult=data['result'];});
+    };  
+    this.restablecols = this.settings['diffmerkmale'].concat([this.tsquery['outcome'],'Anzahl','Anteil']);
+    if (!this.tsquery['outcome']){
+      this.restablecols = this.settings['diffmerkmale'].concat(['Anzahl','Anteil']);
+    }
+    this.api.postTypeRequest('get_data/', { "client_id": this.api.REST_API_SERVER_CLIENTID,
+    "groupinfo": {
+      "level":"KV","levelid":this.settings['levelid'],
+      "Jahr":parseInt(this.tsquery['stopdate'].slice(0,4)),
+      "Monat":parseInt(this.tsquery['stopdate'].slice(5,7))},
+    "showfields": ['level','levelid','Jahr','Monat','KM6Versicherte', 'BEVSTAND']
+    }).subscribe(data=>{this.bevrefdata = data['data'][0];
+    this.api.postTypeRequest('analytics/timeseries/',this.tsquery).subscribe(data => {this.tsqueryresult=this.preparedata(data);});
+  });    
+  }
+
+  preparedata(input){
+    let output = [];
+    if (input.length>0){
+      let allitems = this.api.sumArray(this.api.getValues(input,'count'));
+      for (let item of input){
+        //item['Bev']=this.bevrefdata['BEVSTAND'];        
+        if (parseFloat(item['count'])>0){
+          item['Anzahl']=item['count'];
+          item['Anteil']=Math.round(1000*item['count']/allitems)/1000;
+        }        
+        //item['Je100Tsd']=Math.round(1e6*item['count']/item['Bev'])/10;
+        item['Alter']=item['ALTER_text'];
+        item['Wochentag']=this.api.getweekdayname(item['timeframe'],true);
+        item['KV']=item['levelid'];
+        if ( item['POCsmed_text']){
+          item['Empfehlung Ort']=item['POCsmed_text'];
+        };
+        if ( item['TTTsmed_text']){
+          item['Empfehlung Dringlichkeit']=item['TTTsmed_text'];
+        };
+        if ( item['POCdispo_text']){
+          item['Entscheidung Ort']=item['POCdispo_text'];
+        };
+        if ( item['TTTdispo_text']){
+          item['Entscheidung Dringlichkeit']=item['TTTdispo_text'];
+        };
+        if ( item['Beschwerden_gesamt']){
+          item['Beschwerde']=item['Beschwerden_gesamt'];
+          delete item['Beschwerden_gesamt'];
+        };
+        
+        if ( item['Anzahl']){
+          output.push(item);
+        };
+      } 
+
+    }
+    
+
+    return output;
+  }
+
+  exportascsv(name, data) {
+    this.csv.exportToCsv(name, data);
+    this.csv.exportToCsv(name + "_settings.csv", [this.settings]);
   }
 
 

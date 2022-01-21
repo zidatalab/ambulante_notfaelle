@@ -55,7 +55,7 @@ export class StartComponent implements OnInit {
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
     this.db.clean();
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr" };
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'weeks' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     //console.log("Colors",this.colorsscheme);
@@ -279,6 +279,7 @@ export class StartComponent implements OnInit {
           item["Mittlere Anzahl Beschwerden"] = null;
         }
         item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
+        item["ARS Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARS"] / (item["BEVSTAND"] / 1e5);
       };
       //console.log("Sample Stat Entry:",statswdate[0]);
       this.stats_ts = statswdate;
@@ -302,7 +303,8 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
-      symptoms_list = this.api.getValues(symptoms_list,'data');
+      console.log("SYMPTOMS",symptoms_list);
+      symptoms_list = this.api.getValues(symptoms_list,'data');      
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list,'Sympt','','n'),'n',"descending");
       for (let item of this.symptoms_list_export) {
         let anzahl_symptome = this.api.sumArray(this.api.getValues(this.symptoms_list_export, "n"));

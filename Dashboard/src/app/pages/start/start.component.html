@@ -40,6 +40,20 @@
                     </mat-chip>
                 </mat-chip-list>
             </p>
+            <h3>Zeitliche Auflösung</h3>
+            <p>
+                <mat-chip-list>
+                    <mat-chip (click)="this.setlevel('resolution','weeks');"
+                        [selected]="(this.levelsettings['resolution']=='weeks')" color="primary">
+                        Kalenderwochen
+                    </mat-chip>
+                    <mat-chip                     
+                     [disabled]="true"
+                        [selected]="(this.levelsettings['resolution']=='months')" color="primary">
+                        Monate
+                    </mat-chip>
+                </mat-chip-list>
+            </p>
             <p *ngIf="this.levelsettings['zeitraum']=='Detailliert'">
                 <mat-form-field appearance="fill">
                     <mat-label>Analysezeitraum</mat-label>
@@ -112,7 +126,7 @@
             <mat-card>
                 <h3>Assessments pro 100.000 Einwohner</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                    [outcomes]="['Assessments pro 100 Tsd. Einw.']" [sortx]="true" [fontcolor]="'white'"
+                    [outcomes]="['Assessments pro 100 Tsd. Einw.','ARS Assessments pro 100 Tsd. Einw.']" [sortx]="true" [fontcolor]="'white'"
                     plottype="area"></app-plot>
                 <div>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"

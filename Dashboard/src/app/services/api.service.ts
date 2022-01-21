@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
  
-  public REST_API_SERVER = "https://zidashboardapi.azurewebsites.net/" ; 
+  public REST_API_SERVER = "https://zidashboardapi.azurewebsites.net/" ;//"http://127.0.0.1:8000/";// "https://zidashboardapi.azurewebsites.net/" ; 
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
@@ -21,13 +21,13 @@ export class ApiService {
   public  getTypeRequest(url) { 
     return this.httpClient.get(this.REST_API_SERVER+url).pipe(map(res => { 
       return res; 
-    })).pipe(timeout(3500),retry(5)); 
+    })).pipe(timeout(3500),/*retry(5)*/); 
   } 
  
   public  postTypeRequest(url, payload) { 
     return this.httpClient.post(this.REST_API_SERVER+url, payload).pipe(map(res => { 
       return res; 
-    })).pipe(timeout(1500),retry(3)); ; 
+    })).pipe(/*timeout(15000),*/retry(1)); ; 
   } 
 
   public  getTypeRequestnotimeout(url) { 
@@ -101,6 +101,9 @@ public  getOptions(array, key){
 public  filterArray(array,key,value){
  let i =0
  let result = []
+ if (!Array.isArray(array)){
+   return result;
+ }
  for (let item of array){
    if (item[key]==value){result.push(item)};
    i = i+1
@@ -158,7 +161,7 @@ public sortArray(array, key, order = "ascending") {
 public sumArray(array) {
   var total = 0;
   for (var obj of array) {
-    if (obj){total += +obj;}
+    if (parseFloat(obj)){total += +obj;}
     };
 
   return total;
@@ -201,8 +204,11 @@ public groupbysum(array,key1,key2="",outcome){
   return result;
 }
 
-public getweekdayname(dayofweek){
+public getweekdayname(dayofweek,mongo=false){
   let days = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+  if (mongo){
+    days = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+  }
   return days[dayofweek-1];
 }
 
@@ -282,6 +288,13 @@ public replacemissing(array,key,replacement="Fehlend"){
     }
   }
   return array;
+}
+
+public arrayintersect(a, b) {
+  var setA = new Set(a);
+  var setB = new Set(b);
+  var intersection = new Set([...setA].filter(x => setB.has(x)));
+  return Array.from(intersection);
 }
 
 }

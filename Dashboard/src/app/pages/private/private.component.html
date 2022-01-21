@@ -1,9 +1,9 @@
 <div class="container" fxLayout="column" fxLayoutGap="30px">
     <div>
         <h1 ngClass.lt-sm="mobileheading">Tool für erweiterte Analysen</h1>
-        <p class="grey">In diesem Bereich ist zukünftig ein Zugriff auf faktisch anonymisierte Individualdatensätze möglich. Er befindet sich aktuell in der Entwicklung.</p>
+        <p class="grey">In diesem Bereich ist ein Zugriff auf faktisch anonymisierte Individualdatensätze möglich</p>
     </div>
-    <div *ngIf="false">
+    <div *ngIf="true">
 <!--         <mat-slide-toggle color="primary" labelPosition='after' *ngIf="this.settings['analyzeall']"
         (toggleChange)="this.updatequery('analyzeall',!this.settings['analyzeall']);"
         [checked]="this.settings['analyzeall']"
@@ -24,8 +24,11 @@
                     <mat-date-range-picker #picker></mat-date-range-picker>
                 </mat-form-field>
             </p>
-            <p>
-                Dauer {{this.duration}}
+            <p *ngIf="this.duration>64" class="accentcolor">
+                Die maximale Länge des Analysezeitraums beträgt 64 Tage. Ihre Anfrage kann nicht ausgeführt werden.
+            </p>
+            <p *ngIf="(this.duration>7 && this.duration<=64) && (this.settings['levelid']=='Gesamt')" class="mat-caption greycolor">
+                Bitte beachten Sie, aufgrund der großen Zahl betroffener Datensätze kann es zu einer verzögerten Auswertung kommen.
             </p>
         </div>
         <div >        
@@ -49,6 +52,10 @@
                 </mat-chip>
             </mat-chip-list>
         </p>
+        <p class="mat-caption accentcolor" *ngIf="this.settings['outcome']=='Anzahl Assessments je 100 Tsd. Einw.'">
+            Hinweis:
+            Es können aktuell nur Raten für die Gesamtbevölkerung berichtet werden. Eine Differenzierung nach Alter und Geschlecht ist nicht möglich.
+        </p>
         </div>
         <div *ngIf="this.settings['outcome']">
             <h3>Differenzierungsmerkmale</h3>
@@ -61,7 +68,10 @@
                 </mat-chip-list>
             </p>
             </div>
+            <!-- Auskommentieren fürs Testen-->
+            <!-- 
             <div>
+                
                 <p><strong>Settings</strong></p>
                 <p>{{this.settings | json}}</p>
         
@@ -70,10 +80,252 @@
                 <p><strong>Query</strong></p>
                 <p>{{this.tsquery | json}}</p>
         
+            </div>  -->
+            <div *ngIf="this.tsqueryresult.length==0">
+                <p>Keine Ergebnisse zur Anzeige</p>
             </div>
-            <div>
-                <p><strong>Result</strong></p>
-                <p>{{this.tsqueryresult | json}}</p>
+            <div *ngIf="this.settings['diffmerkmale'].length==0 && this.tsqueryresult.length>0">
+                
+                
+                <div>
+                <app-box [value]="this.tsqueryresult[0]['count']" [numberformat]="'1.0-0'"
+                            [maincolor]="this.colorsscheme[4].concat('80')"
+                            [description]="'Assessments in '.concat(this.settings['levelid'])"></app-box>
+                </div>
+                <div *ngIf="this.tsqueryresult[0]['DAUERsmed']">
+                    <app-box [value]="this.tsqueryresult[0]['DAUERsmed']" [numberformat]="'1.0-0'"
+                                [maincolor]="this.colorsscheme[2].concat('80')"
+                                [description]="'Mittlere Dauer SmED'"></app-box>
+                </div>
+                <div *ngIf="this.tsqueryresult[0]['DAUERdispo']">
+                    <app-box [value]="this.tsqueryresult[0]['DAUERdispo']" [numberformat]="'1.0-0'"
+                                [maincolor]="this.colorsscheme[2].concat('80')"
+                                [description]="'Mittlere Dauer Disposition'"></app-box>
+                </div>
+                <div *ngIf="this.tsqueryresult[0]['Anzahl_Fragen']">
+                    <app-box [value]="this.tsqueryresult[0]['Anzahl_Fragen']" [numberformat]="'1.0-0'"
+                                [maincolor]="this.colorsscheme[1].concat('80')"
+                                [description]="'Mittlere Anzahl Fragen SmED'"></app-box>
+                </div>
+                
+    
+ 
+        
+            </div>
+            <div *ngIf="this.settings['diffmerkmale'].length==1 && this.tsqueryresult.length>0"
+                fxLayout="row wrap">
+                <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+                    <mat-card>
+                        <h3>Anzahl Assessments</h3>
+                        <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                            [fontcolor]="'white'"                            
+                            [outcomes]="['count']"
+                            plottype="bar"></app-plot>
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+                    <mat-card>
+                        <h3>Anteil Assessments</h3>
+                        <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                            [fontcolor]="'white'"   [colorscheme]="['#d0f321']"                          
+                            [outcomes]="['Anteil']" [percent]="true"
+                            plottype="bar"></app-plot>
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                <div fxFlex=100 fxFlex.lt-md=100 *ngIf="(this.tsqueryresult.length>0) && 
+                    (this.tsquery['outcome']) || (this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
+                    || (this.settings['diffmerkmale'].includes('Beschwerde'))
+                    ">
+                    <mat-card>
+                        <h3>{{this.settings['outcome']}}</h3>
+                        <ng-container *ngIf="!(this.settings['diffmerkmale'].includes('Hauptbeschwerde')) &&
+                        !(this.settings['diffmerkmale'].includes('Beschwerde'))">
+                        <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                            [fontcolor]="'white'"   [colorscheme]="['orange']"                          
+                            [outcomes]="[this.tsquery['outcome']]" 
+                            plottype="bar"></app-plot>
+                        </ng-container>
+                        <p>{{this.restablecols | json}}</p>
+                        <ng-container *ngIf="(this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
+                        || (this.settings['diffmerkmale'].includes('Beschwerde'))">                            
+                                <app-table [(data)]="this.tsqueryresult" [outcomes_rate]="['Anteil']"
+                                [columns]="this.restablecols"></app-table>        
+                            </ng-container>
+                            
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                
+            
+             
+        
+            </div>
+            <div *ngIf="this.settings['diffmerkmale'].length==2 && this.tsqueryresult.length>0"
+                fxLayout="row wrap">
+                <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+                    <mat-card>
+                        <h3>Anzahl Assessments</h3>
+                        <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                            [fontcolor]="'white'"                            
+                            [outcomes]="['count']"
+                            [colorby]="this.settings['diffmerkmale'][1]"
+                            plottype="bar"></app-plot>
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+                    <mat-card>
+                        <h3>Anteil Assessments</h3>
+                        <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                            [fontcolor]="'white'"   [colorscheme]="['#d0f321']"  
+                            [colorby]="this.settings['diffmerkmale'][1]"
+                            [outcomes]="['Anteil']" [percent]="true"
+                            plottype="bar"></app-plot>
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                <div fxFlex=100 fxFlex.lt-md=100 *ngIf="(this.tsqueryresult.length>0) && (this.tsquery['outcome']
+                    || ((this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
+                    || (this.settings['diffmerkmale'].includes('Beschwerde')))
+                    )">
+                    <mat-card>
+                        <h3>{{this.settings['outcome']}}</h3>
+                        <ng-container *ngIf="!(this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
+                        && !(this.settings['diffmerkmale'].includes('Beschwerde'))">
+                            <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" 
+                                [colorby]="this.settings['diffmerkmale'][1]"
+                                [fontcolor]="'white'"   [colorscheme]="['orange']"                          
+                                [outcomes]="[this.tsquery['outcome']]" 
+                                plottype="bar"></app-plot>
+                            </ng-container>
+                            <ng-container *ngIf="(this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
+                            || (this.settings['diffmerkmale'].includes('Beschwerde'))">                            
+                                    <app-table [(data)]="this.tsqueryresult" [outcomes_rate]="['Anteil']"
+                                    [columns]="this.restablecols"></app-table>        
+                                </ng-container>
+                            
+                        <div>
+                            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                                (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                                </mat-expansion-panel-header>
+                                <mat-panel-description>
+                                <div class="mat-caption">
+                                    <p >
+                                        <a (click)="this.exportascsv('daten.csv',this.tsqueryresult)">
+                                            <mat-icon inline=true>file_download</mat-icon>
+                                            Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                                        </a>
+                                    </p>
+                                    <h3> Weitere Informationen zum Indikator</h3>
+                                    <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                </div>
+                                </mat-panel-description>
+                            </mat-expansion-panel>
+                        </div>
+                    </mat-card>
+                </div>
+                
+            
+             
         
             </div>
     </div>
