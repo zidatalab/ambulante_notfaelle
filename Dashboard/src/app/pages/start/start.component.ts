@@ -132,6 +132,7 @@ export class StartComponent implements OnInit {
     if (this.metadata) {
       if (this.metadata.length > 0) {
         this.dometasettings();
+        this.setlevel("__init","");
       }
     }
     else {
@@ -279,7 +280,7 @@ export class StartComponent implements OnInit {
           item["Mittlere Anzahl Beschwerden"] = null;
         }
         item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
-        item["ARS Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARS"] / (item["BEVSTAND"] / 1e5);
+        item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARS"] / (item["BEVSTAND"] / 1e5);
       };
       //console.log("Sample Stat Entry:",statswdate[0]);
       this.stats_ts = statswdate;
