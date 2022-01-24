@@ -5982,7 +5982,7 @@ __webpack_require__.r(__webpack_exports__);
 class ApiService {
     constructor(httpClient) {
         this.httpClient = httpClient;
-        this.REST_API_SERVER = "https://dashboardapi.ziapp.de"; //"http://127.0.0.1:8000/";
+        this.REST_API_SERVER = "https://dashboardapi.ziapp.de/"; //"http://127.0.0.1:8000/";
         this.REST_API_SERVER_CLIENTID = "smed_reporting";
         this.primarycolor = "#2196f3"; // "#e91e63";
         this.accentcolor = "#e3714e1";
