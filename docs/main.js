@@ -5871,7 +5871,7 @@ class StartComponent {
             if (thefield == "mainsymptoms_ts") {
                 let symptoms_list = [];
                 symptoms_list = yield this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop']);
-                console.log("SYMPTOMS", symptoms_list);
+                //console.log("SYMPTOMS",symptoms_list);
                 symptoms_list = this.api.getValues(symptoms_list, 'data');
                 this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
                 for (let item of this.symptoms_list_export) {
@@ -5982,7 +5982,7 @@ __webpack_require__.r(__webpack_exports__);
 class ApiService {
     constructor(httpClient) {
         this.httpClient = httpClient;
-        this.REST_API_SERVER = "https://dashboardapi.ziapp.de/"; //"http://127.0.0.1:8000/";
+        this.REST_API_SERVER = "https://dashboardapi.ziapp.de/"; //"https://zidashboardapi.azurewebsites.net/" ;//"http://127.0.0.1:8000/"; "https://dashboardapi.ziapp.de/";
         this.REST_API_SERVER_CLIENTID = "smed_reporting";
         this.primarycolor = "#2196f3"; // "#e91e63";
         this.accentcolor = "#e3714e1";
