@@ -825,7 +825,7 @@ class MapComponent {
                 attribution: this.attributions[theprovider]
             });
             tiles.addTo(mymap);
-            mymap.attributionControl.setPrefix('<a href="https://www.zidatasciencelab.de"><strong>Zi</strong> Data Science Lab</a>');
+            mymap.attributionControl.setPrefix('<a href="https://www.ziapp.de"><strong>Zi</strong> Data Science Lab</a>');
             tiles.getContainer().className += ' custombgmap';
             // Chloropleth Map
             if (!this.selectmap) {
