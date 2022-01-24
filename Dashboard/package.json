@@ -1,6 +1,6 @@
 {
   "name": "ambulantenotfaelle",
-  "version": "0.9.101",
+  "version": "0.9.105",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

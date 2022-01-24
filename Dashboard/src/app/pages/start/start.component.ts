@@ -306,7 +306,7 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
-      console.log("SYMPTOMS",symptoms_list);
+      //console.log("SYMPTOMS",symptoms_list);
       symptoms_list = this.api.getValues(symptoms_list,'data');      
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list,'Sympt','','n'),'n',"descending");
       for (let item of this.symptoms_list_export) {
