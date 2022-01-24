@@ -280,7 +280,9 @@ export class StartComponent implements OnInit {
           item["Mittlere Anzahl Beschwerden"] = null;
         }
         item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
-        item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARS"] / (item["BEVSTAND"] / 1e5);
+        // item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE"] / (item["BEVSTAND"] / 1e5);
+        // item["ARE Assessments (v2) pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v2"] / (item["BEVSTAND"] / 1e5);
+        item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v3"] / (item["BEVSTAND"] / 1e5);
       };
       //console.log("Sample Stat Entry:",statswdate[0]);
       this.stats_ts = statswdate;

@@ -127,9 +127,10 @@
                 <h3>Assessments pro 100.000 Einwohner</h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
                     [outcomes]="['Assessments pro 100 Tsd. Einw.',
-                    'ARE Assessments pro 100 Tsd. Einw.']" 
-                    [sortx]="true" [fontcolor]="'white'" [colorscheme]="[this.colorsscheme[0],this.colorsscheme[4],'crimson']"
-                    plottype="area"></app-plot>
+                    'ARE Assessments pro 100 Tsd. Einw.'
+                    ]" 
+                    [sortx]="true" [fontcolor]="'white'" 
+                    plottype="tsline"></app-plot>
                 <div>
                     <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
                         (closed)="panelOpenState = false">
@@ -144,9 +145,9 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
-                            <p>ARE Assessments: Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE). Berücksichtigt wurden Erbrechen/Übelkeit,
-                                Atembeschwerden, Bauchschmerzen, Covid 19, Durchfall, Erbrechen/Übelkeit, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen,
-                                Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
+                            <p>ARE Assessments: Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE). 
+                                Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, 
+                                Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
                         </div>
                     </mat-expansion-panel>
                 </div>
