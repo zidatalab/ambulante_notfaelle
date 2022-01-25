@@ -55,7 +55,7 @@ export class StartComponent implements OnInit {
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
     this.db.clean();
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'weeks' };
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'weekly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     //console.log("Colors",this.colorsscheme);
@@ -186,7 +186,7 @@ export class StartComponent implements OnInit {
   async querydatasmed(thefield) {
     let now:Date = new Date();    
     // implement check for local data status here if ok -> do nothing 
-    let stand = await this.db.getstand(thefield,"KV",this.levelsettings["levelvalues"]);
+    let stand = await this.db.getstand(thefield,"KV",this.levelsettings["levelvalues"],this.levelsettings["resolution"]);
     //console.log("Stand testen:",thefield,stand,this.levelsettings["start"],this.levelsettings["stop"]);
     if (stand){
     if (stand['startdate']<=this.levelsettings["start"] && 
@@ -204,6 +204,7 @@ export class StartComponent implements OnInit {
     };
     query["groupinfo"]["level"] = "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
+    query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
     query["groupinfo"]["Jahr"] = {
       "$gte": parseInt(this.levelsettings["start"].slice(0, 4)),
       "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
@@ -212,7 +213,7 @@ export class StartComponent implements OnInit {
         let dbdaterange;
     this.db.querydatadates(thefield, 'KV',
       this.levelsettings["levelvalues"], this.levelsettings["start"],
-      this.levelsettings["stop"]).then(data => { dbdaterange = data });
+      this.levelsettings["stop"],this.levelsettings["resolution"]).then(data => { dbdaterange = data });
     if (dbdaterange) {
       if ((dbdaterange['min'] > this.levelsettings["start"] ||
         dbdaterange['max'] < this.levelsettings["stop"]) ||
@@ -221,9 +222,9 @@ export class StartComponent implements OnInit {
           data => {            
             let res = data["data"];
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => {
+            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4),this.levelsettings["resolution"]).then(() => {
               this.updatedb(res, thefield);
-              this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"]);
+              this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"],this.levelsettings["resolution"]);
             });
           },
           error => {  });
@@ -234,9 +235,13 @@ export class StartComponent implements OnInit {
         data => {
           let res = data["data"];          
           this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4)).then(() => { 
+            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4),
+            this.levelsettings["resolution"]).then(() => { 
+              //console.log('store new data',thefield,res);
               this.updatedb(res, thefield) });
-              this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"]);
+              this.db.storestand(thefield,'KV', 
+              this.levelsettings["levelvalues"],now.toISOString(),
+              this.levelsettings["start"],this.levelsettings["stop"],this.levelsettings["resolution"]);
         },
         error => { this.progress = false; });
     };
@@ -266,7 +271,8 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {      
       this.stats_ts = [];
       this.summaryinfo = [];
-      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,this.levelsettings["resolution"]);
+      //console.log('statswdate:',statswdate);
       if (statswdate.length>0){
 
       for (let item of statswdate) {
@@ -305,7 +311,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
-      symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,this.levelsettings["resolution"]);
       //console.log("SYMPTOMS",symptoms_list);
       symptoms_list = this.api.getValues(symptoms_list,'data');      
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list,'Sympt','','n'),'n',"descending");
@@ -319,7 +325,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],false);
+      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],false,this.levelsettings["resolution"]);
       dbutiltimes = this.api.getValues(dbutiltimes,'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       let ntotal = this.api.sumArray(this.api.getValues(utiltimes,'n'));
@@ -337,7 +343,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timetotreat") {
       let ttt = [];     
-      ttt = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      ttt = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,this.levelsettings["resolution"]);
       ttt = this.api.groupbysum(ttt,'TTTsmed_text','','Anzahl');
       let total = this.api.sumArray(this.api.getValues(ttt,'Anzahl'));
       for (let item of ttt){
@@ -350,7 +356,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "decisions") {
       let decisions = [];     
-      decisions = await this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop']);
+      decisions = await this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,this.levelsettings["resolution"]);
       //console.log("decicions",decisions.slice(0,20));
       let total = this.api.sumArray(this.api.getValues(decisions,'Anzahl'));
       this.decisions_ttt=this.api.replacemissing(this.api.groupbysum(decisions,'TTTsmed_text',"TTTdispo_text",'Anzahl'),'TTTdispo_text',"Keine Daten");

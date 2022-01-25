@@ -9,11 +9,11 @@ export class DBService {
 
   constructor(private api:ApiService) { }
 
-  async storestand(Indicator,level,levelid,Stand,mindate,maxdate){
+  async storestand(Indicator,level,levelid,Stand,mindate,maxdate,resolution){
     //console.log("Stand speichern!");
     await db.standdb
-          .where('[level+levelid+Indicator]')
-          .equals([level,levelid,Indicator])
+          .where('[level+levelid+Indicator+timeframe]')
+          .equals([level,levelid,Indicator+resolution])
           .delete();
     db.standdb.put({
               'level':level,
@@ -21,21 +21,22 @@ export class DBService {
               'Stand':Stand,
               'Indicator':Indicator,
               'startdate':mindate,
-              'stopdate':maxdate
+              'stopdate':maxdate,
+              'timeframe':resolution
             });    
         };   
 
-getstand(Indicator,level,levelid){
+getstand(Indicator,level,levelid,resolution){
     return db.standdb
-    .where('[level+levelid+Indicator]')
-    .equals([level,levelid,Indicator]).first();
+    .where('[level+levelid+Indicator+timeframe]')
+    .equals([level,levelid,Indicator,resolution]).first();
 
   }
 
   
 
 
-  listdata(Indicator,level, levelid, start="",stop="",expand=true) {
+  listdata(Indicator,level, levelid, start="",stop="",expand=true,resolution) {
     let tosearch = {
       Indicator: Indicator,
       level: level,
@@ -44,35 +45,36 @@ getstand(Indicator,level,levelid){
     // Can be implemented later to restrict results
     if (start!=="" && stop!=="" && expand==true){
       return db.datadb
-      .where('[level+levelid+Indicator+Datum]')
-      .between([level,levelid,Indicator,start],[level,levelid,Indicator,stop])
+      .where('[level+levelid+Indicator+Datum+timeframe]')
+      .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution])
       .toArray()
       .then(data => this.api.objectkeystocolumns(data,'data'));
     }
     if (expand==true) {
     return db.datadb
-      .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).toArray().then(data => this.api.objectkeystocolumns(data,'data'));
+      .where('[level+levelid+Indicator+timeframe]').equals([level,levelid,Indicator,resolution]).toArray().then(data => this.api.objectkeystocolumns(data,'data'));
     }
     if (expand==false) {
       return db.datadb
-        .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).toArray();
+        .where('[level+levelid+Indicator+timeframe]').equals([level,levelid,Indicator,resolution]).toArray();
       };
   }
 
-  async querydatadates(Indicator,level, levelid, start="",stop="") {
-    let count = await db.datadb.where('[level+levelid+Indicator+Datum]')
-    .between([level,levelid,Indicator,start],[level,levelid,Indicator,stop]).count();
+  async querydatadates(Indicator,level, levelid, start="",stop="",resolution="monthly") {
+    let count = await db.datadb.where('[level+levelid+Indicator+Datum+timeframe]')
+    .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution]).count();
     if (count>0){
     let tosearch = {
       Indicator: Indicator,
       level: level,
-      levelid:levelid
+      levelid:levelid,
+      resolution:resolution
     }
     let dbpointer=[];
     let res = {};
     if (start!=="" && stop!==""){
-      db.datadb.where('[level+levelid+Indicator+Datum]')
-      .between([level,levelid,Indicator,start],[level,levelid,Indicator,stop])
+      db.datadb.where('[level+levelid+Indicator+Datum+timeframe]')
+      .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution])
       .sortBy('Datum').then(data => {
         dbpointer=data;
         if (dbpointer && (dbpointer.length>1)){
@@ -84,8 +86,8 @@ getstand(Indicator,level,levelid){
       } 
     else 
     { 
-      db.datadb.where('[level+levelid+Indicator]')
-      .equals([level,levelid,Indicator])
+      db.datadb.where('[level+levelid+Indicator+timeframe]')
+      .equals([level,levelid,Indicator,resolution])
       .sortBy('Datum').then(data => {
         dbpointer=data;
         if (dbpointer.length>1){          
@@ -101,26 +103,28 @@ getstand(Indicator,level,levelid){
     
   }
 
-  deletewhere(Indicator,level, levelid, startjahr="",stopjahr="") {
+  deletewhere(Indicator,level, levelid, startjahr="",stopjahr="",resolution="monthly") {
     let tosearch = {
       Indicator: Indicator,
       level: level,
-      levelid:levelid
+      levelid:levelid,
+      timeframe:resolution
     }
     // Can be implemented later to restrict results
     if (startjahr=="" && stopjahr!==""){
       db.datadb
-      .where('[level+levelid+Indicator+Jahr]').between([level,levelid,Indicator,startjahr],[level,levelid,Indicator,stopjahr]).delete();
+      .where('[level+levelid+Indicator+Jahr+timeframe]').between([level,levelid,Indicator,startjahr,resolution],[level,levelid,Indicator,stopjahr,resolution]).delete();
     };
     return db.datadb
-      .where('[level+levelid+Indicator]').equals([level,levelid,Indicator]).delete();
+      .where('[level+levelid+Indicator+timeframe]').equals([level,levelid,Indicator,resolution]).delete();
   }
 
   adddatabulk(array) {
+    //console.log('add bulk',array)
     return db.datadb.bulkPut(array);
   };
 
-  async adddata({level, levelid,Jahr,Monat,KW,Datum,Indicator,data,KM6Versicherte,BEVSTAND}) {
+  async adddata({level, levelid,Jahr,Monat,KW,Datum,Indicator,data,KM6Versicherte,BEVSTAND,resolution}) {
     return await db.datadb
       .put({
         Indicator: Indicator,
@@ -130,7 +134,9 @@ getstand(Indicator,level,levelid){
         Monat:Monat,
         KW:KW  ,
         Datum:Datum,
-        data:data});
+        data:data,
+        timeframe:resolution
+      });
   };
 
   clean(){

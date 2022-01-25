@@ -15,6 +15,7 @@ export class SmedAggregationService {
 
 
 async newcombine(array,fieldname){
+  //if (fieldname=="stats"){console.log("newcombine",fieldname,array);};
   let newarray = [];
   let dbarray=[];
   if (array.length==0){return []};
@@ -37,10 +38,12 @@ async newcombine(array,fieldname){
       topush['data']=fielditem;
       newarray.push(topush); 
       topush['Indicator']=fieldname;
+      topush['timeframe']=item['timeframe'];
       dbarray.push(topush);    
     }
   };
   }  
+  //if (fieldname=="stats"){console.log("newcombine res",fieldname,dbarray);};
   await this.db.adddatabulk(dbarray);    
 }
 

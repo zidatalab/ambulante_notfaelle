@@ -8,6 +8,7 @@ export class DataItem {
   KW: number;
   Datum:string;
   Indicator:string;
+  timeframe:string;
   data:any;
 }
 
@@ -18,6 +19,7 @@ export class StandItem {
   Indicator:string;
   startdate:string;
   stopdate:string;
+  timeframe:string;
 }
 
 export class AppDB extends Dexie {
@@ -31,9 +33,9 @@ export class AppDB extends Dexie {
       db.delete();
       db.open();
     });
-    db.version(4).stores({
-      datadb: 'id++,[level+levelid+Indicator+Datum],[level+levelid+Indicator]',
-      standdb: 'id++,[level+levelid+Indicator]',
+    db.version(6).stores({
+      datadb: 'id++,[level+levelid+Indicator+Datum+timeframe],[level+levelid+Indicator+timeframe]',
+      standdb: 'id++,[level+levelid+Indicator+timeframe]',
     }); 
     db.datadb.mapToClass(DataItem); 
     db.standdb.mapToClass(StandItem); 

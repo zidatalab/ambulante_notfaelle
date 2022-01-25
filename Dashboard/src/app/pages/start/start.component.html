@@ -43,13 +43,13 @@
             <h3>Zeitliche Auflösung</h3>
             <p>
                 <mat-chip-list>
-                    <mat-chip (click)="this.setlevel('resolution','weeks');"
-                        [selected]="(this.levelsettings['resolution']=='weeks')" color="primary">
+                    <mat-chip (click)="this.setlevel('resolution','weekly');"
+                        [selected]="(this.levelsettings['resolution']=='weekly')" color="primary">
                         Kalenderwochen
                     </mat-chip>
                     <mat-chip                     
                      [disabled]="true"
-                        [selected]="(this.levelsettings['resolution']=='months')" color="primary">
+                        [selected]="(this.levelsettings['resolution']=='monthly')" color="primary">
                         Monate
                     </mat-chip>
                 </mat-chip-list>
