@@ -53,8 +53,8 @@ export class StartComponent implements OnInit {
 
   ngOnInit(): void {    
     //console.log("USER", this.auth.currentUserValue);
-    // uncomment for db debug
-    // this.db.clean();
+    // uncomment for failsafe db ops, cleans cache on app init
+    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
