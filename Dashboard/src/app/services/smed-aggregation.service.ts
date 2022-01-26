@@ -16,7 +16,6 @@ export class SmedAggregationService {
 
 async newcombine(array,fieldname){
   //if (fieldname=="stats"){console.log("newcombine",fieldname,array);};
-  let newarray = [];
   let dbarray=[];
   if (array.length==0){return []};
   for (let item of array){
@@ -31,12 +30,9 @@ async newcombine(array,fieldname){
       topush['KM6Versicherte']=item['KM6Versicherte'];
       topush['BEVSTAND']=item['KM6Versicherte'];
       topush['KW']=fielditem['KW'];
-      if (topush['KW']>0 && topush['Jahr']>0){
-        topush['Datum']=this.getDateOfISOWeek(topush['KW'],topush['Jahr']).toISOString().slice(0,10);
-      }      
+      topush['Datum']=fielditem['Datum']
       delete fielditem['KW'];
-      topush['data']=fielditem;
-      newarray.push(topush); 
+      topush['data']=fielditem;      
       topush['Indicator']=fieldname;
       topush['timeframe']=item['timeframe'];
       dbarray.push(topush);    

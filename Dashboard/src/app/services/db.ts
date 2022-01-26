@@ -33,8 +33,8 @@ export class AppDB extends Dexie {
       db.delete();
       db.open();
     });
-    db.version(6).stores({
-      datadb: 'id++,[level+levelid+Indicator+Datum+timeframe],[level+levelid+Indicator+timeframe]',
+    db.version(10).stores({
+      datadb: 'id++,[level+levelid+Indicator+timeframe+Datum],[level+levelid+Indicator+timeframe]',
       standdb: 'id++,[level+levelid+Indicator+timeframe]',
     }); 
     db.datadb.mapToClass(DataItem); 

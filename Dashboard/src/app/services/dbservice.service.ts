@@ -45,8 +45,8 @@ getstand(Indicator,level,levelid,resolution){
     // Can be implemented later to restrict results
     if (start!=="" && stop!=="" && expand==true){
       return db.datadb
-      .where('[level+levelid+Indicator+Datum+timeframe]')
-      .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution])
+      .where('[level+levelid+Indicator+timeframe+Datum]')
+      .between([level,levelid,Indicator,resolution,start],[level,levelid,Indicator,resolution,stop])
       .toArray()
       .then(data => this.api.objectkeystocolumns(data,'data'));
     }
@@ -61,8 +61,8 @@ getstand(Indicator,level,levelid,resolution){
   }
 
   async querydatadates(Indicator,level, levelid, start="",stop="",resolution="monthly") {
-    let count = await db.datadb.where('[level+levelid+Indicator+Datum+timeframe]')
-    .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution]).count();
+    let count = await db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
+    .between([level,levelid,Indicator,resolution,start],[level,levelid,Indicator,resolution,stop]).count();
     if (count>0){
     let tosearch = {
       Indicator: Indicator,
@@ -73,8 +73,8 @@ getstand(Indicator,level,levelid,resolution){
     let dbpointer=[];
     let res = {};
     if (start!=="" && stop!==""){
-      db.datadb.where('[level+levelid+Indicator+Datum+timeframe]')
-      .between([level,levelid,Indicator,start,resolution],[level,levelid,Indicator,stop,resolution])
+      db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
+      .between([level,levelid,Indicator,resolution,start],[level,levelid,Indicator,resolution,stop])
       .sortBy('Datum').then(data => {
         dbpointer=data;
         if (dbpointer && (dbpointer.length>1)){

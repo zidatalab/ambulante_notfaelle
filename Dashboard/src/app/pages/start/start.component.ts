@@ -54,8 +54,8 @@ export class StartComponent implements OnInit {
   ngOnInit(): void {    
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for db debug
-    this.db.clean();
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'weekly' };
+    // this.db.clean();
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     //console.log("Colors",this.colorsscheme);
@@ -271,8 +271,10 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {      
       this.stats_ts = [];
       this.summaryinfo = [];
-      let statswdate = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,this.levelsettings["resolution"]);
-      //console.log('statswdate:',statswdate);
+      let statswdate = await this.db.listdata('stats', "KV", 
+      this.levelsettings['levelvalues'],this.levelsettings['start'],this.levelsettings['stop'],true,
+      this.levelsettings["resolution"]);
+      // console.log('statswdate:',statswdate);
       if (statswdate.length>0){
 
       for (let item of statswdate) {

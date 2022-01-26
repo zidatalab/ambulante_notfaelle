@@ -48,7 +48,7 @@
                         Kalenderwochen
                     </mat-chip>
                     <mat-chip                     
-                     [disabled]="true"
+                     (click)="this.setlevel('resolution','monthly');"
                         [selected]="(this.levelsettings['resolution']=='monthly')" color="primary">
                         Monate
                     </mat-chip>
@@ -83,7 +83,7 @@
             <p><strong>Ersteinschätzung am Telefon</strong></p>
             <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die
                 Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen
-                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo">Die Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
+                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
 
         </div>
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
