@@ -40,6 +40,7 @@ export class AdminComponent implements OnInit {
   uploadareaid: string;
   topicoptions = ['ordering', 'subgroups', 'demography', 'outcomes']
   typeoptions = ['level', 'levelid', 'group', 'rate', 'number']
+  usergroupoptions=['kvuser'];
   appversion:string = 'none';
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();

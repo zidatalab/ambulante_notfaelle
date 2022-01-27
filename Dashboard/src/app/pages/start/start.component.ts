@@ -290,7 +290,7 @@ export class StartComponent implements OnInit {
         item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
         // item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE"] / (item["BEVSTAND"] / 1e5);
         // item["ARE Assessments (v2) pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v2"] / (item["BEVSTAND"] / 1e5);
-        item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v3"] / (item["BEVSTAND"] / 1e5);
+        item["Anteil ARE Assessments"] = (100*((item["Assessments_mit_ARE_v3"] /  item["Assessments"])/.25))-100;                
       };
       //console.log("Sample Stat Entry:",statswdate[0]);
       this.stats_ts = statswdate;

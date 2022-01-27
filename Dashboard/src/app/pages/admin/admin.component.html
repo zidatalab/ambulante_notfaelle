@@ -1,11 +1,11 @@
 <div class="container" fxLayout="column" fxLayoutGap="1rem">
     <h1 ngClass.lt-sm="mobileheading">Administration</h1>
-    <p *ngIf="this.backenddoc && this.appversion" class="mat-caption greycolor"> Frontend Version: {{this.appversion}}, Backend Version: {{this.backenddoc['info']['version']}}</p>
+
     <div *ngIf="!this.adduser && !this.adddata" fxLayout="row wrap" fxLayoutGap="1rem"
         fxLayoutAlign="start space-between">
         <div fxFlex=100>
             <h2>Administrationsaufgaben</h2>
-            <p class="mat-caption greycolor">In diesem Bereich können Dashboard Administratoren ("Admin") und 
+            <p class="mat-caption greycolor">In diesem Bereich können Dashboard Administratoren ("Admin") und
                 Zi-Administratoren ("Superadmin") Daten oder Nutzer*innen hinzufügen.</p>
         </div>
         <div>
@@ -24,34 +24,72 @@
     <div *ngIf="!this.adduser && !this.adddata">
         <h2>Nutzerliste</h2>
         <p class="mat-caption greycolor">In diesem Bereich können Nutzerberechtigungen geändert werden.</p>
-        <mat-list>
-            <ng-container *ngFor="let user of this.users">
+        <mat-card>
+            <mat-list>
                 <mat-list-item>
-                    <mat-icon color="primary" fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')>=0"
-                        mat-list-icon>admin_panel_settings
-                    </mat-icon>
-                    <mat-icon fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')<0" mat-list-icon>
-                        account_circle</mat-icon>
-                    <div mat-line><strong>{{!user.lastname? 'k.A.': user.anrede+" "+user.lastname }} </strong>
-                        ({{user.email
-                        }})
-                        <a *ngIf="this.currentuser['is_superadmin']" (click)="user.stammdaten=!user.stammdaten"> ></a>
+                    <div mat-line fxLayout="row wrap">
+                        <div fxFlex=5></div>
+                        <div fxFlex=44 class="greycolor mat-caption">
+                            Benutzer
+                        </div>
+                        <div fxFlex=50 class="greycolor mat-caption">
+                            Rechte und Gruppen
+                        </div>
                     </div>
-                    <div mat-line>
-                        <mat-chip-list *ngIf="!user.stammdaten">
-                            <mat-chip color="primary" (click)="this.updateuser(user.email,'user',!user['is_user'])"
-                                [selected]="user['is_user']">User</mat-chip>
-                            <mat-chip color="primary" (click)="this.updateuser(user.email,'admin',!user['is_admin'])"
-                                [selected]="user['is_admin']">Admin</mat-chip>
-                            <mat-chip color="primary"
-                                (click)="this.updateuser(user.email,'superadmin',!user['is_superadmin'])"
-                                [selected]="user['is_superadmin']">Superadmin</mat-chip>
-                        </mat-chip-list>
+                </mat-list-item>
+                <ng-container *ngFor="let user of this.users">
+                    <mat-list-item>
+                        <mat-icon color="accent" fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')>=0"
+                            mat-list-icon>admin_panel_settings
+                        </mat-icon>
+                        <mat-icon fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')<0" mat-list-icon>
+                            account_circle</mat-icon>
+                        <div mat-line fxLayout="row wrap">
+                            <div fxFlex=45><span *ngIf="user.stammdaten"><br></span><strong><a
+                                        *ngIf="this.currentuser['is_superadmin']"
+                                        (click)="user.stammdaten=!user.stammdaten">{{!user.lastname? 'k.A.':
+                                        user.anrede+" "+user.lastname }} </a></strong>
+                                        <span *ngIf="user.stammdaten">({{user.email}})</span>
+                            </div>
+                            <div fxFlex=54 fxLayout="wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
+                                <div>
+                                    <mat-chip-list *ngIf="!user.stammdaten" class="smallchips">
+                                        <mat-chip color="primary"
+                                            (click)="this.updateuser(user.email,'user',!user['is_user'])"
+                                            [selected]="user['is_user']">User</mat-chip>
+                                        <mat-chip color="primary"
+                                            (click)="this.updateuser(user.email,'admin',!user['is_admin'])"
+                                            [selected]="user['is_admin']">Admin</mat-chip>
+                                        <mat-chip color="primary"
+                                            (click)="this.updateuser(user.email,'superadmin',!user['is_superadmin'])"
+                                            [selected]="user['is_superadmin']">Superadmin</mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <div>
+                                    <ng-container  *ngIf="user['usergroups']">
+                                        <ng-container  *ngIf="user['usergroups']['smed_reporting']">
+                                    <mat-chip-list  class="smallchips">                                        
+                                        <mat-chip color="accent" [selected]="user['usergroups']['smed_reporting'].indexOf('kvuser')>=0">KV-User</mat-chip>                                    
+                                        <mat-chip color="accent" [selected]="!(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0)">Public Access</mat-chip>
+                                    </mat-chip-list>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container  *ngIf="!user['usergroups'] || !user['usergroups']['smed_reporting']">                                    
+                                    <mat-chip-list  class="smallchips">                                        
+                                        <mat-chip color="accent" [selected]="user['is_superadmin']">KV-User</mat-chip>                                    
+                                        <mat-chip color="accent" [selected]="user['is_user'] && !user['is_superadmin']">Public Access</mat-chip>
+                                    </mat-chip-list>                                        
+                                    </ng-container>
+
+                                </div>
+
+                            </div>
+                        </div>
                         <div *ngIf="user.stammdaten" mat-line>
-                            <span style="color: lightgray;">Nur für Admins</span>
-                            <mat-chip-list class="add-margin" *ngIf="user.stammdaten">
+                            <mat-chip-list class="add-margin" *ngIf="user.stammdaten" class="smallchips">
                                 <mat-chip *ngIf="!user.chpwd" color="primary" (click)="this.deletuser(user.email)"
-                                    selected>löschen</mat-chip>
+                                    selected>
+                                    löschen</mat-chip>
                                 <mat-chip *ngIf="!user.chpwd" color="accent"
                                     (click)="user.chpwd=!user.chpwd;user.rndpwd=this.rndpwd();" selected>password
                                     zurücksetzen</mat-chip>
@@ -68,13 +106,13 @@
                                     </p>
                                 </div>
                             </mat-chip-list>
+                            <br>
                         </div>
-                        <div mat-line></div>
-                        <div fxHide.gt-sm=true mat-line></div>
-                    </div>
-                </mat-list-item>
-            </ng-container>
-        </mat-list>
+                        <mat-divider></mat-divider>
+                    </mat-list-item>
+                </ng-container>
+            </mat-list>
+        </mat-card>
     </div>
 
     <div fxLayout="row wrap" *ngIf="this.adduser">
@@ -174,13 +212,13 @@
                             (click)="dataInput.click()">Daten
                             Auswählen</button>
                     </div>
-                   
+
                 </div>
                 <div *ngIf="this.geojsonfile" fxLayout="column" fxLayoutGap="10px">
                     <div fxFlex=100>
                         <h3><strong>2. GEOJSON beschreiben</strong> <span *ngIf="this.geodatafile">
                                 <mat-icon color="primary">check_circle</mat-icon>
-                            </span></h3>                            
+                            </span></h3>
                     </div>
                     <div fxFlex=100>
                         <p>Die Datei hat {{this.geojsonfile['features'].length | number}} Regionen.</p>
@@ -279,7 +317,8 @@
                             </mat-form-field>
                             <mat-form-field appearance="outline" *ngIf="row.type=='level'">
                                 <mat-label>Öffentliche Raumebenen</mat-label>
-                                <mat-select [(value)]="row.publiclevels" (selectionChange)="this.checkmetadata()" multiple>
+                                <mat-select [(value)]="row.publiclevels" (selectionChange)="this.checkmetadata()"
+                                    multiple>
                                     <mat-option *ngFor="let option of this.getrefvalues(row.varname)" [value]="option">
                                         {{option}}</mat-option>
                                 </mat-select>
@@ -337,10 +376,9 @@
 
 
 
-        <div class="add-margin" fxLayoutAlign="space-between" 
-        *ngIf="(!this.uploadres || this.uploadres=='error')">
-            <div><button mat-raised-button (click)="uploadnewdata()" [disabled]="(!this.metadone) && (!this.uploadareaid)"
-                    color="accent">Hinzufügen
+        <div class="add-margin" fxLayoutAlign="space-between" *ngIf="(!this.uploadres || this.uploadres=='error')">
+            <div><button mat-raised-button (click)="uploadnewdata()"
+                    [disabled]="(!this.metadone) && (!this.uploadareaid)" color="accent">Hinzufügen
 
                 </button></div>
             <div><button mat-raised-button (click)="this.resetall();" color="primary">Abbrechen</button></div>
@@ -361,5 +399,5 @@
             </mat-card>
         </div>
     </div>
-   
+
 </div>

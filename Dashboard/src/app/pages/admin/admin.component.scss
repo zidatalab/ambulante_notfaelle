@@ -27,3 +27,20 @@ textarea
 {
   width:100%;
 }
+
+.smallchips {
+    .mat-chip {
+        font-size: 9px;    
+        margin-top: 8px;
+        margin-right: 2px;
+        margin-bottom: 4px;
+        margin-left: 8px; 
+    }
+    .mat-standard-chip {
+        min-height: 18px;
+    }
+ }
+ 
+ .listbox {
+     background-color: rgba(255, 255, 255, 0.01);               
+ }
