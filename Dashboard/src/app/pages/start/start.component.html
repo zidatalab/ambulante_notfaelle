@@ -3,7 +3,7 @@
         <p *ngIf="this.currentuser" class="mat-caption right">
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
-        <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser}">
+        <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser || this.summaryinfo}">
             <h1>Ambulante Akut- und Notfälle in Deutschland</h1>
             <p style="color:lightslategrey" *ngIf="this.currentuser">
                 Interner Testbetrieb<br>Informationen zu Problemen bitte per <strong><a style="color:white;"href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
@@ -124,7 +124,9 @@
         </div>
         <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card >
-                <h3>SmED Assessments <br>pro 100.000 Einwohner</h3>
+                <h3>SmED Assessments 
+                    <br><span class="lightgreycolor">pro 100.000 Einwohner</span>
+                    </h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
                     [outcomes]="['Assessments pro 100 Tsd. Einw.']" 
                     [sortx]="true" [fontcolor]="'white'" 
@@ -152,7 +154,7 @@
         </div>
         <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
-                <h3>Aktivität respiratorischer Erkrankungen<br> in Prozent der Hintergrundaktivität</h3>
+                <h3>Aktivität respiratorischer Erkrankungen<br><span class="lightgreycolor">Abweichung von der Hintergrundaktivität in Prozent</span></h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
                     [outcomes]="['Anteil ARE Assessments']" 
                     [sortx]="true" [fontcolor]="'white'" [colorscheme]="['crimson']"
@@ -174,6 +176,7 @@
                             <p>ARE Assessments: Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE). 
                                 Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, 
                                 Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
+                                <p>Ausgewiesen ist die prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25% ARE-Assessments).</p>
                         </div>
                     </mat-expansion-panel>
                 </div>
@@ -182,7 +185,7 @@
         </div>
         <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
-                <h3>Mittlere Dauer pro Assessment</h3>
+                <h3>Mittlere Dauer <br><span class="lightgreycolor">Dauer in Sekunden pro Assessment</span></h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
                     [colorscheme]="['rgb(183,205,0)']" [sortx]="true" [outcomes]="['Mittlere Dauer (Sek.)']"
                     plottype="tsline"></app-plot>
@@ -210,7 +213,7 @@
         </div>
         <div fxFlex fxFlex.lt-md=100 *ngIf="this.stats_ts && this.currentuser">
             <mat-card>
-                <h3>Anzahl Fragen pro Assessment <mat-icon class="backgroundicon">lock_open</mat-icon> </h3>
+                <h3>Anzahl Fragen<br><span class="lightgreycolor">Anzahl Fragen pro Assessment</span><mat-icon class="backgroundicon">lock_open</mat-icon> </h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
                     [colorscheme]="[this.colorsscheme[2]]" [sortx]="true" [outcomes]="['Mittlere Anzahl Fragen']"
                     plottype="tsline"></app-plot>
@@ -238,7 +241,7 @@
         </div>
         <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.stats_ts">
             <mat-card>
-                <h3>Beschwerden pro Assessment</h3>
+                <h3>Anzahl Beschwerden<br><span class="lightgreycolor">Anzahl unterschiedliche Beschwerdebilder pro Assessment</span></h3>
                 <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
                     [colorscheme]="['orange']" [sortx]="true" [outcomes]="['Mittlere Anzahl Beschwerden']"
                     plottype="tsline"></app-plot>
