@@ -38,6 +38,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    //this.checkforopentabs();
     this.currentdate = new Date();
     this._auth.currentUser.subscribe(data => {
       if (data){
@@ -57,6 +58,21 @@ export class AppComponent {
   }
 
    
+  public checkforopentabs(){
+    // Broadcast that you're opening a page.
+    localStorage.openpages = Date.now();
+    window.addEventListener('storage', function (e) {
+        if(e.key == "openpages") {
+            // Listen if anybody else is opening the same page!
+            localStorage.page_available = Date.now();
+        }
+        if(e.key == "page_available") {
+            alert("Eine andere Seite ist bereits offen. Bitte nutzen Sie diese Anwendung nur auf einem Tab, um Probleme zu vermeiden.");
+            
+        }
+    }, false);
+  }
+
 
   public autorefreshdata(){    
     this.updatemetadata().subscribe(

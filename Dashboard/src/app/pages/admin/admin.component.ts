@@ -43,17 +43,11 @@ export class AdminComponent implements OnInit {
     };
     let add =false;
     if (key=="usergroups.kvuser"){
-      if (value){
-      if (value['smed_reporting']){
-        add = !(value['smed_reporting'].indexOf('kvuser')>=0);
-      }}
-      else {
-        add = true;
-      };     
+      add = value;
     };
      
     if (key=="usergroups.public"){
-        add = false;
+        add = !value;
         };
     
     if (key=="usergroups.kvuser" || key=="usergroups.public"){

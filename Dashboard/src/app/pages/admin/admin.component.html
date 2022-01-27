@@ -69,10 +69,11 @@
                                     <ng-container  *ngIf="user['usergroups']">
                                         <ng-container  *ngIf="user['usergroups']['smed_reporting']">
                                     <mat-chip-list  class="smallchips">                                        
-                                        <mat-chip color="primary" (click)="this.updateuser(user.email,'usergroups.kvuser',user['usergroups'])"
+                                        <mat-chip color="primary" 
+                                        (click)="this.updateuser(user.email,'usergroups.kvuser',!(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0))"
                                         [selected]="user['usergroups']['smed_reporting'].indexOf('kvuser')>=0">KV-User</mat-chip>                                    
                                         <mat-chip color="accent" 
-                                        (click)="this.updateuser(user.email,'usergroups.public',user['usergroups'])"
+                                        (click)="this.updateuser(user.email,'usergroups.public',(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0))"
                                         [selected]="!(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0)">Public Access</mat-chip>
                                     </mat-chip-list>
                                         </ng-container>
@@ -80,10 +81,10 @@
                                     <ng-container  *ngIf="!user['usergroups'] || !user['usergroups']['smed_reporting']">                                    
                                     <mat-chip-list  class="smallchips">                                        
                                         <mat-chip color="primary" 
-                                        (click)="this.updateuser(user.email,'usergroups.kvuser',user['usergroups'])"
+                                        (click)="this.updateuser(user.email,'usergroups.kvuser',true)"
                                         [selected]="user['is_superadmin']">KV-User</mat-chip>                                    
                                         <mat-chip color="accent" 
-                                        (click)="this.updateuser(user.email,'usergroups.public',user['usergroups'])"
+                                        (click)="this.updateuser(user.email,'usergroups.public',true)"
                                         [selected]="user['is_user'] && !user['is_superadmin']">Public Access</mat-chip>
                                     </mat-chip-list>                                        
                                     </ng-container>
