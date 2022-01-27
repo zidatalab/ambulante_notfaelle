@@ -9,8 +9,8 @@ import * as chroma from "chroma-js";
 }) 
 export class ApiService { 
  
- 
-  public REST_API_SERVER = "https://dashboardapi.ziapp.de/";//"https://zidashboardapi.azurewebsites.net/" ;//"http://127.0.0.1:8000/"; "https://dashboardapi.ziapp.de/";
+  public itsatest  = false;
+  public REST_API_SERVER =  "http://localhost:8000/";// "http://localhost:8000/";// "https://dashboardapi.ziapp.de/";
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
@@ -21,13 +21,13 @@ export class ApiService {
   public  getTypeRequest(url) { 
     return this.httpClient.get(this.REST_API_SERVER+url).pipe(map(res => { 
       return res; 
-    })).pipe(/*timeout(3500),*/retry(2)); 
+    })).pipe(/*timeout(3500),*/retry(3)); 
   } 
  
   public  postTypeRequest(url, payload) { 
     return this.httpClient.post(this.REST_API_SERVER+url, payload).pipe(map(res => { 
       return res; 
-    })).pipe(/*timeout(15000),*/retry(1)); ; 
+    })).pipe(/*timeout(15000),*/retry(3)); ; 
   } 
 
   public  getTypeRequestnotimeout(url) { 
@@ -45,9 +45,12 @@ export class ApiService {
   
 // Specific Requests
 
-public updateuser(user,setting,value){
+public updateuser(user,setting,value,usergroups=""){
   let payload = {'email' : user,'key':setting,'value':value};
-  return this.postTypeRequest('userstatus', payload);
+  if (usergroups!=""){
+    payload['usergroups']=usergroups;
+  }
+  return this.postTypeRequest('userstatus/', payload);
 }
 
 public deleteuser(user,password=""){

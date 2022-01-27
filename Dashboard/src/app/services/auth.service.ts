@@ -42,7 +42,7 @@ export class AuthService {
           .set('username', b.username)
           .set('password', b.password)
           .set('client_id', this._api.REST_API_SERVER_CLIENTID);
-          return this._api.postTypeRequestnotimeout('login', payload).pipe(map(user => {
+          return this._api.postTypeRequestnotimeout('login/', payload).pipe(map(user => {
             return this.logintasks(user);
                   }));
       }
