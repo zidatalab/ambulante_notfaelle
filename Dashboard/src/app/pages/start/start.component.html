@@ -9,9 +9,10 @@
                 Interner Testbetrieb<br>Informationen zu Problemen bitte per <strong><a style="color:white;"href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
             </p>
         </div>
-        <p *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
-            Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.
-        </p>
+        <ng-container *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
+            <!-- Text anpassen -->
+            <p>Es sind aktuell keine öffentlichen Informationen auf diesem Portal verfügbar.</p>
+        </ng-container>
     </div>
 
     <div *ngIf="this.metadata.length>0 || this.currentuser">
@@ -79,7 +80,7 @@
     </div>
     <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
         <div class="lightgreycolor mat-caption" fxFlex=100>
-
+            <!-- Text anpassen -->
             <p><strong>Ersteinschätzung am Telefon</strong></p>
             <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die
                 Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen
@@ -145,6 +146,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>keine</p>
                         </div>
                     </mat-expansion-panel>
@@ -173,6 +175,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>ARE Assessments: Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE). 
                                 Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, 
                                 Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
@@ -204,6 +207,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                         </mat-panel-description>
@@ -232,6 +236,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
@@ -260,6 +265,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                         </mat-panel-description>
@@ -289,6 +295,7 @@
                                     </a>
                                 </p>
                                 <h3> Weitere Informationen zum Indikator</h3>
+                                <!-- Text anpassen -->
                                 <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                             </div>
                         </mat-panel-description>
@@ -321,6 +328,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
@@ -351,6 +359,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
@@ -382,6 +391,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
@@ -413,6 +423,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
@@ -444,6 +455,7 @@
                                 </a>
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
+                            <!-- Text anpassen -->
                             <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
                         </div>
                     </mat-panel-description>
