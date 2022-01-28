@@ -30,10 +30,9 @@ export class AppDB extends Dexie {
     super('smeddb');
     var db = this;
     db.on("versionchange", function (event) {
-      db.delete();
-      db.open();
+      db.close();        
     });
-    db.version(10).stores({
+    db.version(11).stores({
       datadb: 'id++,[level+levelid+Indicator+timeframe+Datum],[level+levelid+Indicator+timeframe]',
       standdb: 'id++,[level+levelid+Indicator+timeframe]',
     }); 
