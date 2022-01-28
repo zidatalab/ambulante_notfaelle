@@ -22,7 +22,25 @@ export class StartComponent implements OnInit {
   mapdatafor: string;
   sortdata = [];
   level: any;
-  levelvalues: any;
+  levelvalues = [
+    'Gesamt',
+    'Baden-Württemberg',
+    'Bayern',
+    'Berlin',
+    'Brandenburg',
+    'Bremen',
+    'Hamburg',
+    'Hessen',
+    'Mecklenburg-Vorpommern',
+    'Niedersachsen',
+    'Nordrhein-Westfalen',
+    'Rheinland-Pfalz',
+    'Saarland',
+    'Sachsen',
+    'Sachsen-Anhalt',
+    'Schleswig-Holstein',
+    'Thüringen'];
+    
   subgroups: any;
   outcomes: any;
   determinants: any;
@@ -158,24 +176,6 @@ export class StartComponent implements OnInit {
   dometasettings() {
     this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
     this.levelid = this.api.filterArray(this.metadata, "type", "levelid")[0]['varname'];
-    this.levelvalues = [
-      'Gesamt',
-      'Baden-Württemberg',
-      'Bayern',
-      'Berlin',
-      'Brandenburg',
-      'Bremen',
-      'Hamburg',
-      'Hessen',
-      'Mecklenburg-Vorpommern',
-      'Niedersachsen',
-      'Nordrhein-Westfalen',
-      'Rheinland-Pfalz',
-      'Saarland',
-      'Sachsen',
-      'Sachsen-Anhalt',
-      'Schleswig-Holstein',
-      'Thüringen'];
     this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
     //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
     //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
