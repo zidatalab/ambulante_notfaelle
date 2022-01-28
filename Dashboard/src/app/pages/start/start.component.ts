@@ -54,7 +54,7 @@ export class StartComponent implements OnInit {
   ngOnInit(): void {    
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for failsafe db ops, cleans cache on app init
-    //this.db.clean();
+    this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
@@ -63,10 +63,11 @@ export class StartComponent implements OnInit {
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);    
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
+    this.updatemetadata();
     window.scroll(0,0);
     this.setlevel("__init","");
-    setTimeout(() => {
-      this.updatemetadata();
+    setTimeout(() => {      
+      this.setlevel("__init","");
     }, 1500);     
     window.scroll(0,0);
   }
