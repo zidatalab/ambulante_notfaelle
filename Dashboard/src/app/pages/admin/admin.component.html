@@ -38,10 +38,17 @@
                         <mat-icon fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')<0" mat-list-icon>
                             account_circle</mat-icon>
                         <div mat-line fxLayout="row wrap">
-                            <div fxFlex=45><span *ngIf="user.stammdaten"><br></span><strong><a
-                                        *ngIf="this.currentuser['is_superadmin']"
+                            <div fxFlex=45><span *ngIf="user.stammdaten"><br>
+                            </span>
+                            <span *ngIf="this.currentuser['is_superadmin']"><strong><a                                        
                                         (click)="user.stammdaten=!user.stammdaten">{{!user.lastname? 'k.A.':
-                                        user.anrede+" "+user.lastname }} </a></strong>
+                                        user.anrede+" "+user.lastname }} </a>
+                                    </strong>
+                            </span>
+                            <span *ngIf="!this.currentuser['is_superadmin']"><strong>{{!user.lastname? 'k.A.':
+                                user.anrede+" "+user.lastname }} 
+                            </strong>
+                            </span>
                                         <span *ngIf="user.stammdaten">({{user.email}})</span>
                             </div>
                             <div fxFlex=54 fxLayout="wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
