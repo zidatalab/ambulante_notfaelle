@@ -10,16 +10,9 @@
         </div>
         <div>
             <button mat-raised-button (click)="this.adduser=!this.adduser" color="primary">Nutzer hinzufügen</button>
-        </div>
-        <div fxShow.lt-md=false>
-            <button mat-raised-button (click)="this.adddata=!this.adddata" color="primary">Daten</button>
-        </div>
+        </div>        
 
-    </div>
-    <div fxShow=false fxShow.lt-md=true>
-        <h4>Hinweis:</h4>
-        <p>Daten und Metadaten können nur auf großen Bildschirmen bearbeitet werden.</p>
-    </div>
+    </div>    
 
     <div *ngIf="!this.adduser && !this.adddata">
         <h2>Nutzerliste</h2>
