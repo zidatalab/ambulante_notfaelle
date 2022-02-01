@@ -12,7 +12,13 @@
         <ng-container *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             <!-- Text anpassen -->
             <p>Es sind aktuell noch keine öffentlichen Informationen auf diesem Portal verfügbar.</p>
-        </ng-container>
+            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland Informationen zu ambulanten Akut- und Notfällen
+              in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den aus den 116117-Leitstellen der Kassenärztlichen Vereinigungen
+              übermittelten SmED-Daten. SmED ist eine Software für die strukturierte medizinische Ersteinschätzung in Deutschland. Durch SmED wird das 
+              medizinische Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen Risikofaktoren 
+              (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende Versorgungsmöglichkeit für den Anrufenden ist, unterstützt.</p>
+            <p>Zukünftig soll das Portal noch um Informationen aus weiteren Quellen für ambulante Akut- und Notfälle ergänzt werden, wie beispielsweise die Abrechnungsdaten.</p>
+      </ng-container>
     </div>
 
     <div *ngIf="this.metadata.length>0 || this.currentuser">
@@ -82,9 +88,9 @@
         <div class="lightgreycolor mat-caption" fxFlex=100>
             <!-- Text anpassen -->
             <p><strong>Ersteinschätzung am Telefon</strong></p>
-            <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die
-                Software SmED wird aktuell noch nicht in allen KVen eingesetzt. Dadurch liegen nicht für alle KVen
-                entsprechende Auswertungen vor. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
+            <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED 
+              wird in allen Kven, jedoch in unterschiedlichem Umfang eingesetzt. Zuverlässige Aussagen können erst bei einer 
+              kontinuierlichen Nutzung getroffen werden. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
 
         </div>
         <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
@@ -147,7 +153,8 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>keine</p>
+                            <p>Im Rahmen von Anrufen bei der 116117 monatlich durchgeführte SmED-Assessments pro 
+                              100.000 Einwohner.</p>
                         </div>
                     </mat-expansion-panel>
                 </div>
@@ -176,10 +183,10 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>ARE Assessments: Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE). 
-                                Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, 
-                                Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
-                                <p>Ausgewiesen ist die prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25% ARE-Assessments).</p>
+                            <p>Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE), ausgewiesen als prozentuale Abweichung von 
+                              ARE Hintergrundaktivität (erwartet werden 25% ARE-Assessments).</p>
+                            <p>Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen, 
+                              Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
                         </div>
                     </mat-expansion-panel>
                 </div>
@@ -208,7 +215,9 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Angaben zur Dauer liegen erst seit Mai 2020 vor. In die Berechnung der Dauer fließen nur Assessments mit dem klassischen 
+                              SmED-Modul (nicht COVID-spezifische Module) und einer Dauer von <= 1000 Sekunden ein, da bei Assessments > 1000 Sekunden 
+                              davon auszugehen ist, dass diese nicht ordnungsgemäß abgeschlossen wurden.</p>
                         </div>
                         </mat-panel-description>
                     </mat-expansion-panel>
@@ -237,7 +246,9 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>In die Anzahl der Fragen fließen alle im Rahmen des SmED-Assessments dokumentierten Fragen ein, sowohl 
+                              allgemeine (Alter, Geschlecht, Schwangerschaft) als auch symptomspezifische Fragen (Vorliegen, Dauer, Stärke), 
+                              auch wenn diese verneint wurden. </p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
@@ -266,7 +277,8 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Die Anzahl der Beschwerden umfasst die im Rahmen des SmED-Assessments dokumentierten vorliegenden Beschwerden der Anrufenden. 
+                              Bisher nicht enthalten sind Beschwerden, die im Rahmen der Vortriage erfasst wurden.</p>
                         </div>
                         </mat-panel-description>
                     </mat-expansion-panel>
@@ -296,7 +308,7 @@
                                 </p>
                                 <h3> Weitere Informationen zum Indikator</h3>
                                 <!-- Text anpassen -->
-                                <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                                <p>Prozentuale Verteilung der SmED-Assessments nach Wochentag und Uhrzeit (Drei-Stunden-Intervalle).</p>
                             </div>
                         </mat-panel-description>
                         </mat-expansion-panel>
@@ -329,7 +341,7 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsdringlichkeit.</p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
@@ -360,7 +372,7 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsebene und Versorgungsdringlichkeit.</p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
@@ -392,7 +404,10 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Abgleich der SmED-Empfehlung mit der Entscheidung des/der Disponent*in hinsichtlich der Versorgungsdringlichkeit. 
+                              Die Entscheidung des/der Disponent*in wird in SmED bisher nur bei einem kleinen Anteil der SmED-Assessments dokumentiert. 
+                              Es wird an einer Übermittlung der entsprechenden Angaben aus der Dispositionssoftware gearbeitet. Dieser Prozess ist bisher 
+                              mit einigen wenigen KVen etabliert. </p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
@@ -424,7 +439,10 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Abgleich der SmED-Empfehlung mit der Entscheidung des/der Disponent*in hinsichtlich der Versorgungsebene. 
+                              Die Entscheidung des/der Disponent*in wird in SmED bisher nur bei einem kleinen Anteil der SmED-Assessments dokumentiert. 
+                              Es wird an einer Übermittlung der entsprechenden Angaben aus der Dispositionssoftware gearbeitet. Dieser Prozess ist bisher 
+                              mit einigen wenigen KVen etabliert.   </p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
@@ -456,7 +474,9 @@
                             </p>
                             <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Es liegt aktuell keine Indikatorenbeschreibung vor</p>
+                            <p>Häufigste im Rahmen des SmED-Assessments dokumentierten vorliegenden Beschwerden der Anrufenden in Prozent von 
+                              allen SmED-Assessments mit Angabe zur Beschwerde. Insgesamt sind über 100 verschiedene Behandlungsanlässe über SmED 
+                              verzeichnet worden. Bisher nicht enthalten sind Beschwerden, die im Rahmen der Vortriage erfasst wurden.</p>
                         </div>
                     </mat-panel-description>
                     </mat-expansion-panel>
