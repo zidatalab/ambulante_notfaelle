@@ -58,7 +58,7 @@
         </p>
         </div>
         <div *ngIf="this.settings['outcome']">
-            <h3>Differenzierungsmerkmale</h3>
+            <h3>Differenzierungsmerkmale (max. 2 Merkmale möglich)</h3>
             <p>
                 <mat-chip-list multiple>
                     <mat-chip (click)="this.updatequery('diffmerkmale',item);" *ngFor="let item of this.diffmerkmale"
