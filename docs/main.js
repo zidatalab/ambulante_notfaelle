@@ -5649,11 +5649,13 @@ class StartComponent {
             let stand = yield this.db.getstand(thefield, "KV", this.levelsettings["levelvalues"], this.levelsettings["resolution"]);
             //console.log("Stand testen:",thefield,stand,this.levelsettings["start"],this.levelsettings["stop"]);
             if (stand) {
-                if (stand['startdate'] <= this.levelsettings["start"] &&
-                    stand['stopdate'] >= this.levelsettings["stop"]) {
+                if ((stand['startdate'] >= this.levelsettings["start"]) &&
+                    (stand['stopdate'] >= this.levelsettings["stop"])) {
                     let oldstand = new Date(stand['Stand']);
                     let dataage = Math.round((now.getTime() - oldstand.getTime()) / (100 * 60 * 60)) / 10;
-                    // console.log('data already in DB',dataage,"hours old");
+                    console.log('data already in DB', dataage, "hours old");
+                    console.log('Stand:', stand);
+                    console.log('Settings:', this.levelsettings);
                     if (dataage <= 24) {
                         return [];
                     }
@@ -5683,7 +5685,7 @@ class StartComponent {
                     isNaN(dbdaterange['max']) || isNaN(dbdaterange['min'])) {
                     this.api.postTypeRequestnotimeout('get_data/', query).subscribe(data => {
                         let res = data["data"];
-                        this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4), this.levelsettings["resolution"]).then(() => {
+                        this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
                             this.updatedb(res, thefield);
                             this.db.storestand(thefield, 'KV', this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
                         });
@@ -5693,7 +5695,7 @@ class StartComponent {
             else {
                 this.api.postTypeRequest('get_data/', query).subscribe(data => {
                     let res = data["data"];
-                    this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4), this.levelsettings["resolution"]).then(() => {
+                    this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
                         //console.log('store new data',thefield,res);
                         this.updatedb(res, thefield);
                     });
@@ -6538,7 +6540,7 @@ class DBService {
             }
         });
     }
-    deletewhere(Indicator, level, levelid, startjahr = "", stopjahr = "", resolution = "monthly") {
+    deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "") {
         let tosearch = {
             Indicator: Indicator,
             level: level,
@@ -6546,11 +6548,12 @@ class DBService {
             timeframe: resolution
         };
         // Can be implemented later to restrict results
-        if (startjahr == "" && stopjahr !== "") {
-            _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+Jahr+timeframe]').between([level, levelid, Indicator, startjahr, resolution], [level, levelid, Indicator, stopjahr, resolution]).delete();
+        if (start !== "" && stop !== "") {
+            return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Datum]').between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop]).delete();
         }
-        ;
-        return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).delete();
+        else {
+            return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).delete();
+        }
     }
     adddatabulk(array) {
         //console.log('add bulk',array)
