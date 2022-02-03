@@ -51,7 +51,7 @@
                             </span>
                                         <span *ngIf="user.stammdaten">({{user.email}})</span>
                             </div>
-                            <div fxFlex=54 fxLayout="wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
+                            <div fxFlex=54 fxLayoutGap="10px" fxLayoutAlign="space-between">
                                 <div>
                                     <mat-chip-list *ngIf="!user.stammdaten" class="smallchips">
                                         <mat-chip color="primary"
@@ -100,21 +100,22 @@
                                     löschen</mat-chip>
                                 <mat-chip *ngIf="!user.chpwd" color="accent"
                                     (click)="user.chpwd=!user.chpwd;user.rndpwd=this.rndpwd();" selected>password
-                                    zurücksetzen</mat-chip>
-                                <div class="add-margin" *ngIf="user.chpwd">
-                                    <p>Neues Password:</p>
-                                    <p><strong>{{user.rndpwd}}</strong> <a class="add-margin"
-                                            (click)="this.copy(user.rndpwd)">
-                                            <mat-icon>content_copy</mat-icon>
-                                        </a></p>
-                                    <p>
-                                        <mat-chip color="accent" (click)="user.chpwd=!user.chpwd;" selected>abbrechen
-                                        </mat-chip>&nbsp;&nbsp;<mat-chip color="primary"
-                                            (click)="chpwd(user.email,user.rndpwd)" selected>passwort setzen</mat-chip>
-                                    </p>
-                                </div>
-                            </mat-chip-list>
-                            <br>
+                                    zurücksetzen</mat-chip>                                
+                            </mat-chip-list>                                           
+                                         
+                        </div>
+                        <div *ngIf="user.chpwd" mat-line>
+                            <p>Neues Password:                            <strong>{{user.rndpwd}}</strong> <a class="add-margin"
+                                    (click)="this.copy(user.rndpwd)">
+                                    <mat-icon>content_copy</mat-icon>
+                                </a>
+                            
+                                
+                                <mat-chip color="accent" (click)="user.chpwd=!user.chpwd;" selected>abbrechen
+                                </mat-chip>&nbsp;&nbsp;<mat-chip color="primary"
+                                    (click)="chpwd(user.email,user.rndpwd)" selected>passwort setzen</mat-chip>
+                                
+                            </p>
                         </div>
                         <mat-divider></mat-divider>
                     </mat-list-item>
