@@ -47,7 +47,7 @@ export class InterceptorService {
       catchError((error: HttpErrorResponse) => {
 
         // Refresh if token has expired and Userdetails not null
-        if (request.url.includes(this.apiurl) && (this._auth.getUserDetails()["username"].length>0) &&
+        if (request.url.includes(this.apiurl) && (this._auth.getUserDetails()["email"].length>0) &&
           error.status == 401) {
           this._auth.refreshToken();
         }
