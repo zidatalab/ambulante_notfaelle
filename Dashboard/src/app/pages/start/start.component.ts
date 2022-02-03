@@ -190,11 +190,13 @@ export class StartComponent implements OnInit {
     let stand = await this.db.getstand(thefield,"KV",this.levelsettings["levelvalues"],this.levelsettings["resolution"]);
     //console.log("Stand testen:",thefield,stand,this.levelsettings["start"],this.levelsettings["stop"]);
     if (stand){
-    if (stand['startdate']<=this.levelsettings["start"] && 
-    stand['stopdate']>=this.levelsettings["stop"]){
+    if ((stand['startdate']>=this.levelsettings["start"]) && 
+    (stand['stopdate']>=this.levelsettings["stop"])){
       let oldstand:Date = new Date(stand['Stand']);
       let dataage = Math.round((now.getTime()-oldstand.getTime())/(100*60*60))/10;
-      // console.log('data already in DB',dataage,"hours old");
+      console.log('data already in DB',dataage,"hours old");
+      console.log('Stand:',stand);
+      console.log('Settings:',this.levelsettings);
       if (dataage<=24){return [];};
     };
   };
@@ -222,8 +224,9 @@ export class StartComponent implements OnInit {
         this.api.postTypeRequestnotimeout('get_data/', query).subscribe(
           data => {            
             let res = data["data"];
-            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4),this.levelsettings["resolution"]).then(() => {
+            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],this.levelsettings["resolution"],
+            this.levelsettings["start"], this.levelsettings["stop"]
+              ).then(() => {
               this.updatedb(res, thefield);
               this.db.storestand(thefield,'KV', this.levelsettings["levelvalues"],now.toISOString(),this.levelsettings["start"],this.levelsettings["stop"],this.levelsettings["resolution"]);
             });
@@ -235,9 +238,9 @@ export class StartComponent implements OnInit {
       this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];          
-          this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],
-            this.levelsettings["start"].slice(0, 4), this.levelsettings["stop"].slice(0, 4),
-            this.levelsettings["resolution"]).then(() => { 
+          this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"],this.levelsettings["resolution"],
+            this.levelsettings["start"], this.levelsettings["stop"],
+            ).then(() => { 
               //console.log('store new data',thefield,res);
               this.updatedb(res, thefield) });
               this.db.storestand(thefield,'KV', 

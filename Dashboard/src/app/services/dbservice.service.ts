@@ -103,7 +103,7 @@ getstand(Indicator,level,levelid,resolution){
     
   }
 
-  deletewhere(Indicator,level, levelid, startjahr="",stopjahr="",resolution="monthly") {
+  deletewhere(Indicator,level, levelid, resolution="monthly", start="",stop="") {
     let tosearch = {
       Indicator: Indicator,
       level: level,
@@ -111,12 +111,17 @@ getstand(Indicator,level,levelid,resolution){
       timeframe:resolution
     }
     // Can be implemented later to restrict results
-    if (startjahr=="" && stopjahr!==""){
-      db.datadb
-      .where('[level+levelid+Indicator+Jahr+timeframe]').between([level,levelid,Indicator,startjahr,resolution],[level,levelid,Indicator,stopjahr,resolution]).delete();
-    };
-    return db.datadb
-      .where('[level+levelid+Indicator+timeframe]').equals([level,levelid,Indicator,resolution]).delete();
+    if (start!=="" && stop!==""){
+      return db.datadb
+      .where('[level+levelid+Indicator+timeframe+Datum]').between(
+        [level,levelid,Indicator,resolution,start],
+        [level,levelid,Indicator,resolution,stop]).delete();
+    }
+    else {
+      return db.datadb
+      .where('[level+levelid+Indicator+timeframe]').equals(
+        [level,levelid,Indicator,resolution]).delete();
+    }    
   }
 
   adddatabulk(array) {
