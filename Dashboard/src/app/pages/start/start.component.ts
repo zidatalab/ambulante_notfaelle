@@ -194,9 +194,9 @@ export class StartComponent implements OnInit {
     (stand['stopdate']>=this.levelsettings["stop"])){
       let oldstand:Date = new Date(stand['Stand']);
       let dataage = Math.round((now.getTime()-oldstand.getTime())/(100*60*60))/10;
-      console.log('data already in DB',dataage,"hours old");
-      console.log('Stand:',stand);
-      console.log('Settings:',this.levelsettings);
+      //console.log('data already in DB',dataage,"hours old");
+      //console.log('Stand:',stand);
+      //console.log('Settings:',this.levelsettings);
       if (dataage<=24){return [];};
     };
   };
