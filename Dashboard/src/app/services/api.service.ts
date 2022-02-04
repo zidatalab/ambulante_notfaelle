@@ -33,13 +33,13 @@ export class ApiService {
   public  getTypeRequestnotimeout(url) { 
     return this.httpClient.get(this.REST_API_SERVER+url).pipe(map(res => { 
       return res; 
-    })).pipe(retry(1)); 
+    })).pipe(retry(3)); 
   } 
  
   public  postTypeRequestnotimeout(url, payload) { 
     return this.httpClient.post(this.REST_API_SERVER+url, payload).pipe(map(res => { 
       return res; 
-    })).pipe(retry(1)); ; 
+    })).pipe(retry(3)); ; 
   } 
   
   
