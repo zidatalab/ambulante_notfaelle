@@ -5900,12 +5900,12 @@ class ApiService {
     getTypeRequestnotimeout(url) {
         return this.httpClient.get(this.REST_API_SERVER + url).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)(res => {
             return res;
-        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.retry)(1));
+        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.retry)(3));
     }
     postTypeRequestnotimeout(url, payload) {
         return this.httpClient.post(this.REST_API_SERVER + url, payload).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.map)(res => {
             return res;
-        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.retry)(1));
+        })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.retry)(3));
         ;
     }
     // Specific Requests
