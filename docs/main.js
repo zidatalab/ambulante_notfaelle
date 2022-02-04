@@ -5530,7 +5530,7 @@ class StartComponent {
         this.stats_ts = [];
         this.summaryinfo = {};
         this.smedrange = {};
-        this.zeitaumoptions = ["Aktuelles Jahr", "Letztes Jahr", "Gesamt", "Detailliert"];
+        this.zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt", "Detailliert"];
         this.ts_results = {};
         this.utiltimes = {};
     }
@@ -5538,7 +5538,7 @@ class StartComponent {
         //console.log("USER", this.auth.currentUserValue);
         // uncomment for failsafe db ops, cleans cache on app init
         this.db.clean();
-        this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr", 'resolution': 'monthly' };
+        this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
         this.summaryinfo["done"] = false;
         this.colorsscheme = this.api.makescale(5);
         //console.log("Colors",this.colorsscheme);
@@ -6853,6 +6853,11 @@ class SmedAggregationService {
         let today = new Date();
         let startdate = "2019-04-01";
         let enddate = today.getFullYear() + "-12-31";
+        if (levelsettings["zeitraum"] == "Letzte 12 Monate") {
+            startdate = new Date(today.getFullYear() - 1 + today.toISOString().slice(4, 8) + "01").toISOString().slice(0, 10);
+            enddate = today.toISOString().slice(0, 10);
+        }
+        ;
         if (levelsettings["zeitraum"] == "Aktuelles Jahr") {
             startdate = new Date(today.getFullYear() + "-01-01").toISOString().slice(0, 10);
             enddate = new Date(today.getFullYear() + "-12-31").toISOString().slice(0, 10);
