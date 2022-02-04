@@ -70,9 +70,8 @@ export class StartComponent implements OnInit {
   decisions_pocvsttt :any;
 
   ngOnInit(): void {    
-    //console.log("USER", this.auth.currentUserValue);
     // uncomment for failsafe db ops, cleans cache on app init
-    this.db.clean();
+    this.db.clean();    
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate",'resolution':'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
@@ -265,7 +264,7 @@ export class StartComponent implements OnInit {
     this.csv.exportToCsv(name + "_settings.csv", [this.levelsettings]);
   }
 
-
+  
   async makesmeditems(thefield) { 
     //console.log("Start",thefield,new Date());
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);

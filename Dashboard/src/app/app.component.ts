@@ -19,6 +19,7 @@ export class AppComponent {
   public loginstatus:boolean;
   public adminstatus:boolean;
   currentdate:any;
+  public apiconnection:number=0;
   
 
   constructor(
@@ -38,7 +39,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    //this.checkforopentabs();
+    this.checkapiconnection();
     this.currentdate = new Date();
     this._auth.currentUser.subscribe(data => {
       if (data){
@@ -46,7 +47,8 @@ export class AppComponent {
         this.loginstatus = true;
         this.adminstatus = this.currentuser["is_admin"] || this.currentuser["is_superadmin"];      
         setTimeout(()=>{this.autorefreshdata();},1000);    
-        setInterval(()=>{this._auth.refreshToken();},1000*60*10);
+        setInterval(()=>{this._auth.refreshToken();this.checkapiconnection();},1000*60*10);
+        
       }
       else {
         this.loginstatus = false;
@@ -57,7 +59,10 @@ export class AppComponent {
       );         
   }
 
-   
+  public checkapiconnection(){
+    this._api.getTypeRequest('openapi.json').subscribe(data => {this.apiconnection=1;}, error =>  {this.apiconnection=2;})
+  }
+  
   public checkforopentabs(){
     // Broadcast that you're opening a page.
     localStorage.openpages = Date.now();

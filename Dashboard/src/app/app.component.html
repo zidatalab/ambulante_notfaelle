@@ -101,6 +101,8 @@
             <!-- Offline message-->
             <div class="offlinemsg" *ngIf="false"><strong>Keine Internetverbindung</strong><br>Dieses Portal benötigt
               eine aktive Internetverbindung.</div>
+              <div class="offlinemsg" *ngIf="this.apiconnection==2"><strong>Keine Verbindung zur API</strong><br>Dieses Portal benötigt
+                eine aktive Internetverbindung.</div>              
             <router-outlet></router-outlet>
           </mat-drawer-content>
         </mat-drawer-container>
@@ -138,7 +140,7 @@
           </div>
           <div style="padding:0.5rem;text-align: center;">
             <p>© {{this.currentdate | date:'Y'}} Zentralinstitut für die kassenärztliche Versorgung in der Bundesrepublik
-              Deutschland</p>
+              Deutschland</p>              
           </div>
         </div>
 
