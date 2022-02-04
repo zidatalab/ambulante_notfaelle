@@ -157,9 +157,13 @@ updatestartstop(levelsettings){
   let today = new Date();
   let startdate = "2019-04-01";
   let enddate = today.getFullYear()+"-12-31";
+  if (levelsettings["zeitraum"]=="Letzte 12 Monate"){
+    startdate = new Date(today.getFullYear()-1+today.toISOString().slice(4,8)+"01").toISOString().slice(0,10);
+    enddate = today.toISOString().slice(0,10)
+  };
   if (levelsettings["zeitraum"]=="Aktuelles Jahr"){
-      startdate = new Date(today.getFullYear()+"-01-01").toISOString().slice(0,10);
-      enddate = new Date(today.getFullYear()+"-12-31").toISOString().slice(0,10)
+    startdate = new Date(today.getFullYear()+"-01-01").toISOString().slice(0,10);
+    enddate = new Date(today.getFullYear()+"-12-31").toISOString().slice(0,10)
     };
     if (levelsettings["zeitraum"]=="Letztes Jahr"){
       startdate = new Date(today.getFullYear()-1+"-01-01").toISOString().slice(0,10);

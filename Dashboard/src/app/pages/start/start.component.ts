@@ -61,7 +61,7 @@ export class StartComponent implements OnInit {
   symptoms_list_export: any;
   summaryinfo = {};
   smedrange = {};
-  zeitaumoptions = ["Aktuelles Jahr", "Letztes Jahr", "Gesamt", "Detailliert"];
+  zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt", "Detailliert"];
   ts_results = {};
   utiltimes = {};
   timetotreat :any;
@@ -73,7 +73,7 @@ export class StartComponent implements OnInit {
     //console.log("USER", this.auth.currentUserValue);
     // uncomment for failsafe db ops, cleans cache on app init
     this.db.clean();
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letztes Jahr",'resolution':'monthly' };
+    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate",'resolution':'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     //console.log("Colors",this.colorsscheme);
