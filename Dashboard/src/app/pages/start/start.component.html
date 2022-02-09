@@ -13,11 +13,29 @@
         <ng-container *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             <!-- Text anpassen -->
             <p>Es sind aktuell noch keine öffentlichen Informationen auf diesem Portal verfügbar.</p>
-            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (Zi) Informationen zu ambulanten Akut- und Notfällen in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den SmED-Daten, die von den 116117-Leitstellen der Kassenärztlichen Vereinigungen übermittelt wurden. Bei SmED (Strukturierte medizinische Ersteinschätzung in Deutschland) handelt es sich um eine Ersteinschätzungssoftware, die den Anwender bei der Einschätzung der Beschwerden eines Patienten unterstützen kann. Durch SmED wird das medizinische Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen Risikofaktoren (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende Versorgungsmöglichkeit für den Anrufenden ist, unterstützt. Die SmED-Empfehlungen der Software stellen dabei eine Entscheidungshilfe für den Anwender dar. Weitere Informationen zu SmED finden Sie <a href="https://www.zi.de/smed">hier</a>.</p>
-            <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für ambulante Akut- und Notfälle ergänzt werden.</p>
+            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (Zi) Informationen
+                zu
+                ambulanten Akut- und Notfällen in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den
+                SmED-Daten,
+                die von den 116117-Leitstellen der Kassenärztlichen Vereinigungen übermittelt wurden. Bei SmED (Strukturierte
+                medizinische Ersteinschätzung in Deutschland) handelt es sich um eine Ersteinschätzungssoftware, die den
+                Anwender
+                bei der Einschätzung der Beschwerden eines Patienten unterstützen kann. Durch SmED wird das medizinische
+                Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen
+                Risikofaktoren (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende
+                Versorgungsmöglichkeit für den Anrufenden ist, unterstützt. Die SmED-Empfehlungen der Software stellen dabei
+                eine
+                Entscheidungshilfe für den Anwender dar. Weitere Informationen zu SmED finden Sie <a
+                    href="https://www.zi.de/smed">hier</a>.</p>
+            <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
+                ambulante Akut- und Notfälle ergänzt werden.</p>
         </ng-container>
         <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
-            <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnisse aus der strukturierten Ersteinschätzung in Deutschland (SmED) im Rahmen von Anrufen bei der 116117. Die Software SmED wird in allen KVen, jedoch in unterschiedlichem Umfang eingesetzt. Zuverlässige Aussagen können erst bei einer kontinuierlichen Nutzung getroffen werden. Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
+            <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnisse aus der strukturierten Ersteinschätzung in Deutschland
+                (SmED) im Rahmen von Anrufen bei der 116117. Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments
+                genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
+                    Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
+                    {{this.summaryinfo["Ende"] | date}}.</span></p>
         </ng-container>
     </div>
 
@@ -265,7 +283,7 @@
                 <mat-card>
                     <h3>Mittlere Dauer <br><span class="lightgreycolor">Dauer in Sekunden pro Assessment</span></h3>
                     <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                        [fontcolor]="'white'" [colorscheme]="['rgb(183,205,0)']" [sortx]="true"
+                        [fontcolor]="'white'" [colorscheme]="[this.colorsscheme[3]]" [sortx]="true"
                         [outcomes]="['Mittlere Dauer (Sek.)']" plottype="tsline"></app-plot>
                     <div>
                         <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
@@ -295,7 +313,7 @@
                     <h3>Anzahl Beschwerden<br><span class="lightgreycolor">Anzahl unterschiedliche Beschwerdebilder pro
                             Assessment</span></h3>
                     <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                        [fontcolor]="'white'" [colorscheme]="['orange']" [sortx]="true"
+                        [fontcolor]="'white'" [colorscheme]="[this.colorsscheme[2]]" [sortx]="true"
                         [outcomes]="['Mittlere Anzahl Beschwerden']" plottype="tsline"></app-plot>
                     <div>
                         <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
@@ -327,7 +345,7 @@
                         <mat-icon class="backgroundicon">lock_open</mat-icon>
                     </h3>
                     <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-                        [fontcolor]="'white'" [colorscheme]="[this.colorsscheme[2]]" [sortx]="true"
+                        [fontcolor]="'white'" [colorscheme]="[this.colorsscheme[1]]" [sortx]="true"
                         [outcomes]="['Mittlere Anzahl Fragen']" plottype="tsline"></app-plot>
                     <div>
                         <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
