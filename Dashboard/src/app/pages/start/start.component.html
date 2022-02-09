@@ -6,19 +6,18 @@
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser || this.summaryinfo['done']}">
             <h1>Ambulante Akut- und Notfälle in Deutschland</h1>
             <p style="color:lightslategrey" *ngIf="this.currentuser">
-                Interner Testbetrieb<br>Informationen zu Problemen bitte per <strong><a style="color:white;"
+                <strong>Interner Testbetrieb</strong>: Informationen zu Problemen bitte per <strong><a style="color:white;"
                         href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
             </p>
         </div>
         <ng-container *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
             <!-- Text anpassen -->
             <p>Es sind aktuell noch keine öffentlichen Informationen auf diesem Portal verfügbar.</p>
-            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland Informationen zu ambulanten Akut- und Notfällen
-              in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den aus den 116117-Leitstellen der Kassenärztlichen Vereinigungen
-              übermittelten SmED-Daten. SmED ist eine Software für die strukturierte medizinische Ersteinschätzung in Deutschland. Durch SmED wird das 
-              medizinische Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen Risikofaktoren 
-              (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende Versorgungsmöglichkeit für den Anrufenden ist, unterstützt.</p>
-            <p>Zukünftig soll das Portal noch um Informationen aus weiteren Quellen für ambulante Akut- und Notfälle ergänzt werden, wie beispielsweise die Abrechnungsdaten.</p>
+            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (Zi) Informationen zu ambulanten Akut- und Notfällen in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den SmED-Daten, die von den 116117-Leitstellen der Kassenärztlichen Vereinigungen übermittelt wurden. Bei SmED (Strukturierte medizinische Ersteinschätzung in Deutschland) handelt es sich um eine Ersteinschätzungssoftware, die den Anwender bei der Einschätzung der Beschwerden eines Patienten unterstützen kann. Durch SmED wird das medizinische Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen Risikofaktoren (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende Versorgungsmöglichkeit für den Anrufenden ist, unterstützt. Die SmED-Empfehlungen der Software stellen dabei eine Entscheidungshilfe für den Anwender dar. Weitere Informationen zu SmED finden Sie <a href="https://www.zi.de/smed">hier</a>.</p>
+            <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für ambulante Akut- und Notfälle ergänzt werden.</p>
+        </ng-container>
+        <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
+            <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnisse aus der strukturierten Ersteinschätzung in Deutschland (SmED) im Rahmen von Anrufen bei der 116117. Die Software SmED wird in allen KVen, jedoch in unterschiedlichem Umfang eingesetzt. Zuverlässige Aussagen können erst bei einer kontinuierlichen Nutzung getroffen werden. Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>
         </ng-container>
     </div>
 
@@ -76,14 +75,7 @@
                 Keine Daten verfügbar
             </p>
         </div>
-        <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
-            <div class="lightgreycolor mat-caption" fxFlex=100>
-                <!-- Text anpassen -->
-                <p><strong>Ersteinschätzung am Telefon</strong></p>
-            <p> Auswertung der Ergebnisse der strukturierten Ersteinschätzung im Rahmen von Anrufen bei der 116 117. Die Software SmED 
-              wird in allen Kven, jedoch in unterschiedlichem Umfang eingesetzt. Zuverlässige Aussagen können erst bei einer 
-              kontinuierlichen Nutzung getroffen werden. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am {{this.summaryinfo["Ende"] | date}}.</span></p>              
-            </div>
+        <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">            
             <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
                 <mat-card>
                     <div fxLayout="row wrap">
@@ -142,8 +134,7 @@
                                 </p>
                                 <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Im Rahmen von Anrufen bei der 116117 monatlich durchgeführte SmED-Assessments pro 
-                              100.000 Einwohner.</p>
+                            <p>Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen bei der 116117 monatlich durchgeführt wurden.</p>
                             </div>
                         </mat-expansion-panel>
                     </div>
@@ -172,10 +163,8 @@
                                 </p>
                                 <h3> Weitere Informationen zum Indikator</h3>
                             <!-- Text anpassen -->
-                            <p>Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE), ausgewiesen als prozentuale Abweichung von 
-                              ARE Hintergrundaktivität (erwartet werden 25% ARE-Assessments).</p>
-                            <p>Berücksichtigt wurden Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen, 
-                              Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
+                            <p>Anzahl der Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE) ausgewiesen als prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25% ARE-Assessments).
+                                Berücksichtigt wurden folgende SmED-Beschwerdebilder: Atembeschwerden, Covid 19, Erkältung/Grippaler Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
                             </div>
                         </mat-expansion-panel>
                     </div>
@@ -204,9 +193,8 @@
                                     </p>
                                     <h3> Weitere Informationen zum Indikator</h3>
                                     <!-- Text anpassen -->
-                                    <p>Häufigste im Rahmen des SmED-Assessments dokumentierten vorliegenden Beschwerden der Anrufenden in Prozent von 
-                                        allen SmED-Assessments mit Angabe zur Beschwerde. Insgesamt sind über 100 verschiedene Behandlungsanlässe über SmED 
-                                        verzeichnet worden. Bisher nicht enthalten sind Beschwerden, die im Rahmen der Vortriage erfasst wurden.</p>
+                                    <p>Prozentuelle Häufigkeit der im Rahmen der SmED-Assessments dokumentierten Beschwerden, sortiert nach der Häufigkeit, anteilig an allen SmED-Assessments, in denen eine Angabe zur Beschwerde vorliegt.
+                                        Insgesamt sind über 100 verschiedene Behandlungsanlässe über SmED verzeichnet worden. Bisher nicht enthalten sind Beschwerden, die im Rahmen der Vortriage erfasst wurden.</p>
                                 </div>
                             </mat-panel-description>
                         </mat-expansion-panel>
@@ -216,7 +204,10 @@
             <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.utiltimes['z']">
                 <ng-container *ngIf="this.utiltimes['z'].length>0">
                     <mat-card>
-                        <h3>Aufkommen nach Tag und Uhrzeit<br><span class="lightgreycolor">Anteil Assessment in Prozent</span></h3>
+                        <h3>Aufkommen nach Tag und Uhrzeit<br><span class="lightgreycolor">Anteil Assessment in Prozent </span>
+                        <span class="lightgreycolor mat-caption">(grün:hoch, blau:niedrig, Werte durch anklicken)</span>
+                        </h3>
+                        
                         <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" plottype="heatmap">
                         </app-plot>
                         <div>
@@ -297,9 +288,7 @@
                                     </p>
                                     <h3> Weitere Informationen zum Indikator</h3>
                                     <!-- Text anpassen -->
-                                    <p>Angaben zur Dauer liegen erst seit Mai 2020 vor. In die Berechnung der Dauer fließen nur Assessments mit dem klassischen 
-                                        SmED-Modul (nicht COVID-spezifische Module) und einer Dauer von <= 1000 Sekunden ein, da bei Assessments > 1000 Sekunden 
-                                        davon auszugehen ist, dass diese nicht ordnungsgemäß abgeschlossen wurden.</p>
+                                    <p>Angaben zur Dauer liegen erst seit Mai 2020 vor. In die Berechnung der Dauer fließen nur Assessments ein, die mit dem klassischen SmED-Modul (nicht COVID-spezifische Module) erfasst wurden. Weiterhin wurden Assessments mit einer Dauer von über 1000 Sekunden ausgeschlossen, da bei diesen Assessments davon auszugehen ist, dass diese nicht ordnungsgemäß abgeschlossen wurden.</p>
                                 </div>
                             </mat-panel-description>
                         </mat-expansion-panel>
