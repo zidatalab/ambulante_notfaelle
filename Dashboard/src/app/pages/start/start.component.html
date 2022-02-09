@@ -205,7 +205,7 @@
                 <ng-container *ngIf="this.utiltimes['z'].length>0">
                     <mat-card>
                         <h3>Aufkommen nach Tag und Uhrzeit<br><span class="lightgreycolor">Anteil Assessment in Prozent </span>
-                        <span class="lightgreycolor mat-caption">(grün:hoch, blau:niedrig, Werte durch anklicken)</span>
+                        <span class="lightgreycolor mat-caption">(grün:hoch, blau:niedrig)</span>
                         </h3>
                         
                         <app-plot [(data)]="this.utiltimes" [fontcolor]="'white'" plottype="heatmap">
