@@ -4074,7 +4074,7 @@ PrivateComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_6_
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](3, "Tool f\u00FCr erweiterte Analysen");
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](4, "p", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](5, "In diesem Bereich ist ein Zugriff auf faktisch anonymisierte Individualdatens\u00E4tze m\u00F6glich");
+        _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtext"](5, "In diesem Bereich nur f\u00FCr KV-Mitarbeiter ist ein Zugriff auf faktisch anonymisierte Individualdatens\u00E4tze m\u00F6glich. Bitte beachten Sie, dass die Datenbankabfragen ggf. etwas Zeit ben\u00F6tigen.");
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](6, PrivateComponent_div_6_Template, 32, 14, "div", 3);
@@ -5568,16 +5568,16 @@ class StartComponent {
         this.summaryinfo = {};
         this.smedrange = {};
         this.zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt", "Detailliert"];
+        this.allpublicfields = ['stats', 'mainsymptoms_ts', 'timetotreat', 'timestats'];
         this.ts_results = {};
         this.utiltimes = {};
     }
     ngOnInit() {
         // uncomment for failsafe db ops, cleans cache on app init
-        this.db.clean();
+        //this.db.clean();
         this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
         this.summaryinfo["done"] = false;
         this.colorsscheme = this.api.makescale(5);
-        //console.log("Colors",this.colorsscheme);
         this.mapdatafor = "";
         this.mapdata = [];
         this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -5585,10 +5585,6 @@ class StartComponent {
         this.updatemetadata();
         window.scroll(0, 0);
         this.setlevel("__init", "");
-        setTimeout(() => {
-            this.setlevel("__init", "");
-        }, 1500);
-        window.scroll(0, 0);
     }
     ngOnDestroy() {
         this.mapdata = [];
@@ -5609,63 +5605,41 @@ class StartComponent {
             this.timetotreat = NaN;
             if (this.levelsettings['start'] && this.levelsettings['stop']) {
                 this.progress = true;
-                // Initial Loading
-                //console.log("Init");
-                yield this.makesmeditems('stats');
-                //console.log("update...");
-                yield this.querydatasmed('stats');
-                //console.log("make...");
-                yield this.makesmeditems('mainsymptoms_ts');
-                //console.log("make...");
-                yield this.makesmeditems('timetotreat');
-                //console.log("make...");
-                yield this.makesmeditems('timestats');
-                //console.log("make...");
-                yield this.makesmeditems('decisions');
-                //console.log("make...");
-                this.progress = false;
-                // Update (implement if-needed tbd.)
-                yield this.querydatasmed('mainsymptoms_ts');
-                //console.log("update...");
-                yield this.querydatasmed('timetotreat');
-                //console.log("update...");
-                yield this.querydatasmed('timestats');
-                //console.log("update...");
-                yield this.querydatasmed('decisions');
-                //console.log("update...");
+                yield this.querydatasmed();
+                if (this.currentuser) {
+                    yield this.querydatasmed('decisions');
+                }
+                ;
             }
-            // Show loading is over
-            this.progress = false;
         });
     }
     updatemetadata() {
-        if (this.api.getmetadata("metadata")) {
-            this.metadata = this.api.getmetadata("metadata");
-            // Performance optimization - use only if needed
-            // this.sortdata = this.api.getmetadata("sortdata");
-            // this.geojson_available = this.api.getmetadata("geodata");
-        }
-        if (this.metadata) {
-            if (this.metadata.length > 0) {
-                this.dometasettings();
-                this.setlevel("__init", "");
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
+            if (this.api.getmetadata("metadata")) {
+                this.metadata = yield this.api.getmetadata("metadata");
+                // Performance optimization - use only if needed by app
+                // this.sortdata = this.api.getmetadata("sortdata");
+                // this.geojson_available = this.api.getmetadata("geodata");
             }
-        }
-        else {
-            setTimeout(() => {
-                if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
-                    if (this.metadata.length > 0) {
-                        this.dometasettings();
-                        this.setlevel("__init", "");
+            if (this.metadata) {
+                if (this.metadata.length > 0) {
+                    this.dometasettings();
+                }
+            }
+            else {
+                setTimeout(() => {
+                    if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
+                        if (this.metadata.length > 0) {
+                            this.dometasettings();
+                        }
                     }
-                }
-                else {
-                    this.metadataok = false;
-                    this.progress = false;
-                }
-            }, 1500);
-        }
-        ;
+                    else {
+                        this.metadataok = false;
+                    }
+                }, 1500);
+            }
+            ;
+        });
     }
     handleklick(plot, event) {
     }
@@ -5673,35 +5647,13 @@ class StartComponent {
         this.level = this.api.filterArray(this.metadata, "type", "level")[0]["varname"];
         this.levelid = this.api.filterArray(this.metadata, "type", "levelid")[0]['varname'];
         this.subgroups = ["Keine"].concat(this.api.getValues(this.api.filterArray(this.metadata, "type", "group"), "varname"));
-        //if (this.subgroups) { this.levelsettings["subgroups"] = this.subgroups[0]; }
-        //this.outcomes = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "outcomes"), "varname"), "varname");
-        //this.determinants = this.api.getValues(this.api.sortArray(this.api.filterArray(this.metadata, "topic", "demography"), "varname"), "varname");
-        //if (this.outcomes) { this.levelsettings["outcomes"] = this.outcomes[0]; }
         this.metadataok = true;
     }
-    querydatasmed(thefield) {
+    querydatasmed(thefield = "") {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
             let now = new Date();
-            // implement check for local data status here if ok -> do nothing 
-            let stand = yield this.db.getstand(thefield, "KV", this.levelsettings["levelvalues"], this.levelsettings["resolution"]);
-            //console.log("Stand testen:",thefield,stand,this.levelsettings["start"],this.levelsettings["stop"]);
-            if (stand) {
-                if ((stand['startdate'] >= this.levelsettings["start"]) &&
-                    (stand['stopdate'] >= this.levelsettings["stop"])) {
-                    let oldstand = new Date(stand['Stand']);
-                    let dataage = Math.round((now.getTime() - oldstand.getTime()) / (100 * 60 * 60)) / 10;
-                    //console.log('data already in DB',dataage,"hours old");
-                    //console.log('Stand:',stand);
-                    //console.log('Settings:',this.levelsettings);
-                    if (dataage <= 24) {
-                        return [];
-                    }
-                    ;
-                }
-                ;
-            }
-            ;
-            // Proceed if data is not available or too old    
+            let oldstand = new Date();
+            let dataage = 0; // 0 hours old     
             let query = {
                 "client_id": this.api.REST_API_SERVER_CLIENTID,
                 "groupinfo": {}
@@ -5713,31 +5665,71 @@ class StartComponent {
                 "$gte": parseInt(this.levelsettings["start"].slice(0, 4)),
                 "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
             };
-            query["showfields"] = [thefield, 'KM6Versicherte', 'BEVSTAND'];
-            let dbdaterange;
-            this.db.querydatadates(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]).then(data => { dbdaterange = data; });
-            if (dbdaterange) {
-                if ((dbdaterange['min'] > this.levelsettings["start"] ||
-                    dbdaterange['max'] < this.levelsettings["stop"]) ||
-                    isNaN(dbdaterange['max']) || isNaN(dbdaterange['min'])) {
-                    this.api.postTypeRequestnotimeout('get_data/', query).subscribe(data => {
-                        let res = data["data"];
-                        this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
-                            this.updatedb(res, thefield);
-                            this.db.storestand(thefield, 'KV', this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
-                        });
-                    }, error => { });
-                }
+            if (thefield != "") {
+                query["showfields"] = [thefield, 'KM6Versicherte', 'BEVSTAND'];
             }
             else {
-                this.api.postTypeRequest('get_data/', query).subscribe(data => {
+                query["showfields"] = this.allpublicfields.concat(['KM6Versicherte', 'BEVSTAND']);
+            }
+            ;
+            let dbdaterange;
+            if (thefield != "") {
+                yield this.db.querydatadates('KV', this.levelsettings["levelvalues"], thefield, this.levelsettings["resolution"]).then(data => {
+                    if (data.length > 0) {
+                        dbdaterange = Object.create(data[0]);
+                    }
+                });
+            }
+            else {
+                yield this.db.querydatadates('KV', this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"]).then(data => {
+                    if (data.length > 0) {
+                        dbdaterange = Object.create(data[0]);
+                    }
+                });
+            }
+            ;
+            if (!dbdaterange) {
+                dbdaterange = { 'startdate': '2000-01-01', 'stopdate': '2000-01-01' };
+            }
+            else {
+                oldstand = new Date(dbdaterange['Stand']);
+                dataage = (now.getTime() - oldstand.getTime()) / (1000 * 60 * 60);
+            }
+            ;
+            if ((dbdaterange['startdate'] <= this.levelsettings["start"]) && (dbdaterange['stopdate'] >= this.levelsettings["stop"]) &&
+                (dataage < 6)) {
+                //console.log("local data!", dataage,'hours old',(now.getTime()-oldstand.getTime()));
+                if (thefield != "") {
+                    this.makesmeditems(thefield);
+                }
+                else {
+                    for (let fielditem of this.allpublicfields) {
+                        this.makesmeditems(fielditem);
+                    }
+                    ;
+                }
+                ;
+            }
+            else {
+                yield this.api.postTypeRequest('get_data/', query).subscribe(data => {
                     let res = data["data"];
-                    this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
-                        //console.log('store new data',thefield,res);
-                        this.updatedb(res, thefield);
-                    });
-                    this.db.storestand(thefield, 'KV', this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
-                }, error => { this.progress = false; });
+                    if (thefield != "") {
+                        this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
+                            this.updatedb(res, thefield);
+                        });
+                        this.db.storestand(thefield, 'KV', this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
+                    }
+                    else {
+                        for (let fielditem of this.allpublicfields) {
+                            this.db.deletewhere(fielditem, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
+                                this.updatedb(res, fielditem);
+                            });
+                            this.db.storestand(fielditem, 'KV', this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
+                        }
+                        ;
+                    }
+                    ;
+                }, error => { });
             }
             ;
         });
@@ -5745,7 +5737,7 @@ class StartComponent {
     updatedb(data, thefield) {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
             yield this.smed.newcombine(data, thefield);
-            this.makesmeditems(thefield);
+            yield this.makesmeditems(thefield);
         });
     }
     exportascsv(name, data) {
@@ -5754,7 +5746,6 @@ class StartComponent {
     }
     makesmeditems(thefield) {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
-            //console.log("Start",thefield,new Date());
             this.levelsettings = this.smed.updatestartstop(this.levelsettings);
             let startdate = this.levelsettings['startdate'];
             let enddate = this.levelsettings['enddate'];
@@ -5762,7 +5753,6 @@ class StartComponent {
                 this.stats_ts = [];
                 this.summaryinfo = [];
                 let statswdate = yield this.db.listdata('stats', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
-                // console.log('statswdate:',statswdate);
                 if (statswdate.length > 0) {
                     for (let item of statswdate) {
                         item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["DAUERsmedFaelle"]);
@@ -5780,7 +5770,6 @@ class StartComponent {
                         item["Anteil ARE Assessments"] = (100 * ((item["Assessments_mit_ARE_v3"] / item["Assessments"]) / .25)) - 100;
                     }
                     ;
-                    //console.log("Sample Stat Entry:",statswdate[0]);
                     this.stats_ts = statswdate;
                     let theid = this.stats_ts[0]['levelid'];
                     if (theid != "Gesamt") {
@@ -5799,13 +5788,14 @@ class StartComponent {
                     this.summaryinfo["Beginn"] = new Date(sorteddates[0]);
                     this.summaryinfo["Ende"] = new Date(sorteddates.pop());
                     this.summaryinfo["done"] = true;
+                    // only here signal for loading done:
+                    this.progress = false;
                 }
             }
             ;
             if (thefield == "mainsymptoms_ts") {
                 let symptoms_list = [];
                 symptoms_list = yield this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
-                //console.log("SYMPTOMS",symptoms_list);
                 symptoms_list = this.api.getValues(symptoms_list, 'data');
                 this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
                 for (let item of this.symptoms_list_export) {
@@ -5830,7 +5820,6 @@ class StartComponent {
                     delete item['n'];
                 }
                 this.utiltimes = this.api.makeheatmapdata(utiltimes, "wt", "h", 'Anteil', 'Wochentag', 'TimeLabel');
-                //console.log("Utiltimes:",this.utiltimes)      
             }
             ;
             if (thefield == "timetotreat") {
@@ -5842,20 +5831,15 @@ class StartComponent {
                     item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
                 }
                 this.timetotreat = ttt;
-                //console.log("TTT",ttt);
             }
             if (thefield == "decisions") {
                 let decisions = [];
                 decisions = yield this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
-                //console.log("decicions",decisions.slice(0,20));
                 let total = this.api.sumArray(this.api.getValues(decisions, 'Anzahl'));
                 this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
                 this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");
                 ;
                 this.decisions_pocvsttt = this.api.groupbysum(decisions, 'TTTsmed_text', "POCsmed_text", 'Anzahl');
-                //console.log("Decisions","decisions_ttt",this.decisions_ttt);
-                //console.log("Decisions","decisions_poc",this.decisions_poc);
-                //console.log("Decisions","pocvsttt",this.decisions_pocvsttt);
             }
         });
     }
@@ -5904,12 +5888,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ApiService": () => (/* binding */ ApiService)
 /* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 8806);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 8377);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ 6874);
 /* harmony import */ var chroma_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chroma-js */ 1487);
 /* harmony import */ var chroma_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chroma_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 4001);
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ 6781);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 4001);
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common/http */ 6781);
+
 
 
 
@@ -6050,7 +6036,9 @@ class ApiService {
         return result;
     }
     getmetadata(name) {
-        return JSON.parse(localStorage.getItem(name));
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, void 0, function* () {
+            return JSON.parse(localStorage.getItem(name));
+        });
     }
     sortArray(array, key, order = "ascending") {
         let result = array;
@@ -6206,8 +6194,8 @@ class ApiService {
         return Array.from(intersection);
     }
 }
-ApiService.ɵfac = function ApiService_Factory(t) { return new (t || ApiService)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__.HttpClient)); };
-ApiService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"]({ token: ApiService, factory: ApiService.ɵfac, providedIn: 'root' });
+ApiService.ɵfac = function ApiService_Factory(t) { return new (t || ApiService)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient)); };
+ApiService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineInjectable"]({ token: ApiService, factory: ApiService.ɵfac, providedIn: 'root' });
 
 
 /***/ }),
@@ -6491,9 +6479,8 @@ class DBService {
     }
     storestand(Indicator, level, levelid, Stand, mindate, maxdate, resolution) {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__awaiter)(this, void 0, void 0, function* () {
-            //console.log("Stand speichern!");
             yield _db__WEBPACK_IMPORTED_MODULE_0__.db.standdb.where('[level+levelid+Indicator+timeframe]')
-                .equals([level, levelid, Indicator + resolution])
+                .equals([level, levelid, Indicator, resolution])
                 .delete();
             _db__WEBPACK_IMPORTED_MODULE_0__.db.standdb.put({
                 'level': level,
@@ -6532,52 +6519,10 @@ class DBService {
         }
         ;
     }
-    querydatadates(Indicator, level, levelid, start = "", stop = "", resolution = "monthly") {
+    querydatadates(level, levelid, Indicator, resolution = "monthly") {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__awaiter)(this, void 0, void 0, function* () {
-            let count = yield _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
-                .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop]).count();
-            if (count > 0) {
-                let tosearch = {
-                    Indicator: Indicator,
-                    level: level,
-                    levelid: levelid,
-                    resolution: resolution
-                };
-                let dbpointer = [];
-                let res = {};
-                if (start !== "" && stop !== "") {
-                    _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
-                        .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
-                        .sortBy('Datum').then(data => {
-                        dbpointer = data;
-                        if (dbpointer && (dbpointer.length > 1)) {
-                            return { 'min': dbpointer[0], 'max': dbpointer[dbpointer.length - 1]['Datum'] };
-                        }
-                        else {
-                            return { 'min': NaN, 'max': NaN };
-                        }
-                        ;
-                    });
-                }
-                else {
-                    _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe]')
-                        .equals([level, levelid, Indicator, resolution])
-                        .sortBy('Datum').then(data => {
-                        dbpointer = data;
-                        if (dbpointer.length > 1) {
-                            return { 'min': dbpointer[0], 'max': dbpointer[dbpointer.length - 1]['Datum'] };
-                        }
-                        else {
-                            return { 'min': NaN, 'max': NaN };
-                        }
-                        ;
-                    });
-                }
-                ;
-            }
-            else {
-                return { 'min': NaN, 'max': NaN };
-            }
+            let res = yield _db__WEBPACK_IMPORTED_MODULE_0__.db.standdb.where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).toArray();
+            return res;
         });
     }
     deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "") {
