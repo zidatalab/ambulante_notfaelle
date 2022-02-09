@@ -1,5 +1,5 @@
-<mat-card [style.background-color]="this.itemcolor" style="min-height: 125px;">
-    <div fxLayout="row">
+<mat-card [style.background-color]="this.itemcolor" >
+    <div fxLayout="row" >
     <div fxFlex>
     <h1 *ngIf="!this.textbehind">{{this.title}}{{this.value |  number: this.numberformat}}</h1>
     <h1 *ngIf="this.textbehind">{{this.value |  number: this.numberformat}} {{this.title}}</h1>

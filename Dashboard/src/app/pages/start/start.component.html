@@ -79,32 +79,27 @@
             <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
                 <mat-card>
                     <div fxLayout="row wrap">
-                        <div fxFlex fxHide.lt-md="true">
-                            <app-box [value]="this.summaryinfo['Assessments Gesamt']" [numberformat]="'1.0-0'"
-                                [maincolor]="this.colorsscheme[4].concat('80')"
-                                [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
+                        <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
+                            <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true"
+                                title="" [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
+                                [description]="'Assessments'"></app-box>
                         </div>
-                        <div fxFlex=50 fxHide="true" fxShow.lt-md="true">
-                            <app-box [value]="this.summaryinfo['Assessments Gesamt']/1000000" [textbehind]="true"
-                                title="Mio." [numberformat]="'1.2-2'" [maincolor]="this.colorsscheme[4].concat('80')"
-                                [description]="'Assessments'.concat(this.summaryinfo['levelid'])"></app-box>
-                        </div>
-                        <div fxFlex fxFlex.lt-md=50>
-                            <app-box [textbehind]="true" title="Sek." [numberformat]="'1.1-1'"
+                        <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
+                            <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                                 [maincolor]="this.colorsscheme[3].concat('80')"
-                                [value]="this.summaryinfo['Mittlere Dauer']" description="Dauer"></app-box>
+                                [value]="this.summaryinfo['Mittlere Dauer']" description="Dauer in Sekunden"></app-box>
                         </div>
-                        <div fxFlex>
+                        <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
                             <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                                 [maincolor]="this.colorsscheme[2].concat('80')"
                                 [value]="this.summaryinfo['Anzahl Beschwerden']"
-                                description="Beschwerden pro Assessment">
+                                description="Anzahl Beschwerden">
                             </app-box>
                         </div>
-                        <div fxFlex fxFlex.lt-md=50 *ngIf="this.currentuser">
+                        <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100 *ngIf="this.currentuser">
                             <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                                 [maincolor]="this.colorsscheme[1].concat('80')"
-                                [value]="this.summaryinfo['Anzahl Fragen']" description="Fragen pro Assessment">
+                                [value]="this.summaryinfo['Anzahl Fragen']" description="Anzahl Fragen">
                             </app-box>
                         </div>
                     </div>
