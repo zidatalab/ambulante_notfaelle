@@ -144,7 +144,7 @@ public  filterArraybyList(array,key,list){
   return result
  }
 
-public  getmetadata(name){
+public async  getmetadata(name){
   return JSON.parse(localStorage.getItem(name));
 }
   

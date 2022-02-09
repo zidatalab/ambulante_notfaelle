@@ -10,10 +10,9 @@ export class DBService {
   constructor(private api:ApiService) { }
 
   async storestand(Indicator,level,levelid,Stand,mindate,maxdate,resolution){
-    //console.log("Stand speichern!");
     await db.standdb
           .where('[level+levelid+Indicator+timeframe]')
-          .equals([level,levelid,Indicator+resolution])
+          .equals([level,levelid,Indicator,resolution])
           .delete();
     db.standdb.put({
               'level':level,
@@ -60,47 +59,9 @@ getstand(Indicator,level,levelid,resolution){
       };
   }
 
-  async querydatadates(Indicator,level, levelid, start="",stop="",resolution="monthly") {
-    let count = await db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
-    .between([level,levelid,Indicator,resolution,start],[level,levelid,Indicator,resolution,stop]).count();
-    if (count>0){
-    let tosearch = {
-      Indicator: Indicator,
-      level: level,
-      levelid:levelid,
-      resolution:resolution
-    }
-    let dbpointer=[];
-    let res = {};
-    if (start!=="" && stop!==""){
-      db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
-      .between([level,levelid,Indicator,resolution,start],[level,levelid,Indicator,resolution,stop])
-      .sortBy('Datum').then(data => {
-        dbpointer=data;
-        if (dbpointer && (dbpointer.length>1)){
-        return {'min':dbpointer[0],'max':dbpointer[dbpointer.length-1]['Datum']}}
-        else {
-          return {'min':NaN,'max':NaN}
-        };
-      });
-      } 
-    else 
-    { 
-      db.datadb.where('[level+levelid+Indicator+timeframe]')
-      .equals([level,levelid,Indicator,resolution])
-      .sortBy('Datum').then(data => {
-        dbpointer=data;
-        if (dbpointer.length>1){          
-          return {'min':dbpointer[0],'max':dbpointer[dbpointer.length-1]['Datum']}}
-          else {
-            return {'min':NaN,'max':NaN}
-          };
-      });
-    };}
-    else {
-      return {'min':NaN,'max':NaN};
-    }
-    
+  async querydatadates(level, levelid,Indicator,resolution="monthly") {
+    let res = await db.standdb.where('[level+levelid+Indicator+timeframe]').equals([level,levelid,Indicator,resolution]).toArray();  
+    return res
   }
 
   deletewhere(Indicator,level, levelid, resolution="monthly", start="",stop="") {
