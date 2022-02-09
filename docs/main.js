@@ -4922,7 +4922,7 @@ function StartComponent_div_9_div_19_div_5_ng_container_1_Template(rf, ctx) { if
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](6, "Anteil Assessment in Prozent ");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](7, "span", 42);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](8, "(gr\u00FCn:hoch, blau:niedrig, Werte durch anklicken)");
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](8, "(gr\u00FCn:hoch, blau:niedrig)");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](9, "app-plot", 43);
