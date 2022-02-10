@@ -77,12 +77,17 @@ diffvars = {
   'Beschwerde':['Beschwerden_gesamt']
 }
 
+SmED_Modul:string="Alle";
+SmED_Level:string="Alle";
+
   ngOnInit(): void {
     this.colorsscheme = this.api.makescale(5);
     //console.log('colors',this.colorsscheme);
     this.settings = { 'analyzeall': true, 'level': 'KV', 'levelid': 'Gesamt', 'diffmerkmale': [] };
     //testesttings
-    this.settings = { "analyzeall": true, "level": "KV", "levelid": "Bremen", "diffmerkmale": [ "Geschlecht" ], "start": new Date("2021-09-30"), "end": new Date("2021-10-30"), "outcome": "Anzahl Assessments" };
+    this.settings = { "analyzeall": true, "level": "KV", "levelid": "Gesamt", "diffmerkmale": [], 
+    "start": new Date("2022-01-02"), 
+    "end": new Date("2022-01-08"), "outcome": "Anzahl Assessments" };
     this.timeseriesquery();
     
   }
@@ -106,6 +111,13 @@ diffvars = {
         this.settings['diffmerkmale'].push(value);
       };  
     };    
+    }
+    if (key=='SmED_Modul'){
+      this.SmED_Modul = value;
+
+    }
+    if (key=='SmED_Level'){
+      this.SmED_Level = value;
     }
   if (this.checkparams()){
     this.timeseriesquery();
@@ -181,6 +193,20 @@ diffvars = {
     if (!this.tsquery['outcome']){
       this.restablecols = this.settings['diffmerkmale'].concat(['Anzahl','Anteil']);
     }
+    // Level/Modul
+    if (this.SmED_Level!="Alle"){
+      if (this.SmED_Level!="Patient"){
+        this.tsquery["filterlist"].push({'SMED_Level':this.SmED_Level});
+      }
+      else {
+        this.tsquery["filterlist"].push({'SMED_Level':'pubusersmed'});
+      }
+      
+    }
+    if (this.SmED_Modul!="Alle"){
+      this.tsquery["filterlist"].push({'SMED_Modul':this.SmED_Modul});
+    }
+
     this.api.postTypeRequest('get_data/', { "client_id": this.api.REST_API_SERVER_CLIENTID,
     "groupinfo": {
       "level":"KV","levelid":this.settings['levelid'],

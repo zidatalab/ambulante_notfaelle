@@ -5,10 +5,6 @@
             <span style="color:white;">Bitte beachten Sie, dass die unstandardisierten Abfragen in diesem Bereich ggf. etwas länger dauern.</span>.</p>
     </div>
     <div *ngIf="true">
-<!--         <mat-slide-toggle color="primary" labelPosition='after' *ngIf="this.settings['analyzeall']"
-        (toggleChange)="this.updatequery('analyzeall',!this.settings['analyzeall']);"
-        [checked]="this.settings['analyzeall']"
-        >Bundesweite Analyse</mat-slide-toggle> -->
         <div>
             <p >
                 <mat-form-field appearance="fill">
@@ -44,6 +40,27 @@
         </p>
         </div>
         <div>
+            <h3>Level</h3>
+            <p>
+                <mat-chip-list>
+                    <mat-chip (click)="this.updatequery('SmED_Level',item);" *ngFor="let item of ['Alle','Telefon','Tresen','Patient']"
+                        [selected]="(this.SmED_Level==item)" color="primary">
+                        {{item}}
+                    </mat-chip>
+                </mat-chip-list>
+            </p>
+            <p class="mat-caption lightgreycolor" *ngIf="this.SmED_Level=='Patient'">Hinweis Assessments mit SmED-Patient sind ab dem 6.12.21 enthalten. Sie können aktuell noch nicht KVen zugeordnet werden. Bitte wählen Sie "Gesamt" als Region aus.</p>
+            <h3>Modul</h3>
+            <p>
+                <mat-chip-list>
+                    <mat-chip (click)="this.updatequery('SmED_Modul',item);" *ngFor="let item of ['Alle','SmED-Triage','SmED-COVID-kurz','SmED-COVID-integriert','SmED-Kontakt+']"
+                        [selected]="(this.SmED_Modul==item)" color="primary">
+                        {{item}}
+                    </mat-chip>
+                </mat-chip-list>
+            </p>
+            </div>
+        <div>
         <h3>Outcome</h3>
         <p>
             <mat-chip-list>
@@ -53,13 +70,9 @@
                 </mat-chip>
             </mat-chip-list>
         </p>
-        <p class="mat-caption accentcolor" *ngIf="this.settings['outcome']=='Anzahl Assessments je 100 Tsd. Einw.'">
-            Hinweis:
-            Es können aktuell nur Raten für die Gesamtbevölkerung berichtet werden. Eine Differenzierung nach Alter und Geschlecht ist nicht möglich.
-        </p>
         </div>
         <div *ngIf="this.settings['outcome']">
-            <h3>Differenzierungsmerkmale (max. 2 Merkmale möglich)</h3>
+            <h3>Differenzierungsmerkmale <span class="lightgreycolor">(max. 2 Merkmale möglich)</span></h3>
             <p>
                 <mat-chip-list multiple>
                     <mat-chip (click)="this.updatequery('diffmerkmale',item);" *ngFor="let item of this.diffmerkmale"
