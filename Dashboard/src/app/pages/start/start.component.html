@@ -10,9 +10,9 @@
                         href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
             </p>
         </div>
-        <ng-container *ngIf="this.metadata.length==0 && !this.currentuser && !this.progress">
+        <ng-container *ngIf="this.metadata && !this.currentuser">
             <!-- Text anpassen -->
-            <p>Es sind aktuell noch keine öffentlichen Informationen auf diesem Portal verfügbar.</p>
+            <ng-container *ngIf="this.metadata.length==0">
             <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (Zi) Informationen
                 zu
                 ambulanten Akut- und Notfällen in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den
@@ -30,12 +30,15 @@
             <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
                 ambulante Akut- und Notfälle ergänzt werden.</p>
         </ng-container>
+        </ng-container>
+        <ng-container *ngIf="this.metadata">
         <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
             <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnisse aus der strukturierten Ersteinschätzung in Deutschland
                 (SmED) im Rahmen von Anrufen bei der 116117. Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments
                 genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
                     Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
                     {{this.summaryinfo["Ende"] | date}}.</span></p>
+        </ng-container>
         </ng-container>
     </div>
 

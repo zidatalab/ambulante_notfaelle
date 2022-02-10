@@ -132,6 +132,7 @@ export class StartComponent implements OnInit {
       }
     }
     else {
+      this.metadata = [];
       setTimeout(() => {
         if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
           if (this.metadata.length > 0) {
@@ -140,6 +141,7 @@ export class StartComponent implements OnInit {
         }
         else {
           this.metadataok = false;
+          this.metadata = [];
         }
       }, 1500);
     };
