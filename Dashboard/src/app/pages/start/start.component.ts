@@ -61,7 +61,7 @@ export class StartComponent implements OnInit {
   symptoms_list_export: any;
   summaryinfo = {};
   smedrange = {};
-  zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt", "Detailliert"];
+  zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt"];
   allpublicfields = ['stats', 'mainsymptoms_ts', 'timetotreat', 'timestats'];
   ts_results = {};
   utiltimes = {};
@@ -82,7 +82,13 @@ export class StartComponent implements OnInit {
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
     this.updatemetadata();
     window.scroll(0, 0);
-    this.setlevel("__init", "");    
+    this.setlevel("__init", "");   
+    // fix long loading
+    setTimeout(()=>{
+      if (this.stats_ts.length==0){
+        this.setlevel("__init", "");   
+      };
+    },1500); 
   }
 
   ngOnDestroy() {
@@ -208,7 +214,7 @@ export class StartComponent implements OnInit {
       await this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
-          if (thefield != "") {
+          if (thefield != "" && res.length>0) {
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
               this.levelsettings["start"], this.levelsettings["stop"],
             ).then(() => {
@@ -217,8 +223,8 @@ export class StartComponent implements OnInit {
             this.db.storestand(thefield, 'KV',
               this.levelsettings["levelvalues"], now.toISOString(),
               this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
-          }
-          else {
+          };
+          if (thefield=="" && res.length>0) {
             for (let fielditem of this.allpublicfields) {
               this.db.deletewhere(fielditem, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
                 this.levelsettings["start"], this.levelsettings["stop"],
