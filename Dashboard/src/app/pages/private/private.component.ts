@@ -17,6 +17,7 @@ export class PrivateComponent implements OnInit {
   bevrefdata={};
   colorsscheme ;
   restablecols=[]; 
+  progress=false;
   settings: any;
   duration:number;
   levelvalues = [
@@ -38,7 +39,7 @@ export class PrivateComponent implements OnInit {
     'Schleswig-Holstein',
     'Thüringen'];
   outcomes = [
-    'Anteil Assessments', 
+    //'Anteil Assessments', 
     'Anzahl Assessments',
     //'Anzahl Assessments je 100 Tsd. Einw.', ## Not possible due to missing reference data
     'Anzahl Beschwerden pro Assessment',
@@ -127,6 +128,7 @@ diffvars = {
   }
 
   timeseriesquery(){
+    this.progress=true;
     this.tsqueryresult = [];
     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
     let start ="";
@@ -227,6 +229,7 @@ diffvars = {
       } 
 
     }
+    this.progress = false;
     
 
     return output;

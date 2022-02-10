@@ -1,8 +1,8 @@
 <div class="container" fxLayout="column" fxLayoutGap="30px">
     <div>
         <h1 ngClass.lt-sm="mobileheading">Tool für erweiterte Analysen</h1>
-        <p class="grey">In diesem Bereich nur für KV-Mitarbeiter ist ein Zugriff auf faktisch anonymisierte Individualdatensätze möglich. 
-            Bitte beachten Sie, dass die Datenbankabfragen ggf. etwas Zeit benötigen.</p>
+        <p class="lightgreycolor">In diesem Bereich nur für KV-Mitarbeiter ist ein Zugriff auf faktisch anonymisierte Individualdatensätze möglich. 
+            <span style="color:white;">Bitte beachten Sie, dass die unstandardisierten Abfragen in diesem Bereich ggf. etwas länger dauern.</span>.</p>
     </div>
     <div *ngIf="true">
 <!--         <mat-slide-toggle color="primary" labelPosition='after' *ngIf="this.settings['analyzeall']"
@@ -69,19 +69,9 @@
                 </mat-chip-list>
             </p>
             </div>
-            <!-- Auskommentieren fürs Testen-->
-            <!-- 
-            <div>
-                
-                <p><strong>Settings</strong></p>
-                <p>{{this.settings | json}}</p>
-        
+            <div *ngIf="this.progress">
+                <mat-spinner></mat-spinner>
             </div>
-            <div>
-                <p><strong>Query</strong></p>
-                <p>{{this.tsquery | json}}</p>
-        
-            </div>  -->
             <div *ngIf="this.tsqueryresult.length==0">
                 <p>Keine Ergebnisse zur Anzeige</p>
             </div>
@@ -185,8 +175,7 @@
                             [fontcolor]="'white'"   [colorscheme]="['orange']"                          
                             [outcomes]="[this.tsquery['outcome']]" 
                             plottype="bar"></app-plot>
-                        </ng-container>
-                        <p>{{this.restablecols | json}}</p>
+                        </ng-container>                        
                         <ng-container *ngIf="(this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                         || (this.settings['diffmerkmale'].includes('Beschwerde'))">                            
                                 <app-table [(data)]="this.tsqueryresult" [outcomes_rate]="['Anteil']"

@@ -1,14 +1,10 @@
 <div class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAllign="space-around">
     <div>
-        <p *ngIf="this.currentuser" class="mat-caption right">
+        <p *ngIf="this.currentuser" class="mat-caption lightgreycolor right">
             Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
                 "+this.currentuser.lastname:"" }}</span></p>
         <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser || this.summaryinfo['done']}">
-            <h1>Ambulante Akut- und Notfälle in Deutschland</h1>
-            <p style="color:lightslategrey" *ngIf="this.currentuser">
-                <strong>Interner Testbetrieb</strong>: Informationen zu Problemen bitte per <strong><a style="color:white;"
-                        href="mailto:smed@zi.de?subject=Zi SmED Dashboard">E-Mail an smed@zi.de</a></strong>.
-            </p>
+            <h1>Ambulante Akut- und Notfälle in Deutschland</h1>            
         </div>
         <ng-container *ngIf="this.metadata && !this.currentuser">
             <!-- Text anpassen -->
@@ -28,23 +24,27 @@
                 Entscheidungshilfe für den Anwender dar. Weitere Informationen zu <strong>SmED</strong> finden Sie 
                 <strong><a href="https://www.zi.de/smed">hier</a></strong>.</p>                                           
             <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
-                ambulante Akut- und Notfälle ergänzt werden.</p>
+                ambulante Akut- und Notfälle ergänzt werden.</p>            
             
         </ng-container>
         </ng-container>
         <ng-container *ngIf="this.metadata">
         <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
-            <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland 
-                (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnisse aus der Strukturierten Ersteinschätzung in Deutschland
-                (<strong><a style="color:white;" href="https://www.zi.de/smed">SmED</a></strong>) im Rahmen von Anrufen bei der Rufnummner (<strong><a style="color:white;" href="https://www.116117.de">116117</a></strong>). Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments
-                genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
+            <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland
+                (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnisse aus der
+                Strukturierten Ersteinschätzung in Deutschland
+                (<strong><a style="color:white;" href="https://www.zi.de/smed">SmED</a></strong>) im Rahmen von Anrufen bei der
+                Rufnummner (<strong><a style="color:white;" href="https://www.116117.de">116117</a></strong>). Bei jeder
+                Ersteinschätzung werden die Inhalte und Empfehlungen strukturiert protokolliert (Assessments). <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
                     Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
                     {{this.summaryinfo["Ende"] | date}}.</span></p>
+            <p class="lightgreycolor" *ngIf="this.currentuser">Als registrierter Nutzer steht Ihnen unser <a routerLink="/private">interner Analysebereich</a> zur Verfügung.</p>
         </ng-container>
         </ng-container>
     </div>
 
     <div *ngIf="(this.metadata.length>0) || this.currentuser">
+        <div>
         <h3 *ngIf="this.currentuser">Bundesland</h3>
         <p *ngIf="this.currentuser">
             <mat-chip-list *ngIf="this.currentuser">
@@ -63,7 +63,10 @@
                 </mat-chip>
             </mat-chip-list>
         </p>
-        <h3>Zeitliche Auflösung</h3>
+        </div>        
+        
+        <div>
+            <h3>Zeitliche Auflösung</h3>
         <p>
             <mat-chip-list>
                 <mat-chip (click)="this.setlevel('resolution','weekly');"
@@ -76,7 +79,7 @@
                 </mat-chip>
             </mat-chip-list>
         </p>        
-
+        </div>        
         <div *ngIf="this.progress &&  this.currentuser">
             <mat-spinner></mat-spinner>
         </div>
