@@ -70,20 +70,7 @@
                     Monate
                 </mat-chip>
             </mat-chip-list>
-        </p>
-        <p *ngIf="this.levelsettings['zeitraum']=='Detailliert'">
-            <mat-form-field appearance="fill">
-                <mat-label>Analysezeitraum</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
-                    <input matStartDate (dateChange)="this.setlevel('__init','');" placeholder="Beginn"
-                        [(ngModel)]="this.levelsettings['start_picker']">
-                    <input matEndDate (dateChange)="this.setlevel('__init','');" placeholder="Ende"
-                        [(ngModel)]="this.levelsettings['stop_picker']">
-                </mat-date-range-input>
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-        </p>
+        </p>        
 
         <div *ngIf="this.progress &&  this.currentuser">
             <mat-spinner></mat-spinner>
