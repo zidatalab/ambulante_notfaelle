@@ -13,28 +13,29 @@
         <ng-container *ngIf="this.metadata && !this.currentuser">
             <!-- Text anpassen -->
             <ng-container *ngIf="this.metadata.length==0">
-            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (Zi) Informationen
+            <p>Auf diesem Portal stellt das Zentralinstitut für die kassenärztliche Versorgung in Deutschland (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) Informationen
                 zu
                 ambulanten Akut- und Notfällen in Deutschland zur Verfügung. Aktuell basieren die Auswertungen auf den
                 SmED-Daten,
-                die von den 116117-Leitstellen der Kassenärztlichen Vereinigungen übermittelt wurden. Bei SmED (Strukturierte
+                die von den 116117-Leitstellen der Kassenärztlichen Vereinigungen übermittelt wurden. Bei <strong>SmED</strong> (Strukturierte
                 medizinische Ersteinschätzung in Deutschland) handelt es sich um eine Ersteinschätzungssoftware, die den
                 Anwender
-                bei der Einschätzung der Beschwerden eines Patienten unterstützen kann. Durch SmED wird das medizinische
+                bei der Einschätzung der Beschwerden eines Patienten unterstützen kann. Durch <strong>SmED</strong> wird das medizinische
                 Fachpersonal bei der systematischen Abfrage von Symptomen in Kombination mit allgemeinen und symptomspezifischen
                 Risikofaktoren (z.B. Alter, Geschlecht, Begleitbeschwerden) sowie bei der Entscheidung, welches die passende
                 Versorgungsmöglichkeit für den Anrufenden ist, unterstützt. Die SmED-Empfehlungen der Software stellen dabei
                 eine
-                Entscheidungshilfe für den Anwender dar. Weitere Informationen zu SmED finden Sie <a
-                    href="https://www.zi.de/smed">hier</a>.</p>
+                Entscheidungshilfe für den Anwender dar. Weitere Informationen zu <strong>SmED</strong> finden Sie 
+                <strong><a href="https://www.zi.de/smed">hier</a></strong>.</p>
             <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
                 ambulante Akut- und Notfälle ergänzt werden.</p>
         </ng-container>
         </ng-container>
         <ng-container *ngIf="this.metadata">
         <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
-            <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnisse aus der strukturierten Ersteinschätzung in Deutschland
-                (SmED) im Rahmen von Anrufen bei der 116117. Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments
+            <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland 
+                (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnisse aus der Strukturierten Ersteinschätzung in Deutschland
+                (<strong><a style="color:white;" href="https://www.zi.de/smed">SmED</a></strong>) im Rahmen von Anrufen bei der Rufnummner (<strong><a style="color:white;" href="https://www.116117.de">116117</a></strong>). Bei jeder Ersteinschätzung werden die Inhalte der Abfrage in einem Assessment protokolliert, SmED-Assessments
                 genannt. <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
                     Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
                     {{this.summaryinfo["Ende"] | date}}.</span></p>

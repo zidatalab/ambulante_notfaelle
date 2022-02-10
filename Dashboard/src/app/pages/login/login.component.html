@@ -13,13 +13,13 @@
                 </mat-form-field>
                 <div *ngIf="!this.login_pending" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
                     <div>
-                        <button mat-raised-button color="primary" type='submit' [disabled]='!this.form.valid' >
-                            Login
+                        <button mat-raised-button color="accent" (click)="logout()">
+                            Abbrechen
                         </button>
                     </div>
                     <div>
-                        <button mat-raised-button color="accent" (click)="logout()">
-                            Abbrechen
+                        <button mat-raised-button color="primary" type='submit' [disabled]='!this.form.valid' >
+                            Login
                         </button>
                     </div>
                 </div>
