@@ -7759,6 +7759,10 @@ body {
   color: black;
 }
 
+.errortext {
+  color: crimson;
+}
+
 .add-margin {
   margin: 1em;
 }
