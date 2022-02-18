@@ -31,10 +31,10 @@
         <ng-container *ngIf="this.metadata">
         <ng-container *ngIf="(this.metadata.length>0) || this.currentuser">
             <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland
-                (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnisse aus der
-                Strukturierten Ersteinschätzung in Deutschland
+                (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnissen aus der
+                Strukturierten medizinischen Ersteinschätzung in Deutschland
                 (<strong><a style="color:white;" href="https://www.zi.de/smed">SmED</a></strong>) im Rahmen von Anrufen bei der
-                Rufnummner (<strong><a style="color:white;" href="https://www.116117.de">116117</a></strong>). Bei jeder
+                Rufnummer (<strong><a style="color:white;" href="https://www.116117.de">116117</a></strong>). Bei jeder
                 Ersteinschätzung werden die Inhalte und Empfehlungen strukturiert protokolliert (Assessments). <span *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
                     Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
                     {{this.summaryinfo["Ende"] | date}}.</span></p>
