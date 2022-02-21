@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
   public itsatest  = false;
-  public REST_API_SERVER =  "https://dashboardapi.ziapp.de/";// "http://localhost:8000/";// "https://dashboardapi.ziapp.de/";
+  public REST_API_SERVER =  "https://api.zidatasciencelab.de/";// "http://localhost:8000/";// "https://dashboardapi.ziapp.de/";
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
