@@ -5419,7 +5419,7 @@ class ApiService {
     constructor(httpClient) {
         this.httpClient = httpClient;
         this.itsatest = false;
-        this.REST_API_SERVER = "https://api.zidatasciencelab.de/"; // "http://localhost:8000/";// "https://dashboardapi.ziapp.de/";
+        this.REST_API_SERVER = "https://dashboardapi.ziapp.de/"; // "https://api.zidatasciencelab.de/"; "http://localhost:8000/"; 
         this.REST_API_SERVER_CLIENTID = "smed_reporting";
         this.primarycolor = "#2196f3"; // "#e91e63";
         this.accentcolor = "#e3714e1";
