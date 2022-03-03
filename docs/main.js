@@ -5472,7 +5472,7 @@ class ApiService {
     }
     countView(url) {
         // Privacy preserving Webcounter, see Documentation here https://github.com/zidatalab/ziwebcounter
-        this.httpClient.get('https://analytics.ziapp.de/view/ambulante_notfaelle/data?pageid=' + url + '&cookiedissent=' + true, { withCredentials: false }).subscribe();
+        this.httpClient.get('https://analytics.api.ziapp.de/view/ambulante_notfaelle/data?pageid=' + url + '&cookiedissent=' + true, { withCredentials: false }).subscribe();
     }
     // Data APIs
     getValues(array, key) {
