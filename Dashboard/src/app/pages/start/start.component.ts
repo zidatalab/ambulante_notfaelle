@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { SmedAggregationService } from 'src/app/services/smed-aggregation.service';
 import { CsvexportService } from 'src/app/services/csvexport.service';
 import { DBService } from 'src/app/services/dbservice.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-start',
@@ -14,7 +15,9 @@ export class StartComponent implements OnInit {
 
 
 
-  constructor(private db: DBService, private csv: CsvexportService, private api: ApiService, private auth: AuthService, private smed: SmedAggregationService) { }
+  constructor(private db: DBService, private csv: CsvexportService, 
+    private api: ApiService, private auth: AuthService, private smed: SmedAggregationService,
+    private router:Router) { }
   metadata = [];
   progress: boolean;
   metadataok: boolean;
@@ -69,6 +72,7 @@ export class StartComponent implements OnInit {
   decisions_ttt: any;
   decisions_poc: any;
   decisions_pocvsttt: any;
+  timetogo:number;
 
   ngOnInit(): void {
     // uncomment for failsafe db ops, cleans cache on app init
@@ -89,6 +93,17 @@ export class StartComponent implements OnInit {
         this.setlevel("__init", "");   
       };
     },1500); 
+
+    // counter
+    this.timetogo = this.check_portal_online();
+    if ((this.timetogo<0) && !this.currentuser){
+      setInterval(()=>{
+        this.timetogo = this.check_portal_online();
+        if (this.timetogo>=0){
+          this.router.navigate(['/']);
+        }
+      }, 1000);
+    };
   }
 
   ngOnDestroy() {
@@ -98,6 +113,11 @@ export class StartComponent implements OnInit {
 
 
   async setlevel(level, value) {
+    if (!this.currentuser && (this.timetogo<0)){
+      return null;
+    }
+  
+
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -108,8 +128,13 @@ export class StartComponent implements OnInit {
     this.decisions_ttt = [];
     this.decisions_poc = [];
     this.decisions_pocvsttt = [];
-
     this.timetotreat = NaN;
+
+    if (this.metadata.length==0){
+      this.updatemetadata();
+      return null;
+    }
+
     if (this.levelsettings['start'] && this.levelsettings['stop']) {
       this.progress = true;
       await this.querydatasmed();
@@ -360,5 +385,27 @@ export class StartComponent implements OnInit {
 
     }
 
+  }
+
+  // Pre Launch Counter
+ check_portal_online() {
+    let date1 = new Date("2022-03-14 08:00:00");;
+    let date2 = new Date();
+    let timediff = date2.getTime() - date1.getTime();
+    return timediff;
+  }
+  
+  counterstring(timediff){
+    if (timediff>=0){
+      return "";
+    }
+    let Tage = Math.floor(-timediff/(1000*60*60*24));
+    let Stunden = Math.floor(-timediff/(1000*60*60));
+    Stunden =  Math.floor((Stunden/24 - Math.floor(Stunden/24))*24);
+    let Minuten = Math.floor(-timediff/(1000*60));
+    Minuten = Math.floor((Minuten/60 - Math.floor(Minuten/60))*60);
+    let Sekunden = Math.floor(-timediff/(1000));
+    Sekunden = Math.floor((Sekunden/60 - Math.floor(Sekunden/60))*60);
+    return Tage +' Tage ' + Stunden + " Stunden " + Minuten + " Minuten " + Sekunden +  " Sekunden";
   }
 }
