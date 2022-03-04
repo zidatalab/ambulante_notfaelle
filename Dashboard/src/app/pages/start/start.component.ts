@@ -75,15 +75,14 @@ export class StartComponent implements OnInit {
   timetogo:number;
 
   ngOnInit(): void {
-    // uncomment for failsafe db ops, cleans cache on app init
-    //this.db.clean();
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-    this.auth.currentUser.subscribe(data => { this.currentuser = data; });
+    this.auth.currentUser.subscribe(data => { this.currentuser = data;});
+
     this.updatemetadata();
     window.scroll(0, 0);
     this.setlevel("__init", "");   
@@ -102,7 +101,7 @@ export class StartComponent implements OnInit {
         if (this.timetogo>=0){
           this.router.navigate(['/']);
         }
-      }, 1000);
+      }, 500);
     };
   }
 

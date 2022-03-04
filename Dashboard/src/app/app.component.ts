@@ -39,6 +39,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    this.db.clean();
     this.checkapiconnection();
     this.currentdate = new Date();
     this._auth.currentUser.subscribe(data => {
