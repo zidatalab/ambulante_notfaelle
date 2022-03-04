@@ -179,6 +179,7 @@ class AppComponent {
         });
     }
     ngOnInit() {
+        this.db.clean();
         this.checkapiconnection();
         this.currentdate = new Date();
         this._auth.currentUser.subscribe(data => {
@@ -5100,8 +5101,6 @@ class StartComponent {
         this.utiltimes = {};
     }
     ngOnInit() {
-        // uncomment for failsafe db ops, cleans cache on app init
-        //this.db.clean();
         this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
         this.summaryinfo["done"] = false;
         this.colorsscheme = this.api.makescale(5);
@@ -5127,7 +5126,7 @@ class StartComponent {
                 if (this.timetogo >= 0) {
                     this.router.navigate(['/']);
                 }
-            }, 1000);
+            }, 500);
         }
         ;
     }
