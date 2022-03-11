@@ -388,7 +388,7 @@ export class StartComponent implements OnInit {
 
   // Pre Launch Counter
  check_portal_online() {
-    let date1 = new Date("2022-03-14 08:00:00");;
+    let date1 = new Date("2022-03-14 08:00:00".replace(/-/g, "/")); // DUE TO BAD SAFARI IMPLEMENTATION!
     let date2 = new Date();
     let timediff = date2.getTime() - date1.getTime();
     return timediff;
