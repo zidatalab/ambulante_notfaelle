@@ -154,13 +154,13 @@ SmED_Level:string="Alle";
         "stopdate": end.slice(0,10),
         "timeframe": "none",
         "outcome": NaN,
-        "filterlist": [
+        "filterlist": 
           {'level':'KV'}                      
-        ],
+        ,
         "subgroups": [] ,
         "client_id":this.api.REST_API_SERVER_CLIENTID    
     };   
-    if (this.settings['levelid']!="Gesamt"){this.tsquery['filterlist'].push({'levelid':this.settings['levelid']})};    
+    if (this.settings['levelid']!="Gesamt"){this.tsquery['filterlist']['levelid']=this.settings['levelid']};    
     for (let item of this.settings['diffmerkmale']){
       this.tsquery['subgroups']=this.tsquery['subgroups'].concat(this.diffvars[item]);
     };
@@ -178,6 +178,7 @@ SmED_Level:string="Alle";
     };
     if ('Mittlere Dauer Disposition'==this.settings['outcome']){
       this.tsquery['outcome']="DAUERdispo";
+      this.tsquery["filterlist"]['DAUERdispo']= {$gte:0}
     };
     if ('Anteil Assessment an Disposition'==this.settings['outcome']){
       // later 2 Queries need to be done, one for DAUERsmed and one DAUERdispo
@@ -196,15 +197,15 @@ SmED_Level:string="Alle";
     // Level/Modul
     if (this.SmED_Level!="Alle"){
       if (this.SmED_Level!="Patient"){
-        this.tsquery["filterlist"].push({'SMED_Level':this.SmED_Level});
+        this.tsquery["filterlist"]['SMED_Level']=this.SmED_Level;
       }
       else {
-        this.tsquery["filterlist"].push({'SMED_Level':'pubusersmed'});
+        this.tsquery["filterlist"]['SMED_Level']='pubusersmed';       
       }
       
     }
     if (this.SmED_Modul!="Alle"){
-      this.tsquery["filterlist"].push({'SMED_Modul':this.SmED_Modul});
+      this.tsquery["filterlist"]['SMED_Modul']=this.SmED_Modul;             
     }
 
     this.api.postTypeRequest('get_data/', { "client_id": this.api.REST_API_SERVER_CLIENTID,
@@ -252,7 +253,13 @@ SmED_Level:string="Alle";
         if ( item['Anzahl']){
           output.push(item);
         };
-      } 
+      }
+
+      if (this.settings['diffmerkmale'].includes('Alter')){
+        output=this.api.sortArray(output,'ALTER_id');
+      }
+      
+      
 
     }
     this.progress = false;
