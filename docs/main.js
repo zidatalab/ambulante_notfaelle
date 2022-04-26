@@ -3658,14 +3658,12 @@ class PrivateComponent {
             "stopdate": end.slice(0, 10),
             "timeframe": "none",
             "outcome": NaN,
-            "filterlist": [
-                { 'level': 'KV' }
-            ],
+            "filterlist": { 'level': 'KV' },
             "subgroups": [],
             "client_id": this.api.REST_API_SERVER_CLIENTID
         };
         if (this.settings['levelid'] != "Gesamt") {
-            this.tsquery['filterlist'].push({ 'levelid': this.settings['levelid'] });
+            this.tsquery['filterlist']['levelid'] = this.settings['levelid'];
         }
         ;
         for (let item of this.settings['diffmerkmale']) {
@@ -3690,6 +3688,7 @@ class PrivateComponent {
         ;
         if ('Mittlere Dauer Disposition' == this.settings['outcome']) {
             this.tsquery['outcome'] = "DAUERdispo";
+            this.tsquery["filterlist"]['DAUERdispo'] = { $gte: 0 };
         }
         ;
         if ('Anteil Assessment an Disposition' == this.settings['outcome']) {
@@ -3712,14 +3711,14 @@ class PrivateComponent {
         // Level/Modul
         if (this.SmED_Level != "Alle") {
             if (this.SmED_Level != "Patient") {
-                this.tsquery["filterlist"].push({ 'SMED_Level': this.SmED_Level });
+                this.tsquery["filterlist"]['SMED_Level'] = this.SmED_Level;
             }
             else {
-                this.tsquery["filterlist"].push({ 'SMED_Level': 'pubusersmed' });
+                this.tsquery["filterlist"]['SMED_Level'] = 'pubusersmed';
             }
         }
         if (this.SmED_Modul != "Alle") {
-            this.tsquery["filterlist"].push({ 'SMED_Modul': this.SmED_Modul });
+            this.tsquery["filterlist"]['SMED_Modul'] = this.SmED_Modul;
         }
         this.api.postTypeRequest('get_data/', { "client_id": this.api.REST_API_SERVER_CLIENTID,
             "groupinfo": {
@@ -3772,6 +3771,9 @@ class PrivateComponent {
                     output.push(item);
                 }
                 ;
+            }
+            if (this.settings['diffmerkmale'].includes('Alter')) {
+                output = this.api.sortArray(output, 'ALTER_id');
             }
         }
         this.progress = false;
