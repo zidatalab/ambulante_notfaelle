@@ -24,7 +24,7 @@
                 Entscheidungshilfe für den Anwender dar. Weitere Informationen zu <strong>SmED</strong> finden Sie 
                 <strong><a href="https://www.zi.de/smed">hier</a></strong>.</p>                                           
             <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
-                ambulante Akut- und Notfälle ergänzt werden.</p>    
+                ambulante Akut- und Notfälle ergänzt werden.</p>                
             
             <h1 class="lightgreycolor" *ngIf="this.timetogo<=0">Zeit bis zum Start<br>{{counterstring(this.timetogo)}}</h1>        
             
@@ -41,6 +41,10 @@
                     Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
                     {{this.summaryinfo["Ende"] | date}}.</span></p>
             <p class="lightgreycolor" *ngIf="this.currentuser">Als registrierter Nutzer steht Ihnen unser <a routerLink="/private">interner Analysebereich</a> zur Verfügung.</p>
+            <p>
+                <strong>HINWEIS: <br></strong>
+                Seit Mitte September werden aufgrund technischer Anpassungen bei HCQS keine SmED-Assessments an das Zi übermittelt. Wir arbeiten mit Hochdruck an der Integration der fehlenden Daten.
+            </p>
         </ng-container>
         </ng-container>
     </div>
