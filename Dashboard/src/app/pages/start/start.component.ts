@@ -237,6 +237,7 @@ export class StartComponent implements OnInit {
       };
     }
     else {
+      console.log(query)
       await this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
