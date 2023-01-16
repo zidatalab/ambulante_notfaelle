@@ -5266,6 +5266,7 @@ class StartComponent {
                 ;
             }
             else {
+                console.log(query);
                 yield this.api.postTypeRequest('get_data/', query).subscribe(data => {
                     let res = data["data"];
                     if (thefield != "" && res.length > 0) {
@@ -5475,7 +5476,7 @@ class ApiService {
     constructor(httpClient) {
         this.httpClient = httpClient;
         this.itsatest = false;
-        this.REST_API_SERVER = "https://api.zidatasciencelab.de/"; // "https://dashboardapi.ziapp.de/"; "http://localhost:8000/"; 
+        this.REST_API_SERVER = "https://barebonedashboardapi.azurewebsites.net/"; //"https://api.zidatasciencelab.de/"; // "https://dashboardapi.ziapp.de/"; "http://localhost:8000/"; 
         this.REST_API_SERVER_CLIENTID = "smed_reporting";
         this.primarycolor = "#2196f3"; // "#e91e63";
         this.accentcolor = "#e3714e1";
