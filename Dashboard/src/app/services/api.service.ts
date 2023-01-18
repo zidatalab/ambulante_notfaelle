@@ -10,7 +10,7 @@ import * as chroma from "chroma-js";
 export class ApiService { 
  
   public itsatest  = false;
-  public REST_API_SERVER = "https://barebonedashboardapi.azurewebsites.net/" //"https://api.zidatasciencelab.de/"; // "https://dashboardapi.ziapp.de/"; "http://localhost:8000/"; 
+  public REST_API_SERVER = "https://api.zidatasciencelab.de/"; // "https://barebonedashboardapi.azurewebsites.net/"; "https://dashboardapi.ziapp.de/"; "http://localhost:8000/"; 
   public REST_API_SERVER_CLIENTID = "smed_reporting"; 
   public primarycolor = "#2196f3"; // "#e91e63";
   public accentcolor = "#e3714e1";
