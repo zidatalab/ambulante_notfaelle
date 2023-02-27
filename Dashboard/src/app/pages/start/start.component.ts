@@ -105,7 +105,6 @@ export class StartComponent implements OnInit {
 
   ngOnDestroy() {
     this.mapdata = [];
-
   }
 
   async setlevel(level, value) {
@@ -388,7 +387,7 @@ export class StartComponent implements OnInit {
     if (timediff >= 0) {
       return "";
     }
-    
+
     let Tage = Math.floor(-timediff / (1000 * 60 * 60 * 24));
     let Stunden = Math.floor(-timediff / (1000 * 60 * 60));
     Stunden = Math.floor((Stunden / 24 - Math.floor(Stunden / 24)) * 24);
