@@ -85,7 +85,6 @@ public  getKeys(array){
 }
 
 objectkeystocolumns(array,objectname){
-  console.log(array)
   for (let item of array){
     let theobject = item[objectname];
     for (let key of Object.keys(theobject)){

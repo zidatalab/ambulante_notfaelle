@@ -240,6 +240,15 @@ export class StartComponent implements OnInit {
       await this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
+
+          if (thefield === "") {
+            for (const item of res) {
+              if (!item.mainsymptoms_ts) {
+                item.mainsymptoms_ts = []
+              }
+            }
+          }
+
           if (thefield != "" && res.length > 0) {
             this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
               this.levelsettings["start"], this.levelsettings["stop"],
@@ -334,7 +343,6 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
 
-      console.log(this.levelsettings)
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
 
