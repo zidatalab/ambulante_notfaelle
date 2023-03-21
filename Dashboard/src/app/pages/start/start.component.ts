@@ -333,8 +333,12 @@ export class StartComponent implements OnInit {
 
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
+
+      console.log(this.levelsettings)
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
+
+
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
 
       for (let item of this.symptoms_list_export) {
@@ -406,7 +410,7 @@ export class StartComponent implements OnInit {
     Minuten = Math.floor((Minuten / 60 - Math.floor(Minuten / 60)) * 60);
     let Sekunden = Math.floor(-timediff / (1000));
     Sekunden = Math.floor((Sekunden / 60 - Math.floor(Sekunden / 60)) * 60);
-    
+
     return Tage + ' Tage ' + Stunden + " Stunden " + Minuten + " Minuten " + Sekunden + " Sekunden";
   }
 }
