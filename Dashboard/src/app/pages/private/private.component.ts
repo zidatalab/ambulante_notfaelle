@@ -149,14 +149,23 @@ export class PrivateComponent implements OnInit {
   timeseriesquery() {
     this.progress = true;
     this.tsqueryresult = [];
-    let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+
+    let _start = new Date(this.settings['start'])
+    let _end = new Date(this.settings['end'])
+
+    function setDate(date) {
+      const minutesOffset = new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()))
+
+      return minutesOffset.toISOString().substring(0, 10);
+    }
+
     let start = "";
-
-    if (this.settings['start']) { start = (new Date(this.settings['start'] - tzoffset)).toISOString(); };
-
+    
+    if (this.settings['start']) { start = setDate(_start) };
+    
     let end = "";
 
-    if (this.settings['end']) { end = (new Date(this.settings['end'] - tzoffset)).toISOString(); };
+    if (this.settings['end']) { end = setDate(_end) };
 
     this.tsqueryresult = {};
     this.bevrefdata = {};
@@ -294,7 +303,7 @@ export class PrivateComponent implements OnInit {
         output = this.api.sortArray(output, 'ALTER_id');
       }
     }
-    
+
     this.progress = false;
 
     return output;
