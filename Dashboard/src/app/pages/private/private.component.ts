@@ -78,6 +78,8 @@ export class PrivateComponent implements OnInit {
   SmED_Modul: string = "Alle";
   SmED_Level: string = "Alle";
 
+  isSingleDayAnalyses = false
+
   ngOnInit(): void {
     this.colorsscheme = this.api.makescale(5);
     //console.log('colors',this.colorsscheme);
@@ -153,12 +155,15 @@ export class PrivateComponent implements OnInit {
     let _start = new Date(this.settings['start'])
     let _end = new Date(this.settings['end'])
 
+    console.log(this.isSingleDayAnalyses)
+    
     function setDate(date) {
       const minutesOffset = new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()))
-
+      
       return minutesOffset.toISOString().substring(0, 10);
     }
-
+    
+    console.log(setDate(_start), setDate(_end))
     let start = "";
     
     if (this.settings['start']) { start = setDate(_start) };

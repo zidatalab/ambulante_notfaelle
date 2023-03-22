@@ -9,7 +9,7 @@
   </div>
   <div *ngIf="true">
     <div>
-      <p>
+      <div>
         <mat-form-field appearance="fill">
           <mat-label>Analysezeitraum</mat-label>
           <mat-date-range-input [rangePicker]="picker">
@@ -21,7 +21,12 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-      </p>
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="isSingleDayAnalyses" style="padding-bottom: 15px;">
+          ein Tag Analyse
+        </mat-slide-toggle>
+      </div>
       <p *ngIf="this.duration>64" class="accentcolor">
         Die maximale Länge des Analysezeitraums beträgt 64 Tage. Ihre Anfrage kann nicht ausgeführt werden.
       </p>
