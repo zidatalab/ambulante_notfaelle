@@ -28,23 +28,23 @@ async newcombine(array,fieldname){
       topush['Jahr']=item['Jahr'];
       topush['Monat']=item['Monat'];
       topush['KM6Versicherte']=item['KM6Versicherte'];
-      topush['BEVSTAND']=item['KM6Versicherte'];
+      topush['BEVSTAND']=item['BEVSTAND'];
       topush['KW']=fielditem['KW'];
       topush['Datum']=fielditem['Datum']
       delete fielditem['KW'];
-      topush['data']=fielditem;      
+      topush['data']=fielditem;
       topush['Indicator']=fieldname;
       topush['timeframe']=item['timeframe'];
-      dbarray.push(topush);    
+      dbarray.push(topush);
     }
   };
-  }  
+  }
   //if (fieldname=="stats"){console.log("newcombine res",fieldname,dbarray);};
-  await this.db.adddatabulk(dbarray);    
+  await this.db.adddatabulk(dbarray);
 }
 
 querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filtervar="",filtervalues=[],topxvar=""){
-  if (levelsettings["zeitraum"]!=="Gesamt") {    
+  if (levelsettings["zeitraum"]!=="Gesamt") {
   let query = {
     "startdate": levelsettings['start'].toISOString().slice(0,10),
     "stopdate": levelsettings['end'].toISOString().slice(0,10),
@@ -59,7 +59,7 @@ querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filt
     query["outcome"]=outcome;
   }
   let tofilter = false;
-  if (filtervar!=="" && filtervalues.length>0){tofilter=true};    
+  if (filtervar!=="" && filtervalues.length>0){tofilter=true};
   return this.api.postTypeRequest('analytics/timeseries/', query).subscribe(
     data => {
       let res = data["result"];
@@ -90,13 +90,13 @@ querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filt
         res= this.api.filterArraybyList(res,topxvar,filterlist);
       }
       return res;
-      
-    },        
+
+    },
     error => {return [];});
   }
   else {
     return [];
-  };     
+  };
 }
 
 // Aggregation Functions
@@ -172,11 +172,11 @@ updatestartstop(levelsettings){
     let millisperday = 1000*60*60*24;
     if (levelsettings["zeitraum"]=="Letzte 4 Wochen"){
       enddate = new Date(today.getTime() - today.getDay()*millisperday).toISOString().slice(0,10);
-      startdate = new Date(today.getTime()-((4*7)-1)*millisperday).toISOString().slice(0,10);        
+      startdate = new Date(today.getTime()-((4*7)-1)*millisperday).toISOString().slice(0,10);
     };
     if (levelsettings["zeitraum"]=="Letzte Woche"){
       enddate = new Date(today.getTime() - today.getDay()*millisperday).toISOString().slice(0,10);
-      startdate = new Date(today.getTime()-((6))*millisperday).toISOString().slice(0,10);        
+      startdate = new Date(today.getTime()-((6))*millisperday).toISOString().slice(0,10);
     };
     if (levelsettings["zeitraum"]=="Detailliert"){
       let newstart= (new Date(levelsettings['start_picker'] - tzoffset)).toISOString().slice(0,10);
@@ -184,14 +184,14 @@ updatestartstop(levelsettings){
       //console.log("Detailliert",levelsettings['start_picker'],newstart,levelsettings['stop_picker'],newstop);
       levelsettings["start"]=newstart;
       levelsettings["stop"]=newstop;
-    } 
+    }
     if (levelsettings["zeitraum"]!="Detailliert"){
       levelsettings["start"]=startdate;
       levelsettings["stop"]=enddate;
     }
     else {
-     
-      
+
+
     };
     return levelsettings;
 }
