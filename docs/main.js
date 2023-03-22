@@ -6288,7 +6288,7 @@ class SmedAggregationService {
                         topush['Jahr'] = item['Jahr'];
                         topush['Monat'] = item['Monat'];
                         topush['KM6Versicherte'] = item['KM6Versicherte'];
-                        topush['BEVSTAND'] = item['KM6Versicherte'];
+                        topush['BEVSTAND'] = item['BEVSTAND'];
                         topush['KW'] = fielditem['KW'];
                         topush['Datum'] = fielditem['Datum'];
                         delete fielditem['KW'];
