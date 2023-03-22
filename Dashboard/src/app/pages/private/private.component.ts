@@ -155,7 +155,9 @@ export class PrivateComponent implements OnInit {
     let _start = new Date(this.settings['start'])
     let _end = new Date(this.settings['end'])
 
-    console.log(this.isSingleDayAnalyses)
+    if(this.isSingleDayAnalyses) {
+      _end = _start
+    }
     
     function setDate(date) {
       const minutesOffset = new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()))
@@ -163,7 +165,6 @@ export class PrivateComponent implements OnInit {
       return minutesOffset.toISOString().substring(0, 10);
     }
     
-    console.log(setDate(_start), setDate(_end))
     let start = "";
     
     if (this.settings['start']) { start = setDate(_start) };

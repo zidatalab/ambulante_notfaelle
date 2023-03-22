@@ -10,7 +10,7 @@
   <div *ngIf="true">
     <div>
       <div>
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" *ngIf="!this.isSingleDayAnalyses">
           <mat-label>Analysezeitraum</mat-label>
           <mat-date-range-input [rangePicker]="picker">
             <input matStartDate placeholder="Beginn" (dateChange)="this.updatequery('__change',true)"
@@ -20,6 +20,13 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        <mat-form-field appearance="fill" *ngIf="this.isSingleDayAnalyses">
+          <mat-label>Analysezeitraum</mat-label>
+          <input matInput [matDatepicker]="picker" (dateChange)="this.updatequery('__change',true)"
+            [(ngModel)]="this.settings['start']">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
       <div>
