@@ -75,7 +75,7 @@ export class PlotComponent implements OnInit {
       displayModeBar: false,
       scrollZoom: false,
       autosizable: true,
-      locale: 'de',
+      // locale: 'de',
       doubleClick: 'reset',
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
@@ -317,18 +317,17 @@ export class PlotComponent implements OnInit {
     let trace = {
       x: xdata,
       y: ydata,
-      name: name,
+      name: '',
       type: type,
-      hovertemplate: ''
     }
 
     if (this.plottype == "stackedarea") {
       trace['stackgroup'] = "one";
     }
 
-    if (this.hovertemplate !== "") {
-      trace['hovertemplate'] = this.hovertemplate;
-    }
+    // if (this.hovertemplate !== "") {
+    //   trace['hovertemplate'] = this.hovertemplate;
+    // }
 
     return trace;
   }
@@ -368,7 +367,6 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
-        trace.hovertemplate = 'test'
       }
 
       if (this.plottype == "area") {
