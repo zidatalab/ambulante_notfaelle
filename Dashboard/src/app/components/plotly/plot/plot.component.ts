@@ -79,7 +79,7 @@ export class PlotComponent implements OnInit {
       doubleClick: 'reset',
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
-      showTips: true
+      showTips: true,
     };
 
     if (this.plottype == "bar") {
@@ -318,7 +318,8 @@ export class PlotComponent implements OnInit {
       x: xdata,
       y: ydata,
       name: name,
-      type: type
+      type: type,
+      hovertemplate: ''
     }
 
     if (this.plottype == "stackedarea") {
@@ -328,12 +329,6 @@ export class PlotComponent implements OnInit {
     if (this.hovertemplate !== "") {
       trace['hovertemplate'] = this.hovertemplate;
     }
-    
-    trace['hovertemplate'] = '<i>Price</i>: $%{y:.2f}' +
-                        '<br><b>X</b>: %{x}<br>' +
-                        '<b>%{text}</b>'
-
-    console.log(trace['hovertemplate'])
 
     return trace;
   }
@@ -352,6 +347,7 @@ export class PlotComponent implements OnInit {
       }
 
       let trace = this.make_trace(xdata, theydata, tracename, type = type);
+
       if (type == "hbar") {
         trace = this.make_trace(this.api.getValues(source, ylist[i]), xdata, ylist[i], type = "bar")
         trace["orientation"] = "h"
@@ -372,6 +368,7 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
+        trace.hovertemplate = 'test'
       }
 
       if (this.plottype == "area") {
