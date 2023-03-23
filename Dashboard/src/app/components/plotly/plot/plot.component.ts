@@ -100,7 +100,7 @@ export class PlotComponent implements OnInit {
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
-        annotations: this.annotations
+        annotations: this.annotations,
       };
 
       if (this.percent) {
@@ -325,9 +325,15 @@ export class PlotComponent implements OnInit {
       trace['stackgroup'] = "one";
     }
 
-    if (this.hovertemplate != "") {
+    if (this.hovertemplate !== "") {
       trace['hovertemplate'] = this.hovertemplate;
     }
+    
+    trace['hovertemplate'] = '<i>Price</i>: $%{y:.2f}' +
+                        '<br><b>X</b>: %{x}<br>' +
+                        '<b>%{text}</b>'
+
+    console.log(trace['hovertemplate'])
 
     return trace;
   }
