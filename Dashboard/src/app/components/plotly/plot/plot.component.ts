@@ -182,6 +182,7 @@ export class PlotComponent implements OnInit {
           ticksuffix: " ",
           nticks: this.n_yticks
         },
+
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 0, r: 20, b: 50, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
@@ -210,7 +211,7 @@ export class PlotComponent implements OnInit {
           zerolinecolor: this.fontcolor,
           zerolinewidth: 2
         },
-        
+
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 200, r: 0, b: 20, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
@@ -297,12 +298,15 @@ export class PlotComponent implements OnInit {
     for (let xvalue of thexvalues) {
       let topush = {};
       topush[this.xvalue] = xvalue;
+
       for (let tocolor of thecolorvalues) {
         let datapoint = this.api.filterArray(this.api.filterArray(inputdata, this.colorby, tocolor), this.xvalue, xvalue)[0];
+
         if (datapoint) {
           topush[tocolor] = datapoint[theoutcome];
         }
       }
+
       newdata.push(topush);
     }
     // console.log("DEBUG make_colorbyvalues:",'df',inputdata,"colorvals",thecolorvalues,"xvals",thexvalues,"outcome",theoutcome,"newdf",newdata);
@@ -320,11 +324,11 @@ export class PlotComponent implements OnInit {
     if (this.plottype == "stackedarea") {
       trace['stackgroup'] = "one";
     }
-    
+
     if (this.hovertemplate != "") {
       trace['hovertemplate'] = this.hovertemplate;
     }
-    
+
     return trace;
   }
 
@@ -340,13 +344,13 @@ export class PlotComponent implements OnInit {
       if (this.outcomelabels.length == ylist.length) {
         tracename = this.outcomelabels[i];
       }
-      
+
       let trace = this.make_trace(xdata, theydata, tracename, type = type);
       if (type == "hbar") {
         trace = this.make_trace(this.api.getValues(source, ylist[i]), xdata, ylist[i], type = "bar")
         trace["orientation"] = "h"
       }
-      
+
       if (type == "bar" || type == "bar" || type == "scatter") {
         trace["marker"] = {
           color: colors[i]
