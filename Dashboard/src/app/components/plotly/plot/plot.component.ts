@@ -367,6 +367,7 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
+        trace['hovertemplate'] = '%{y}'
       }
 
       if (this.plottype == "area") {
