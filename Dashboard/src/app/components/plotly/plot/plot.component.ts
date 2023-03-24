@@ -93,6 +93,7 @@ export class PlotComponent implements OnInit {
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
       showTips: true,
+      seperator: ',.'
     };
 
     if (this.plottype == "bar") {
