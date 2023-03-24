@@ -1,10 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
+import * as DeLocale from '../../../../../node_modules/plotly.js/lib/locales/de-ch.js'
+import * as SVLocale from 'plotly.js/lib/locales/de.js';
+import { PlotlyService } from 'angular-plotly.js';
 
 @Component({
   selector: 'app-plot',
   templateUrl: './plot.component.html',
-  styleUrls: ['./plot.component.scss']
+  styleUrls: ['./plot.component.scss'],
+  providers: [PlotlyService]
 })
 
 export class PlotComponent implements OnInit {
@@ -45,7 +49,16 @@ export class PlotComponent implements OnInit {
   @Input() legendposy = 1;
   @Output() clicked = new EventEmitter<string>();
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, private plotlyService: PlotlyService) {
+      // this.setupPlotly()
+  }
+
+  // private async setupPlotly() {
+  //   const plotly = await this.plotlyService.getPlotly()
+  //   plotly.register(DeLocale)
+  //   plotly.setPlotConfig({ locale: 'de' })
+  // }
+
   plotlayout: any;
   plotdata: any;
   mainconfig: any;
@@ -75,7 +88,7 @@ export class PlotComponent implements OnInit {
       displayModeBar: false,
       scrollZoom: false,
       autosizable: true,
-      // locale: 'de',
+      locale: 'de',
       doubleClick: 'reset',
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
@@ -95,7 +108,7 @@ export class PlotComponent implements OnInit {
           zerolinewidth: 2,
           annotations: this.annotations,
           ticksuffix: " ",
-          nticks: this.n_yticks
+          nticks: this.n_yticks,
         },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
@@ -180,7 +193,7 @@ export class PlotComponent implements OnInit {
           zerolinewidth: 2,
           annotations: this.annotations,
           ticksuffix: " ",
-          nticks: this.n_yticks
+          nticks: this.n_yticks,
         },
 
         autosize: true, padding: 0,

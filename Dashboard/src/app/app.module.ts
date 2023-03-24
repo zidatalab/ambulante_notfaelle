@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StartComponent } from './pages/start/start.component';
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule ,PlotlyService} from 'angular-plotly.js';
+import * as DeLocale from '../../node_modules/plotly.js/lib/locales/de-ch.js'
 import * as SVLocale from 'plotly.js/lib/locales/de.js';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MapComponent } from './components/leafletmap/map/map.component';
@@ -42,7 +43,6 @@ registerLocaleData(locales, 'de');
     PrivateComponent,
     AdminComponent,
     ReplacePipe
-    
   ],
   imports: [
     BrowserModule,
@@ -55,10 +55,9 @@ registerLocaleData(locales, 'de');
     ReactiveFormsModule, 
     FormsModule, 
     HttpClientModule 
-
-    
   ],
-  providers: [{provide: LOCALE_ID, useValue: 'de-DE' },PlotlyService,
+  providers: [
+    // {provide: LOCALE_ID, useValue: 'de-DE' },PlotlyService,
 
   // This needs to be uncommented to provide  auth
   { provide: HTTP_INTERCEPTORS, 
@@ -70,6 +69,12 @@ registerLocaleData(locales, 'de');
 
 export class AppModule { 
   constructor(private plotlyService: PlotlyService) {
-    this.plotlyService.getPlotly()
+    this.setupPlotly()
+  }
+
+  private async setupPlotly() {
+    const plotly = await this.plotlyService.getPlotly()
+    plotly.register(DeLocale)
+    plotly.setPlotConfig({ locale: 'de' })
   }
 }
