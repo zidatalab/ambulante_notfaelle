@@ -50,7 +50,7 @@ export class PlotComponent implements OnInit {
   @Output() clicked = new EventEmitter<string>();
 
   constructor(private api: ApiService, private plotlyService: PlotlyService) {
-      // this.setupPlotly()
+    // this.setupPlotly()
   }
 
   // private async setupPlotly() {
@@ -88,7 +88,17 @@ export class PlotComponent implements OnInit {
       displayModeBar: false,
       scrollZoom: false,
       autosizable: true,
-      locale: 'de',
+      locale: 'de-eu',
+      locales: {
+        'de-eu': {
+          format: {
+            currency: ['€', ''],
+            decimal: ',',
+            thousands: '.',
+            grouping: [3]
+          }
+        }
+      },
       doubleClick: 'reset',
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
