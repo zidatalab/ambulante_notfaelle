@@ -371,6 +371,8 @@ export class PlotComponent implements OnInit {
 
       let trace = this.make_trace(xdata, theydata, tracename, type = type);
 
+      trace['hovertemplate'] = '%{y:.2f}'
+      
       if (type == "hbar") {
         trace = this.make_trace(this.api.getValues(source, ylist[i]), xdata, ylist[i], type = "bar")
         trace["orientation"] = "h"
