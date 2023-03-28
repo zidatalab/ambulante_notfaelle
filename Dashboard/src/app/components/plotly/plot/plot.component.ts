@@ -88,14 +88,14 @@ export class PlotComponent implements OnInit {
       displayModeBar: false,
       scrollZoom: false,
       autosizable: true,
-      locale: 'de-eu',
+      locale: 'de',
       locales: {
-        'de-eu': {
+        'de': {
           format: {
             currency: ['€', ''],
             decimal: ',',
             thousands: '.',
-            grouping: [3]
+            grouping: [2],
           }
         }
       },
@@ -103,7 +103,7 @@ export class PlotComponent implements OnInit {
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
       showTips: true,
-      seperator: ',.'
+      hovertmeplate: '%{y:.2f}'
     };
 
     if (this.plottype == "bar") {
@@ -371,6 +371,8 @@ export class PlotComponent implements OnInit {
 
       let trace = this.make_trace(xdata, theydata, tracename, type = type);
 
+      trace['hovertemplate'] = '%{y:.2f}'
+
       if (type == "hbar") {
         trace = this.make_trace(this.api.getValues(source, ylist[i]), xdata, ylist[i], type = "bar")
         trace["orientation"] = "h"
@@ -391,7 +393,6 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
-        trace['hovertemplate'] = '%{y}'
       }
 
       if (this.plottype == "area") {
