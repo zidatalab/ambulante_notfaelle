@@ -99,8 +99,6 @@
       <p>Keine Ergebnisse zur Anzeige</p>
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==0 && this.tsqueryresult.length>0">
-
-
       <div>
         <app-box [value]="this.tsqueryresult[0]['count']" [numberformat]="'1.0-0'"
           [maincolor]="this.colorsscheme[4].concat('80')"
@@ -118,10 +116,6 @@
         <app-box [value]="this.tsqueryresult[0]['Anzahl_Fragen']" [numberformat]="'1.0-0'"
           [maincolor]="this.colorsscheme[1].concat('80')" [description]="'Mittlere Anzahl Fragen SmED'"></app-box>
       </div>
-
-
-
-
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==1 && this.tsqueryresult.length>0" fxLayout="row wrap">
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
@@ -194,7 +188,6 @@
             <app-table [(data)]="this.tsqueryresult" [outcomes_rate]="['Anteil']"
               [columns]="this.restablecols"></app-table>
           </ng-container>
-
           <div>
             <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
               (closed)="panelOpenState = false">
@@ -217,10 +210,6 @@
           </div>
         </mat-card>
       </div>
-
-
-
-
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==2 && this.tsqueryresult.length>0" fxLayout="row wrap">
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
@@ -295,7 +284,6 @@
             <app-table [(data)]="this.tsqueryresult" [outcomes_rate]="['Anteil']"
               [columns]="this.restablecols"></app-table>
           </ng-container>
-
           <div>
             <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
               (closed)="panelOpenState = false">
@@ -318,12 +306,6 @@
           </div>
         </mat-card>
       </div>
-
-
-
-
     </div>
   </div>
-
-
 </div>
