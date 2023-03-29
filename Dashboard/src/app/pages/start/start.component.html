@@ -49,6 +49,9 @@
             {{this.summaryinfo["Ende"] | date}}.</span></p>
         <p class="lightgreycolor" *ngIf="this.currentuser">Als registrierter Nutzer steht Ihnen unser <a
             routerLink="/private">interner Analysebereich</a> zur Verfügung.</p>
+            <!-- TODO set dates from database -->
+        <p class="lightgreycolor">Die Daten liegen bis einschließlich MMM JJJJ vor und werden monatlich aktualisiert
+          (letzte Aktualisierung am TT.MM.JJJJ).</p>
       </ng-container>
     </ng-container>
   </div>
