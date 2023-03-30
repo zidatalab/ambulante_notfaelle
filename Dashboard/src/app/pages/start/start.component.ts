@@ -115,6 +115,7 @@ export class StartComponent implements OnInit {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
+
     this.summaryinfo = [];
     this.stats_ts = [];
     this.utiltimes = {};
@@ -222,7 +223,6 @@ export class StartComponent implements OnInit {
       oldstand = new Date(dbdaterange['Stand']);
       dataage = (now.getTime() - oldstand.getTime()) / (1000 * 60 * 60);
     };
-
     if ((dbdaterange['startdate'] <= this.levelsettings["start"]) && (dbdaterange['stopdate'] >= this.levelsettings["stop"]) &&
       (dataage < 6)
     ) {
@@ -259,7 +259,6 @@ export class StartComponent implements OnInit {
               this.levelsettings["levelvalues"], now.toISOString(),
               this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
           };
-
           if (thefield == "" && res.length > 0) {
             for (let fielditem of this.allpublicfields) {
               this.db.deletewhere(fielditem, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
@@ -384,6 +383,7 @@ export class StartComponent implements OnInit {
       for (let item of ttt) {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
+      this.timetotreat = ttt;
 
       this.timetotreat = ttt;
     }
@@ -418,7 +418,6 @@ export class StartComponent implements OnInit {
     Minuten = Math.floor((Minuten / 60 - Math.floor(Minuten / 60)) * 60);
     let Sekunden = Math.floor(-timediff / (1000));
     Sekunden = Math.floor((Sekunden / 60 - Math.floor(Sekunden / 60)) * 60);
-
     return Tage + ' Tage ' + Stunden + " Stunden " + Minuten + " Minuten " + Sekunden + " Sekunden";
   }
 }
