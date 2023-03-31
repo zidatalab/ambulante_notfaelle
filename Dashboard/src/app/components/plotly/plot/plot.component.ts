@@ -1,11 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
+import * as DeLocale from '../../../../../node_modules/plotly.js/lib/locales/de-ch.js'
+import * as SVLocale from 'plotly.js/lib/locales/de.js';
+import { PlotlyService } from 'angular-plotly.js';
 
 @Component({
   selector: 'app-plot',
   templateUrl: './plot.component.html',
-  styleUrls: ['./plot.component.scss']
+  styleUrls: ['./plot.component.scss'],
+  providers: [PlotlyService]
 })
+
 export class PlotComponent implements OnInit {
   @Input() data: any;
   @Input() xvalue: string;
@@ -73,11 +78,22 @@ export class PlotComponent implements OnInit {
       displayModeBar: false,
       scrollZoom: false,
       autosizable: true,
-      locale: 'de',
+      locale: 'de-eu',
+      locales: {
+        'de-eu': {
+          format: {
+            currency: ['€', ''],
+            decimal: ',',
+            thousands: '.',
+            grouping: [2]
+          }
+        }
+      },
       doubleClick: 'reset',
       showAxisDragHandles: false,
       showAxisRangeEntryBoxes: false,
-      showTips: true
+      showTips: true,
+      seperator: ',.'
     };
 
     if (this.plottype == "bar") {
@@ -93,12 +109,12 @@ export class PlotComponent implements OnInit {
           zerolinewidth: 2,
           annotations: this.annotations,
           ticksuffix: " ",
-          nticks: this.n_yticks
+          nticks: this.n_yticks,
         },
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
-        annotations: this.annotations
+        annotations: this.annotations,
       };
 
       if (this.percent) {
@@ -117,6 +133,7 @@ export class PlotComponent implements OnInit {
         paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         //annotations: this.annotations
       };
+
       let plotdata = this.data;
       plotdata['type'] = "heatmap";
       let colors = this.api.makescale(2);
@@ -160,7 +177,6 @@ export class PlotComponent implements OnInit {
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
       };
-
     }
 
     if (this.plottype == "tsline" || this.plottype == "lines" || this.plottype == "area" ||
@@ -177,15 +193,18 @@ export class PlotComponent implements OnInit {
           zerolinewidth: 2,
           annotations: this.annotations,
           ticksuffix: " ",
-          nticks: this.n_yticks
+          nticks: this.n_yticks,
         },
+
         autosize: true, padding: 0,
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 0, r: 20, b: 50, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent"
       };
+
       if (this.percent) {
         this.plotlayout.yaxis.tickformat = ',.1%';
       }
+
       if (this.percentx) {
         this.plotlayout.xaxis.tickformat = ',.1%';
       }
@@ -208,13 +227,13 @@ export class PlotComponent implements OnInit {
         legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 200, r: 0, b: 20, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
-
       };
     }
 
     if (this.custommargins) {
       this.plotlayout['margin'] = this.custommargins;
     }
+
     if (this.showlegend) {
       this.plotlayout['showlegend'] = true;
     }
@@ -237,7 +256,6 @@ export class PlotComponent implements OnInit {
         size: this.fontsize,
         color: this.fontcolor
       };
-
     }
     if (this.ytitle !== "") {
       this.plotlayout['yaxis']['title'] = this.ytitle;
@@ -247,17 +265,19 @@ export class PlotComponent implements OnInit {
         size: this.fontsize,
         color: this.fontcolor
       };
-
     }
+
     if (this.plottype != "heatmap") {
       let plotdata = []
 
       for (let item of this.data) {
         plotdata.push(item);
       }
+
       if (this.sort) {
         plotdata = this.api.sortArray(plotdata, this.outcomes[0]);
       }
+
       if (this.sortx) {
         plotdata = this.api.sortArray(plotdata, this.xvalue);
       }
@@ -284,15 +304,19 @@ export class PlotComponent implements OnInit {
     let thecolorvalues = this.api.getuniqueValues(inputdata, this.colorby).sort();
     let thexvalues = this.api.getuniqueValues(inputdata, this.xvalue);
     let theoutcome = this.outcomes[0];
+
     for (let xvalue of thexvalues) {
       let topush = {};
       topush[this.xvalue] = xvalue;
+
       for (let tocolor of thecolorvalues) {
         let datapoint = this.api.filterArray(this.api.filterArray(inputdata, this.colorby, tocolor), this.xvalue, xvalue)[0];
+
         if (datapoint) {
           topush[tocolor] = datapoint[theoutcome];
         }
       }
+
       newdata.push(topush);
     }
     // console.log("DEBUG make_colorbyvalues:",'df',inputdata,"colorvals",thecolorvalues,"xvals",thexvalues,"outcome",theoutcome,"newdf",newdata);
@@ -304,14 +328,17 @@ export class PlotComponent implements OnInit {
       x: xdata,
       y: ydata,
       name: name,
-      type: type
+      type: type,
     }
+
     if (this.plottype == "stackedarea") {
       trace['stackgroup'] = "one";
     }
-    if (this.hovertemplate != "") {
-      trace['hovertemplate'] = this.hovertemplate;
-    }
+
+    // if (this.hovertemplate !== "") {
+    //   trace['hovertemplate'] = this.hovertemplate;
+    // }
+
     return trace;
   }
 
@@ -319,17 +346,22 @@ export class PlotComponent implements OnInit {
     let xdata = this.api.getValues(source, xaxis)
     let list = []
     let i = 0
+
     for (let name in ylist) {
       let theydata = this.api.getValues(source, ylist[i]);
       let tracename = ylist[i];
+
       if (this.outcomelabels.length == ylist.length) {
         tracename = this.outcomelabels[i];
       }
+
       let trace = this.make_trace(xdata, theydata, tracename, type = type);
+
       if (type == "hbar") {
         trace = this.make_trace(this.api.getValues(source, ylist[i]), xdata, ylist[i], type = "bar")
         trace["orientation"] = "h"
       }
+
       if (type == "bar" || type == "bar" || type == "scatter") {
         trace["marker"] = {
           color: colors[i]
@@ -345,10 +377,15 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
+
+        trace['name'] = ''
+        trace['hovertemplate'] = '%{x} | %{y:.2f}'
       }
+
       if (this.plottype == "area") {
         trace["fill"] = "tozeroy";
       }
+
       if (this.plottype == "violin") {
         trace = this.make_trace(name, theydata, ylist[i], type = type);
         trace['x'] = name;
@@ -357,6 +394,7 @@ export class PlotComponent implements OnInit {
           width: this.linewidth
         }
       }
+
       if (this.plottype == "scatter") {
         trace['mode'] = 'markers';
         trace["marker"] = {
