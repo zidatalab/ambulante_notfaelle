@@ -393,7 +393,7 @@ export class PlotComponent implements OnInit {
         }
 
         trace['name'] = ''
-        trace['hovertemplate'] = '%{x} | %{y:.2f}'
+        trace['hovertemplate'] = '%{x} </br> %{y:.2f}'
       }
 
       if (this.plottype == "area") {
