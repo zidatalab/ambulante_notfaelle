@@ -375,17 +375,22 @@ export class StartComponent implements OnInit {
     };
 
     if (thefield == "timetotreat") {
-      let ttt = [];
-      ttt = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
-      ttt = this.api.groupbysum(ttt, 'TTTsmed_text', '', 'Anzahl');
-      let total = this.api.sumArray(this.api.getValues(ttt, 'Anzahl'));
+      let result = [];
+      result = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
+      const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
 
-      for (let item of ttt) {
+      for (let item of result) {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
-      this.timetotreat = ttt;
 
-      this.timetotreat = ttt;
+      console.log(result)
+
+      if(result[0].TTTsmed_text !== undefined) {
+        result.push({TTTsmed_text: undefined, Anzahl: 0, Anteil: 0})
+      }
+
+      this.timetotreat = result;
     }
 
     if (thefield == "decisions") {

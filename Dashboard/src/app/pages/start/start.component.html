@@ -52,7 +52,6 @@
       </ng-container>
     </ng-container>
   </div>
-
   <div *ngIf="(this.timetogo>=0) || this.currentuser">
     <div>
       <h3 *ngIf="this.currentuser">Bundesland</h3>
@@ -74,7 +73,6 @@
         </mat-chip-list>
       </p>
     </div>
-
     <div>
       <h3>Zeitliche Auflösung</h3>
       <p>
@@ -126,7 +124,6 @@
             </div>
           </div>
         </mat-card>
-
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
         <mat-card>
@@ -156,7 +153,6 @@
               </div>
             </mat-expansion-panel>
           </div>
-
         </mat-card>
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
@@ -260,12 +256,11 @@
           </mat-card>
         </ng-container>
       </div>
-
-
       <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat">
         <mat-card *ngIf="this.timetotreat.length>0">
           <h3>SmED Empfehlungen zur Dringlichkeit<br><span class="lightgreycolor">Anteil Assessment in Prozent</span>
           </h3>
+          {{ this.timetotreat | json }}
           <app-plot [(data)]="this.timetotreat" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'" [showlegend]="false"
             [outcomes]="['Anteil']" [custommargins]="{ l: 50, r: 0, b: 0, t: 0 }" plottype="hbar">
           </app-plot>
@@ -505,12 +500,6 @@
           </div>
         </mat-card>
       </div>
-
-
-
-
-
     </div>
-
   </div>
 </div>
