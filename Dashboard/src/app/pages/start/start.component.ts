@@ -376,6 +376,39 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timetotreat") {
       let result = [];
+      let standardSort = [
+        {
+          TTTsmed_text: undefined,
+          Anzahl: 0,
+          Anteil: 0
+        },
+        {
+          TTTsmed_text: 'Notfall',
+          Anzahl: 0,
+          Anteil: 0
+        },
+        {
+          TTTsmed_text: 'schnellstmögliche ärztliche Behandlung',
+          Anzahl: 0,
+          Anteil: 0
+        },
+        {
+          TTTsmed_text: 'Ärztliche Behandlung innerhalb von 24h',
+          Anzahl: 0,
+          Anteil: 0
+        },
+        {
+          TTTsmed_text: 'Ärztliche Behandlung nicht innerhalb von 24h erforderlich',
+          Anzahl: 0,
+          Anteil: 0
+        },
+        {
+          TTTsmed_text: 'k.A./Befragung unklar',
+          Anzahl: 0,
+          Anteil: 0
+        }
+      ]
+
       result = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
       const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
@@ -383,14 +416,27 @@ export class StartComponent implements OnInit {
       for (let item of result) {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
-
-      console.log(result)
-
-      if(result[0].TTTsmed_text !== undefined) {
-        result.push({TTTsmed_text: undefined, Anzahl: 0, Anteil: 0})
+      
+      if (result[0].TTTsmed_text !== undefined) {
+        result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
       }
 
-      this.timetotreat = result;
+      this.timetotreat = createStandardSort(result);
+
+      function createStandardSort(data) {
+        const result = []
+
+        for(const item of standardSort) {
+          for(const _item of data) {
+            if(item.TTTsmed_text === _item.TTTsmed_text) {
+              item.Anteil = _item.Anteil
+              item.Anzahl = _item.Anzahl
+            }
+          }
+          result.push(item)
+        }
+        return result.reverse()
+      }
     }
 
     if (thefield == "decisions") {
