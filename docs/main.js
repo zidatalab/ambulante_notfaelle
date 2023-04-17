@@ -5471,15 +5471,62 @@ class StartComponent {
             }
             ;
             if (thefield == "timetotreat") {
-                let ttt = [];
-                ttt = yield this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
-                ttt = this.api.groupbysum(ttt, 'TTTsmed_text', '', 'Anzahl');
-                let total = this.api.sumArray(this.api.getValues(ttt, 'Anzahl'));
-                for (let item of ttt) {
+                let result = [];
+                let standardSort = [
+                    {
+                        TTTsmed_text: undefined,
+                        Anzahl: 0,
+                        Anteil: 0
+                    },
+                    {
+                        TTTsmed_text: 'Notfall',
+                        Anzahl: 0,
+                        Anteil: 0
+                    },
+                    {
+                        TTTsmed_text: 'schnellstmögliche ärztliche Behandlung',
+                        Anzahl: 0,
+                        Anteil: 0
+                    },
+                    {
+                        TTTsmed_text: 'Ärztliche Behandlung innerhalb von 24h',
+                        Anzahl: 0,
+                        Anteil: 0
+                    },
+                    {
+                        TTTsmed_text: 'Ärztliche Behandlung nicht innerhalb von 24h erforderlich',
+                        Anzahl: 0,
+                        Anteil: 0
+                    },
+                    {
+                        TTTsmed_text: 'k.A./Befragung unklar',
+                        Anzahl: 0,
+                        Anteil: 0
+                    }
+                ];
+                result = yield this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
+                const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
+                for (let item of result) {
                     item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
                 }
-                this.timetotreat = ttt;
-                this.timetotreat = ttt;
+                if (result[0].TTTsmed_text !== undefined) {
+                    result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 });
+                }
+                this.timetotreat = createStandardSort(result);
+                function createStandardSort(data) {
+                    const result = [];
+                    for (const item of standardSort) {
+                        for (const _item of data) {
+                            if (item.TTTsmed_text === _item.TTTsmed_text) {
+                                item.Anteil = _item.Anteil;
+                                item.Anzahl = _item.Anzahl;
+                            }
+                        }
+                        result.push(item);
+                    }
+                    return result.reverse();
+                }
             }
             if (thefield == "decisions") {
                 let decisions = [];
