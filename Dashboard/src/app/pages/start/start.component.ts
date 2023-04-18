@@ -34,13 +34,15 @@ export class StartComponent implements OnInit {
     'Mecklenburg-Vorpommern',
     'Niedersachsen',
     'Nordrhein-Westfalen',
+    'Nordrhein',
+    'Westfalen-Lippe',
     'Rheinland-Pfalz',
     'Saarland',
     'Sachsen',
     'Sachsen-Anhalt',
     'Schleswig-Holstein',
-    'Thüringen'];
-
+    'Thüringen'
+  ];
   subgroups: any;
   outcomes: any;
   determinants: any;
@@ -416,7 +418,7 @@ export class StartComponent implements OnInit {
       for (let item of result) {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
-      
+
       if (result[0].TTTsmed_text !== undefined) {
         result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
       }
@@ -426,9 +428,9 @@ export class StartComponent implements OnInit {
       function createStandardSort(data) {
         const result = []
 
-        for(const item of standardSort) {
-          for(const _item of data) {
-            if(item.TTTsmed_text === _item.TTTsmed_text) {
+        for (const item of standardSort) {
+          for (const _item of data) {
+            if (item.TTTsmed_text === _item.TTTsmed_text) {
               item.Anteil = _item.Anteil
               item.Anzahl = _item.Anzahl
             }
