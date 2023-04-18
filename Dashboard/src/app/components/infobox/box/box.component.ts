@@ -17,10 +17,9 @@ export class BoxComponent implements OnInit {
   @Input() numberformat: string;
   @Input() maticon: string;
   @Input() textbehind: boolean;
-  itemcolor:string;
+  itemcolor: string;
 
-  constructor(private api:ApiService) { }
-
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
     this.value = Number(this.value);
@@ -33,7 +32,7 @@ export class BoxComponent implements OnInit {
   setcolor() {
     let color = this.maincolor;
     this.itemcolor = this.maincolor;
-    
+
     if (this.cutoffs.length > 0 && this.cutoffs.length == this.colors.length) {
       let i = 0;
       for (let cutvalue of this.cutoffs) {
@@ -42,13 +41,7 @@ export class BoxComponent implements OnInit {
         }
         i = i + 1;
       }
-
     }
     this.itemcolor = color;
-
   }
-
-
 }
-
-
