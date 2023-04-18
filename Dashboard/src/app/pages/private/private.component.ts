@@ -30,6 +30,8 @@ export class PrivateComponent implements OnInit {
     'Mecklenburg-Vorpommern',
     'Niedersachsen',
     'Nordrhein-Westfalen',
+    'Nordrhein',
+    'Westfalen-Lippe',
     'Rheinland-Pfalz',
     'Saarland',
     'Sachsen',
