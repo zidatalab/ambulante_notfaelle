@@ -419,7 +419,36 @@
           </div>
         </mat-card>
       </div>
-
+      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat">
+        <mat-card *ngIf="this.timetotreat.length>0">
+          <h3>SmED Empfehlungen zur Dringlichkeit<br><span class="lightgreycolor">Anteil Assessment in Prozent</span>
+          </h3>
+          <app-plot [(data)]="this.timetotreat" [xvalue]="'TTTsmed_text'" [fontcolor]="'white'" [showlegend]="false"
+            [outcomes]="['Anteil']" [custommargins]="{ l: 50, r: 0, b: 0, t: 0 }" plottype="hbar">
+          </app-plot>
+          <div>
+            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+              (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+              </mat-expansion-panel-header>
+              <mat-panel-description>
+                <div class="mat-caption">
+                  <p *ngIf="this.currentuser">
+                    <a (click)="this.exportascsv('empfehlung.csv',this.timetotreat)">
+                      <mat-icon inline=true>file_download</mat-icon>
+                      Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                    </a>
+                  </p>
+                  <h3> Weitere Informationen zum Indikator</h3>
+                  <!-- Text anpassen -->
+                  <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsdringlichkeit.</p>
+                </div>
+              </mat-panel-description>
+            </mat-expansion-panel>
+          </div>
+        </mat-card>
+      </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_ttt">
         <mat-card *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl

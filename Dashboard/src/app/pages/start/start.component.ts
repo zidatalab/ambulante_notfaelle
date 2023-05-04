@@ -68,6 +68,7 @@ export class StartComponent implements OnInit {
   ts_results = {};
   utiltimes = {};
   timetotreat: any;
+  qmCases: any;
   decisions_ttt: any;
   decisions_poc: any;
   decisions_pocvsttt: any;
@@ -125,6 +126,7 @@ export class StartComponent implements OnInit {
     this.decisions_poc = [];
     this.decisions_pocvsttt = [];
     this.timetotreat = NaN;
+    this.qmCases = NaN;
 
     if (this.metadata.length == 0) {
       this.updatemetadata();
@@ -448,6 +450,11 @@ export class StartComponent implements OnInit {
       this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
       this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");;
       this.decisions_pocvsttt = this.api.groupbysum(decisions, 'TTTsmed_text', "POCsmed_text", 'Anzahl');
+    }
+
+    if(thefield = "qmCases") {
+      let result = []
+
     }
   }
 
