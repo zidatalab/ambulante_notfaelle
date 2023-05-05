@@ -64,7 +64,7 @@ export class StartComponent implements OnInit {
   summaryinfo = {};
   smedrange = {};
   zeitaumoptions = ["Letzte 12 Monate", "Letztes Jahr", "Gesamt"];
-  allpublicfields = ['stats', 'mainsymptoms_ts', 'timetotreat', 'timestats'];
+  allpublicfields = ['stats', 'mainsymptoms_ts', 'timetotreat', 'timestats', 'qmCases'];
   ts_results = {};
   utiltimes = {};
   timetotreat: any;
@@ -452,9 +452,73 @@ export class StartComponent implements OnInit {
       this.decisions_pocvsttt = this.api.groupbysum(decisions, 'TTTsmed_text', "POCsmed_text", 'Anzahl');
     }
 
-    if(thefield = "qmCases") {
+    if (thefield === "qmCases") {
       let result = []
 
+      let standardSort = [
+        {
+          text: "Vortriage",
+          data: 0,
+        },
+        {
+          text: 'nur Notfall ausgeschlossen',
+          data: 0,
+        },
+        {
+          text: 'Assessment vollständig',
+          data: 0,
+        },
+        {
+          text: 'Assessement abgekürzt',
+          data: 0,
+        },
+        {
+          text: 'SmED nicht anwendbar',
+          data: 0,
+        },
+      ]
+
+      const data = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      let total = 0
+
+      if (data.length > 0) {
+        for (const item of data) {
+          if (item["QMFaelle"]) {
+            total = item["QMFaelle"]
+            for (const _item of standardSort) {
+              if (_item.text === "Vortriage") {
+                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Vortriage"))
+              }
+              if (_item.text === "nur Notfall ausgeschlossen") {
+                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_nur_Notfall_ausgeschlossen"))
+              }
+              if (_item.text === "Assessment vollständig") {
+                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_vollst"))
+              }
+              if (_item.text === "Assessement abgekürzt") {
+                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_abgekuerzt"))
+              }
+              if (_item.text === "SmED nicht anwendbar") {
+                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_SmED_nicht_anwendbar"))
+              }
+            }
+          }
+        }
+      }
+
+      if (standardSort) {
+        for (const item of standardSort) {
+          item.data = inPercent(item.data, total)
+        }
+      }
+
+      this.qmCases = standardSort.reverse()
+
+      function inPercent(x, y) {
+        const result = Math.round(1000 * x / y) / 10
+        
+        return result
+      }
     }
   }
 
