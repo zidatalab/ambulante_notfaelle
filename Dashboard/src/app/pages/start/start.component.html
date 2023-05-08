@@ -421,7 +421,7 @@
       </div>
       <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat && this.currentuser">
         <mat-card *ngIf="this.timetotreat.length>0">
-          <h3>SmED Empfehlungen zur Dringlichkeit<br><span class="lightgreycolor">Anteil Assessment in Prozent</span>
+          <h3>SmED-Assessments nach QM-Kategorien<br><span class="lightgreycolor">Anteil Assessment in Prozent</span>
           </h3>
           <app-plot [(data)]="this.qmCases" [xvalue]="'text'" [fontcolor]="'white'" [showlegend]="false"
             [outcomes]="['data']" [custommargins]="{ l: 50, r: 0, b: 0, t: 0 }" plottype="hbar">
@@ -442,7 +442,7 @@
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
                   <!-- Text anpassen -->
-                  <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsdringlichkeit.</p>
+                  <p>Prozentuale Verteilung der SmED-Assessments nach QM-Kategorien.</p>
                 </div>
               </mat-panel-description>
             </mat-expansion-panel>
