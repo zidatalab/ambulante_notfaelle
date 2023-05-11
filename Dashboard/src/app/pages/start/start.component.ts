@@ -453,8 +453,6 @@ export class StartComponent implements OnInit {
     }
 
     if (thefield === "qmCases") {
-      let result = []
-
       let standardSort = [
         {
           text: "Vortriage",
@@ -484,22 +482,32 @@ export class StartComponent implements OnInit {
       if (data.length > 0) {
         for (const item of data) {
           if (item["QMFaelle"]) {
-            total = item["QMFaelle"]
+            total += item["QMFaelle"]
             for (const _item of standardSort) {
               if (_item.text === "Vortriage") {
-                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Vortriage"))
+                if (_item.data === 0) {
+                  _item.data = (this.api.sumArray(this.api.getValues(data, "QM_Kat_Vortriage")))
+                }
               }
               if (_item.text === "nur Notfall ausgeschlossen") {
-                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_nur_Notfall_ausgeschlossen"))
+                if (_item.data === 0) {
+                  _item.data = (this.api.sumArray(this.api.getValues(data, "QM_Kat_nur_Notfall_ausgeschlossen")))
+                }
               }
               if (_item.text === "Assessment vollständig") {
-                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_vollst"))
+                if (_item.data === 0) {
+                  _item.data = (this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_vollst")))
+                }
               }
               if (_item.text === "Assessement abgekürzt") {
-                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_abgekuerzt"))
+                if (_item.data === 0) {
+                  _item.data = (this.api.sumArray(this.api.getValues(data, "QM_Kat_Assessment_abgekuerzt")))
+                }
               }
               if (_item.text === "SmED nicht anwendbar") {
-                _item.data += this.api.sumArray(this.api.getValues(data, "QM_Kat_SmED_nicht_anwendbar"))
+                if (_item.data === 0) {
+                  _item.data = (this.api.sumArray(this.api.getValues(data, "QM_Kat_SmED_nicht_anwendbar")))
+                }
               }
             }
           }
@@ -516,7 +524,7 @@ export class StartComponent implements OnInit {
 
       function inPercent(x, y) {
         const result = Math.round(1000 * x / y) / 10
-        
+
         return result
       }
     }
