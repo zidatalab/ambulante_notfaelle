@@ -73,6 +73,7 @@ export class StartComponent implements OnInit {
   decisions_poc: any;
   decisions_pocvsttt: any;
   timetogo: number;
+  absoluteNumbers: boolean
 
   ngOnInit(): void {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };

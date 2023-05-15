@@ -127,9 +127,9 @@
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
         <mat-card>
-          <h3>SmED Assessments
-            <br><span class="lightgreycolor">pro 100.000 Einwohner</span>
-          </h3>
+          <h3>SmED Assessments </h3>
+          <mat-slide-toggle>Absolute Zahlen</mat-slide-toggle>
+          <br><span class="lightgreycolor">pro 100.000 Einwohner</span>
           <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
             [outcomes]="['Assessments pro 100 Tsd. Einw.']" [sortx]="true" [fontcolor]="'white'"
             plottype="area"></app-plot>
