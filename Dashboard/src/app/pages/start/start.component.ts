@@ -73,7 +73,7 @@ export class StartComponent implements OnInit {
   decisions_poc: any;
   decisions_pocvsttt: any;
   timetogo: number;
-  absoluteNumbers: boolean
+  absoluteNumbers: boolean = false
 
   ngOnInit(): void {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
@@ -322,9 +322,13 @@ export class StartComponent implements OnInit {
           // item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE"] / (item["BEVSTAND"] / 1e5);
           // item["ARE Assessments (v2) pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v2"] / (item["BEVSTAND"] / 1e5);
           item["Anteil ARE Assessments"] = (100 * ((item["Assessments_mit_ARE_v3"] / item["Assessments"]) / .25)) - 100;
+
+          item['totaleNumbers'] = item['Assessments']
         };
 
+        
         this.stats_ts = statswdate;
+        console.log(this.stats_ts)
         let theid = this.stats_ts[0]['levelid'];
 
         if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
