@@ -127,8 +127,10 @@
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
         <mat-card>
-          <h3>SmED Assessments </h3>
-          <mat-slide-toggle input [(ngModel)]="absoluteNumbers">Absolute Zahlen</mat-slide-toggle>
+          <div class="sliderHeader">
+            <h3>SmED Assessments </h3>
+            <mat-slide-toggle input [(ngModel)]="absoluteNumbers">Absolute Zahlen</mat-slide-toggle>
+          </div>
           <br><span *ngIf="!absoluteNumbers" class="lightgreycolor">pro 100.000 Einwohner</span>
           <span class="lightgreycolor" *ngIf="absoluteNumbers">Absolute Zahlen</span>
           <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
