@@ -328,7 +328,6 @@ export class StartComponent implements OnInit {
 
         
         this.stats_ts = statswdate;
-        console.log(this.stats_ts)
         let theid = this.stats_ts[0]['levelid'];
 
         if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
