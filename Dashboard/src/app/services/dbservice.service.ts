@@ -41,12 +41,12 @@ export class DBService {
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
       return db.datadb
-      .where('[level+levelid+Indicator+timeframe+Datum]')
-      .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
-      .toArray()
-      .then(data => this.api.objectkeystocolumns(data, 'data'));
+        .where('[level+levelid+Indicator+timeframe+Datum]')
+        .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
+        .toArray()
+        .then(data => this.api.objectkeystocolumns(data, 'data'));
     }
-    
+
     if (expand == true) {
       return db.datadb
         .where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).toArray().then(data => this.api.objectkeystocolumns(data, 'data'));

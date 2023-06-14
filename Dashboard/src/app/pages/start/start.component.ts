@@ -155,8 +155,7 @@ export class StartComponent implements OnInit {
       if (this.metadata.length > 0) {
         this.dometasettings();
       }
-    }
-    else {
+    } else {
       this.metadata = [];
       setTimeout(() => {
         if ((this.metadata !== undefined) && (this.sortdata !== undefined)) {
@@ -326,7 +325,6 @@ export class StartComponent implements OnInit {
           item['totaleNumbers'] = item['Assessments']
         };
 
-        
         this.stats_ts = statswdate;
         let theid = this.stats_ts[0]['levelid'];
 
@@ -352,7 +350,6 @@ export class StartComponent implements OnInit {
 
       symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
-
 
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
 
