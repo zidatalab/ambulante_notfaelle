@@ -104,6 +104,8 @@ export class StartComponent implements OnInit {
         }
       }, 500);
     };
+
+    console.log(this.auth.isRKIUser())
   }
 
   ngOnDestroy() {

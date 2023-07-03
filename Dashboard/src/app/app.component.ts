@@ -80,7 +80,6 @@ export class AppComponent {
   public autorefreshdata() {
     this.updatemetadata().subscribe(
       data => {
-        console.log(data)
         this.setmetadata("metadata", data["data"]);
       });
     // this.getsortdata().subscribe(data => {

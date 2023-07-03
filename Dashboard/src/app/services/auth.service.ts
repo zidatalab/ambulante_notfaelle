@@ -107,4 +107,27 @@ export class AuthService {
     }).join(''));
     return JSON.parse(jsonPayload);
   };
+
+  public getUserReportingGroup() {
+    if (this.currentUserValue) {
+
+      return this.currentUserValue.usergroups.smed_reporting
+    }
+
+    return []
+  }
+
+  public isRKIUser() {
+    if(this.currentUserValue) {
+      const userGroup = this.currentUserValue.usergroups.smed_reporting
+      
+      if(userGroup.includes('rki') && !(userGroup.includes('kvuser'))) {
+        return true
+      }
+
+      return false
+    }
+
+    return false
+  }
 }
