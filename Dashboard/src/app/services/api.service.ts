@@ -20,7 +20,6 @@ export class ApiService {
 
   public getTypeRequest(url) {
     return this.httpClient.get(this.REST_API_SERVER + url).pipe(map(res => {
-      console.log(res)
       return res;
     })).pipe(/*timeout(3500),*/retry(3));
   }
