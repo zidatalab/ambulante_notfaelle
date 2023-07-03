@@ -224,7 +224,7 @@ export class StartComponent implements OnInit {
       "groupinfo": {}
     };
     // console.log(this.level)
-    query["groupinfo"]["level"] = this.isRKIUser && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
+    query["groupinfo"]["level"] = (this.isRKIUser || this.isRKIKVUser) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
     query["groupinfo"]["Jahr"] = {
@@ -251,6 +251,7 @@ export class StartComponent implements OnInit {
     else {
       await this.db.querydatadates(
         'KV', this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"]).then(data => {
+          console.log(data)
           if (data.length > 0) { dbdaterange = Object.create(data[0]); }
         });
     };
