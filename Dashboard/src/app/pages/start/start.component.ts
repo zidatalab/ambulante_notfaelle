@@ -337,6 +337,7 @@ export class StartComponent implements OnInit {
       let statswdate = await this.db.listdata('stats', "KV",
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
         this.levelsettings["resolution"]);
+
       if (statswdate.length > 0) {
 
         for (let item of statswdate) {
@@ -458,7 +459,8 @@ export class StartComponent implements OnInit {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
 
-      if (!this.isRKIUser) {
+      console.log(result)
+      if (!this.isRKIUser || !this.isRKIKVUser) {
         if (result[0].TTTsmed_text !== undefined) {
           result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
         }

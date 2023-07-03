@@ -87,11 +87,12 @@ export class DBService {
   }
 
   adddatabulk(array) {
-    //console.log('add bulk',array)
+    console.log(array)
     return db.datadb.bulkPut(array);
   };
 
   async adddata({ level, levelid, Jahr, Monat, KW, Datum, Indicator, data, KM6Versicherte, BEVSTAND, resolution }) {
+    console.log(level, levelid)
     return await db.datadb
       .put({
         Indicator: Indicator,
