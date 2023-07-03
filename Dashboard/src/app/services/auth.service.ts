@@ -130,4 +130,18 @@ export class AuthService {
 
     return false
   }
+
+  public isRKIKVUser() {
+    if(this.currentUserValue) {
+      const userGroup = this.currentUserValue.usergroups.smed_reporting
+      
+      if(userGroup.includes('rki') && userGroup.includes('kvuser')) {
+        return true
+      }
+
+      return false
+    }
+
+    return false
+  }
 }

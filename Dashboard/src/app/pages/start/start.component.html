@@ -30,13 +30,11 @@
         </p>
         <p>Zukünftig soll das Portal um Informationen aus weiteren Quellen (wie beispielsweise die Abrechnungsdaten) für
           ambulante Akut- und Notfälle ergänzt werden.</p>
-
         <h1 class="lightgreycolor" *ngIf="this.timetogo<=0">Zeit bis zum Start<br>{{counterstring(this.timetogo)}}</h1>
-
       </ng-container>
     </ng-container>
     <ng-container *ngIf="(this.timetogo>=0) || this.currentuser">
-      <ng-container *ngIf="(this.timetogo>=0) || this.currentuser">
+      <ng-container *ngIf="((this.timetogo>=0) || this.currentuser) && !this.isRKIUser">
         <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland
           (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnissen aus der
           Strukturierten medizinischen Ersteinschätzung in Deutschland
@@ -53,26 +51,40 @@
     </ng-container>
   </div>
   <div *ngIf="(this.timetogo>=0) || this.currentuser">
-    <div>
-      <h3 *ngIf="this.currentuser">Bundesland</h3>
-      <p *ngIf="this.currentuser">
-        <mat-chip-list *ngIf="this.currentuser">
-          <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.levelvalues"
-            [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
-            {{item.replace('KV ','')}}
-          </mat-chip>
-        </mat-chip-list>
-      </p>
-      <h3>Analysezeitraum</h3>
-      <p>
-        <mat-chip-list>
-          <mat-chip (click)="this.setlevel('zeitraum',item);" *ngFor="let item of this.zeitaumoptions"
-            [selected]="(this.levelsettings['zeitraum']==item)" color="primary">
-            {{item}}
-          </mat-chip>
-        </mat-chip-list>
-      </p>
+    <div *ngIf="this.currentuser">
+      <div *ngIf="(this.isRKIUser || this.isRKIKVUser); then rkiUser else kvUser"></div>
+      <ng-template #kvUser>
+        <h3>Bundesland</h3>
+        <p>
+          <mat-chip-list>
+            <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.levelvalues"
+              [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
+              {{item.replace('KV ','')}}
+            </mat-chip>
+          </mat-chip-list>
+        </p>
+      </ng-template>
+      <ng-template #rkiUser>
+        <h3>Einsatzort</h3>
+        <p>
+          <mat-chip-list>
+            <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.rkiLevelvalues"
+              [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
+              {{item.replace('Gesamt','116117')}}
+            </mat-chip>
+          </mat-chip-list>
+        </p>
+      </ng-template>
     </div>
+    <h3>Analysezeitraum</h3>
+    <p>
+      <mat-chip-list>
+        <mat-chip (click)="this.setlevel('zeitraum',item);" *ngFor="let item of this.zeitaumoptions"
+          [selected]="(this.levelsettings['zeitraum']==item)" color="primary">
+          {{item}}
+        </mat-chip>
+      </mat-chip-list>
+    </p>
     <div>
       <h3>Zeitliche Auflösung</h3>
       <p>
@@ -129,7 +141,8 @@
         <mat-card>
           <div class="sliderHeader">
             <h3>SmED Assessments </h3>
-            <mat-slide-toggle input [(ngModel)]="absoluteNumbers">Absolute Zahlen</mat-slide-toggle>
+            <mat-slide-toggle *ngIf="!this.isRKIUser" input [(ngModel)]="absoluteNumbers">Absolute
+              Zahlen</mat-slide-toggle>
           </div>
           <br><span *ngIf="!absoluteNumbers" class="lightgreycolor">pro 100.000 Einwohner</span>
           <span class="lightgreycolor" *ngIf="absoluteNumbers">Absolute Zahlen</span>
@@ -452,7 +465,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_ttt">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && !this.rkiUser">
         <mat-card *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -492,7 +505,7 @@
         </mat-card>
       </div>
 
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.decisions_poc && this.currentuser">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && !this.rkiUser">
         <mat-card *ngIf="this.decisions_poc.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open

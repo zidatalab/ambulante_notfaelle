@@ -43,6 +43,8 @@ export class StartComponent implements OnInit {
     'Schleswig-Holstein',
     'Thüringen'
   ];
+  rkiLevelvalues = [
+  ]
   subgroups: any;
   outcomes: any;
   determinants: any;
@@ -74,6 +76,8 @@ export class StartComponent implements OnInit {
   decisions_pocvsttt: any;
   timetogo: number;
   absoluteNumbers: boolean = false
+  isRKIUser: boolean = false
+  isRKIKVUser: boolean = false
 
   ngOnInit(): void {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
@@ -83,6 +87,10 @@ export class StartComponent implements OnInit {
     this.mapdata = [];
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     this.auth.currentUser.subscribe(data => { this.currentuser = data; });
+
+    this.isRKIUser = this.auth.isRKIUser()
+    this.isRKIKVUser = this.auth.isRKIKVUser()
+    this.buildLevelValuesForCustomers()
 
     this.updatemetadata();
     window.scroll(0, 0);
@@ -110,6 +118,26 @@ export class StartComponent implements OnInit {
 
   ngOnDestroy() {
     this.mapdata = [];
+  }
+
+  buildLevelValuesForCustomers() {
+    if (this.isRKIUser || this.isRKIKVUser) {
+      for (const item of this.currentuser.usergroups.smed_reporting) {
+        if(item === 'kvuser') continue
+
+        this.rkiLevelvalues.push(item)
+      }
+
+      if (this.isRKIUser) {
+        this.rkiLevelvalues.push('Gesamt')
+      }
+
+      if (this.isRKIKVUser) {
+        for (const item of this.levelvalues) {
+          this.rkiLevelvalues.push(item)
+        }
+      }
+    }
   }
 
   async setlevel(level, value) {
@@ -191,7 +219,8 @@ export class StartComponent implements OnInit {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
     };
-    query["groupinfo"]["level"] = "KV"
+    // console.log(this.level)
+    query["groupinfo"]["level"] = this.isRKIUser && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
     query["groupinfo"]["Jahr"] = {
@@ -424,8 +453,10 @@ export class StartComponent implements OnInit {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
 
-      if (result[0].TTTsmed_text !== undefined) {
-        result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
+      if (!this.isRKIUser) {
+        if (result[0].TTTsmed_text !== undefined) {
+          result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
+        }
       }
 
       this.timetotreat = createStandardSort(result);
