@@ -87,7 +87,6 @@ export class DBService {
   }
 
   adddatabulk(array) {
-    console.log(array)
     return db.datadb.bulkPut(array);
   };
 

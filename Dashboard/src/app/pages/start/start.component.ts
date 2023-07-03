@@ -92,7 +92,10 @@ export class StartComponent implements OnInit {
     this.isRKIKVUser = this.auth.isRKIKVUser()
     this.buildLevelValuesForCustomers()
 
-    if(this.isRKIUser || this.isRKIKVUser) {
+    if (this.isRKIUser || this.isRKIKVUser) {
+      if (this.levelsettings['levelvalues'] === 'rki') {
+        this.levelsettings['level'] = 'customer'
+      }
       this.absoluteNumbers = true
     }
 
@@ -116,8 +119,6 @@ export class StartComponent implements OnInit {
         }
       }, 500);
     };
-
-    console.log(this.auth.isRKIUser())
   }
 
   ngOnDestroy() {
@@ -127,7 +128,7 @@ export class StartComponent implements OnInit {
   buildLevelValuesForCustomers() {
     if (this.isRKIUser || this.isRKIKVUser) {
       for (const item of this.currentuser.usergroups.smed_reporting) {
-        if(item === 'kvuser') continue
+        if (item === 'kvuser') continue
 
         this.rkiLevelvalues.push(item)
       }
@@ -152,6 +153,10 @@ export class StartComponent implements OnInit {
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
+
+      if (this.levelsettings['levelvalues'] === 'rki') {
+        this.levelsettings['level'] = 'customer'
+      }
     };
 
     this.summaryinfo = [];
@@ -223,7 +228,6 @@ export class StartComponent implements OnInit {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
     };
-    // console.log(this.level)
     query["groupinfo"]["level"] = (this.isRKIUser || this.isRKIKVUser) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
@@ -243,15 +247,14 @@ export class StartComponent implements OnInit {
 
     if (thefield != "") {
       await this.db.querydatadates(
-        'KV', this.levelsettings["levelvalues"], thefield, this.levelsettings["resolution"]).then(data => {
+        this.levelsettings['level'], this.levelsettings["levelvalues"], thefield, this.levelsettings["resolution"]).then(data => {
           if (data.length > 0) { dbdaterange = Object.create(data[0]); }
         }
         );
     }
     else {
       await this.db.querydatadates(
-        'KV', this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"]).then(data => {
-          console.log(data)
+        this.levelsettings['level'], this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"]).then(data => {
           if (data.length > 0) { dbdaterange = Object.create(data[0]); }
         });
     };
@@ -266,7 +269,6 @@ export class StartComponent implements OnInit {
     if ((dbdaterange['startdate'] <= this.levelsettings["start"]) && (dbdaterange['stopdate'] >= this.levelsettings["stop"]) &&
       (dataage < 6)
     ) {
-      //console.log("local data!", dataage,'hours old',(now.getTime()-oldstand.getTime()));
       if (thefield != "") {
         this.makesmeditems(thefield);
       }
@@ -290,23 +292,23 @@ export class StartComponent implements OnInit {
           }
 
           if (thefield != "" && res.length > 0) {
-            this.db.deletewhere(thefield, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
+            this.db.deletewhere(thefield, this.levelsettings['level'], this.levelsettings["levelvalues"], this.levelsettings["resolution"],
               this.levelsettings["start"], this.levelsettings["stop"],
             ).then(() => {
               this.updatedb(res, thefield)
             });
-            this.db.storestand(thefield, 'KV',
+            this.db.storestand(thefield, this.levelsettings['level'],
               this.levelsettings["levelvalues"], now.toISOString(),
               this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
           };
           if (thefield == "" && res.length > 0) {
             for (let fielditem of this.allpublicfields) {
-              this.db.deletewhere(fielditem, 'KV', this.levelsettings["levelvalues"], this.levelsettings["resolution"],
+              this.db.deletewhere(fielditem, this.levelsettings['level'], this.levelsettings["levelvalues"], this.levelsettings["resolution"],
                 this.levelsettings["start"], this.levelsettings["stop"],
               ).then(() => {
                 this.updatedb(res, fielditem)
               });
-              this.db.storestand(fielditem, 'KV',
+              this.db.storestand(fielditem, this.levelsettings['level'],
                 this.levelsettings["levelvalues"], now.toISOString(),
                 this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
             };
@@ -334,7 +336,7 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {
       this.stats_ts = [];
       this.summaryinfo = [];
-      let statswdate = await this.db.listdata('stats', "KV",
+      let statswdate = await this.db.listdata('stats', this.levelsettings['level'],
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
         this.levelsettings["resolution"]);
 
@@ -385,7 +387,7 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
 
-      symptoms_list = await this.db.listdata('mainsymptoms_ts', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      symptoms_list = await this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
 
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
@@ -400,7 +402,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"]);
+      let dbutiltimes = await this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"]);
       dbutiltimes = this.api.getValues(dbutiltimes, 'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       let ntotal = this.api.sumArray(this.api.getValues(utiltimes, 'n'));
@@ -451,7 +453,7 @@ export class StartComponent implements OnInit {
         }
       ]
 
-      result = await this.db.listdata('timetotreat', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      result = await this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
       const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
 
@@ -459,7 +461,6 @@ export class StartComponent implements OnInit {
         item['Anteil'] = Math.round(1000 * item['Anzahl'] / total) / 10;
       }
 
-      console.log(result)
       if (!this.isRKIUser || !this.isRKIKVUser) {
         if (result[0].TTTsmed_text !== undefined) {
           result.push({ TTTsmed_text: undefined, Anzahl: 0, Anteil: 0 })
@@ -486,7 +487,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "decisions") {
       let decisions = [];
-      decisions = await this.db.listdata('decisions', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      decisions = await this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       let total = this.api.sumArray(this.api.getValues(decisions, 'Anzahl'));
       this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
       this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");;
@@ -517,7 +518,7 @@ export class StartComponent implements OnInit {
         },
       ]
 
-      const data = await this.db.listdata('stats', "KV", this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      const data = await this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
       let total = 0
 
       if (data.length > 0) {

@@ -51,7 +51,7 @@ querysmedts(groupvars=[],outcome="",levelsettings,sort=false,topx:any=false,filt
     "subgroups": groupvars    ,
     "filterlist": []
   }
-  query["filterlist"].push({"level":"KV"});
+  query["filterlist"].push({"level":levelsettings['level']});
   if (levelsettings["levelvalues"]!=="Gesamt"){
     query["filterlist"].push({"levelid":levelsettings["levelvalues"]});
   }
