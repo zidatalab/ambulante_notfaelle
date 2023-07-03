@@ -171,7 +171,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts && (this.rkiUser || this.isRKIKVUser)">
         <mat-card>
           <h3>Aktivität respiratorischer Erkrankungen<br><span class="lightgreycolor">Abweichung von der
               Hintergrundaktivität in Prozent</span></h3>
@@ -465,7 +465,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && !this.rkiUser">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && (this.rkiUser || this.isRKIKVUser)">
         <mat-card *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -505,7 +505,7 @@
         </mat-card>
       </div>
 
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && !this.rkiUser">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && (this.rkiUser || this.isRKIKVUser)">
         <mat-card *ngIf="this.decisions_poc.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open

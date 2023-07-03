@@ -92,6 +92,10 @@ export class StartComponent implements OnInit {
     this.isRKIKVUser = this.auth.isRKIKVUser()
     this.buildLevelValuesForCustomers()
 
+    if(this.isRKIUser || this.isRKIKVUser) {
+      this.absoluteNumbers = true
+    }
+
     this.updatemetadata();
     window.scroll(0, 0);
     this.setlevel("__init", "");
