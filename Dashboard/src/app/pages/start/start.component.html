@@ -171,43 +171,11 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts && (this.rkiUser || this.isRKIKVUser)">
-        <mat-card>
-          <h3>Aktivität respiratorischer Erkrankungen<br><span class="lightgreycolor">Abweichung von der
-              Hintergrundaktivität in Prozent</span></h3>
-          <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
-            [outcomes]="['Anteil ARE Assessments']" [sortx]="true" [fontcolor]="'white'" [colorscheme]="['crimson']"
-            plottype="area"></app-plot>
-          <div>
-            <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
-              (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
-              </mat-expansion-panel-header>
-              <div class="mat-caption">
-                <p *ngIf="this.currentuser">
-                  <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
-                    <mat-icon inline=true>file_download</mat-icon>
-                    Angezeigte Daten als CSV-Datei herunterladen &nbsp;
-                  </a>
-                </p>
-                <h3> Weitere Informationen zum Indikator</h3>
-                <!-- Text anpassen -->
-                <p>Anzahl der Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE)
-                  ausgewiesen als prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25%
-                  ARE-Assessments).
-                  Berücksichtigt wurden folgende SmED-Beschwerdebilder: Atembeschwerden, Covid 19, Erkältung/Grippaler
-                  Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden
-                  (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
-              </div>
-            </mat-expansion-panel>
-          </div>
-
-        </mat-card>
-      </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.symptoms_list">
         <mat-card *ngIf="this.symptoms_list.length>0">
-          <h3>Häufigste Beschwerden<br><span class="lightgreycolor">Anteil Assessment in Prozent</span></h3>
+          <h3>Häufigste Beschwerden</h3>
+          <br>
+          <span class="lightgreycolor">Anteil Assessment in Prozent</span>
           <app-plot [(data)]="this.symptoms_list" [xvalue]="'Sympt'" [percent]="true" [fontcolor]="'white'"
             (clicked)="handleklick('Beschwerden',$event);" [outcomes]="['Anteil']" [sort]="true"
             plottype="hbar"></app-plot>
@@ -238,7 +206,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.utiltimes['z']">
+      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.utiltimes['z']">
         <ng-container *ngIf="this.utiltimes['z'].length>0">
           <mat-card>
             <h3>Aufkommen nach Tag und Uhrzeit<br><span class="lightgreycolor">Anteil Assessment in Prozent </span>
@@ -465,7 +433,8 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && (this.rkiUser || this.isRKIKVUser)">
+      <div fxFlex=50 fxFlex.lt-md=100
+        *ngIf="(this.currentuser && this.decisions_ttt) && (!this.rkiUser || !this.isRKIKVUser)">
         <mat-card *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -505,7 +474,8 @@
         </mat-card>
       </div>
 
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && (this.rkiUser || this.isRKIKVUser)">
+      <div fxFlex=50 fxFlex.lt-md=100
+        *ngIf="(this.decisions_poc && this.currentuser) && (!this.rkiUser || !this.isRKIKVUser)">
         <mat-card *ngIf="this.decisions_poc.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
