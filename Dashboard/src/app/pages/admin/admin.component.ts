@@ -22,40 +22,35 @@ export class AdminComponent implements OnInit {
   adddata: boolean;
   uploaderror: any;
   currentuser: any;
-  usergroupoptions=['kvuser'];
-  
+  usergroupoptions = ['kvuser'];
+
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
     this.updateuserlist();
-    this.buildForm();    
+    this.buildForm();
   }
 
-  ngOnDestroy(){
-    
-    }
-
-
   updateuser(user, key, value) {
+    let add = false;
 
-    if (key!="usergroups.kvuser" && key!="usergroups.public"){
-    this.api.updateuser(user, key, value).subscribe(
-      data => { this.updateuserlist() });
+    if (key != "usergroups.kvuser" && key != "usergroups.public") {
+      this.api.updateuser(user, key, value).subscribe(
+        data => { this.updateuserlist() });
     };
-    let add =false;
-    if (key=="usergroups.kvuser"){
+
+    if (key == "usergroups.kvuser") {
       add = value;
     };
-     
-    if (key=="usergroups.public"){
-        add = !value;
-        };
-    
-    if (key=="usergroups.kvuser" || key=="usergroups.public"){
-    this.api.updateuser(user, 'usergroups', add, 'kvuser' ).subscribe(
-          data => { this.updateuserlist() });
-    }
 
+    if (key == "usergroups.public") {
+      add = !value;
+    };
+
+    if (key == "usergroups.kvuser" || key == "usergroups.public") {
+      this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
+        data => { this.updateuserlist() });
     }
+  }
 
   deletuser(user) {
     this.api.deleteuser(user).subscribe(
@@ -67,7 +62,6 @@ export class AdminComponent implements OnInit {
   }
 
   buildForm() {
-
     this.myRegform = this.fb.group(
       {
         anrede: ["", [
@@ -84,12 +78,7 @@ export class AdminComponent implements OnInit {
       }
     );
     this.myRegform.patchValue({ "password": this.rndpwd() });
-
   };
-
-  
-
- 
 
   addusernow() {
     let toadd = this.myRegform.value;
@@ -99,8 +88,6 @@ export class AdminComponent implements OnInit {
         this.updateuserlist();
       }
     );
-
-
   }
 
   chpwd(user, pwd) {
@@ -117,9 +104,7 @@ export class AdminComponent implements OnInit {
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
+
     document.execCommand('copy');
   }
-
-  
-
 }
