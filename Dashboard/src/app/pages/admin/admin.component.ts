@@ -23,11 +23,33 @@ export class AdminComponent implements OnInit {
   uploaderror: any;
   currentuser: any;
   usergroupoptions = ['kvuser'];
+  selectedDataLevel = []
 
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
     this.updateuserlist();
     this.buildForm();
+    this.getUserGroups()
+  }
+
+  async getUserGroups() : Promise<void> {
+    const metaData: Array<any> = await this.api.getmetadata("metadata")
+    const getLevelId = metaData.filter(item => item.varname === 'levelid')[0]
+    const levelRights = getLevelId.levelrights
+
+    if (levelRights) {
+      const getCustomerLevels = Object.keys(levelRights)
+        .filter((key) => !key.includes('kvuser') && !key.includes('public'))
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: levelRights[key] })
+        }, {})
+
+      const levelKeys = Object.keys(getCustomerLevels) 
+
+      for(const level of levelKeys) {
+        this.usergroupoptions.push(level)
+      }
+    }
   }
 
   updateuser(user, key, value) {
@@ -57,6 +79,11 @@ export class AdminComponent implements OnInit {
       data => { this.updateuserlist() });
   }
 
+  showData() {
+    console.log('test')
+    console.log(this.myRegform)
+  }
+
   updateuserlist() {
     this.api.getTypeRequest('users/').subscribe(data => { this.users = data; })
   }
@@ -74,7 +101,8 @@ export class AdminComponent implements OnInit {
         lastname: ["", [
           Validators.required,
           Validators.minLength(2)]],
-        email: ["", [Validators.required, Validators.email]]
+        email: ["", [Validators.required, Validators.email]],
+        dataLevel: ['', [Validators.required]]
       }
     );
     this.myRegform.patchValue({ "password": this.rndpwd() });
