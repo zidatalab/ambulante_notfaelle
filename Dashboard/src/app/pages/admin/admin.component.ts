@@ -82,8 +82,10 @@ export class AdminComponent implements OnInit {
   }
 
   deletuser(user) {
-    this.api.deleteuser(user).subscribe(
-      data => { this.updateUserList() });
+    alert('delete')
+    // open dialog to reinsure it wasn't a mistake
+    // this.api.deleteuser(user).subscribe(
+    //   data => { this.updateUserList() });
   }
 
   showData() {
@@ -169,6 +171,9 @@ export class AdminComponent implements OnInit {
   }
 
   fullName(value) {
+    if(value.full_name) {
+      return value.full_name
+    }
     return `${value.anrede} ${value.firstname} ${value.lastname}`
   }
 }
