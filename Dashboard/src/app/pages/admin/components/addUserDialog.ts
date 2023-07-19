@@ -16,7 +16,7 @@ export class AddUserDialog implements OnInit {
   ) { }
 
   myRegform: any;
-  usergroupoptions = ['public', 'kvuser'];
+  usergroupoptions = [{ name: 'Public Access', value: 'public' }, { name: 'KV Benutzer', value: 'kvuser' }];
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
@@ -46,7 +46,7 @@ export class AddUserDialog implements OnInit {
       const levelKeys = Object.keys(getCustomerLevels)
 
       for (const level of levelKeys) {
-        this.usergroupoptions.push(level)
+        this.usergroupoptions.push({ name: level, value: level })
       }
     }
   }

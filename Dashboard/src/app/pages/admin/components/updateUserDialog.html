@@ -39,8 +39,8 @@
         <mat-form-field appearance="fill" class="full-width">
           <mat-select multiple name="dataLevel" formControlName="dataLevel"
             [(ngModel)]="data.usergroups.smed_reporting">
-            <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel">
-              {{ dataLevel }}
+            <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
+              {{ dataLevel.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>

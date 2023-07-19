@@ -36,8 +36,8 @@
         <h4><strong>Daten-Level</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
           <mat-select multiple name="dataLevel" formControlName="dataLevel">
-            <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel">
-              {{ dataLevel }}
+            <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
+              {{ dataLevel.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
