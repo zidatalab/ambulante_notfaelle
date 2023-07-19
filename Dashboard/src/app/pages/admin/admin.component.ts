@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
-import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AddUserDialog } from './components/addUserDialog';
 import { UpdateUserDialog } from './components/updateUserDialog';
 import { DeleteUserDialog } from './components/deleteUserDialog';
@@ -17,7 +16,6 @@ export class AdminComponent implements OnInit {
   constructor(
     private api: ApiService,
     private auth: AuthService,
-    private fb: FormBuilder,
     private dialog: MatDialog
     ) { }
 
@@ -36,10 +34,6 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
     this.updateUserList();
-  }
-
-  showData() {
-    console.log(this.myRegform)
   }
 
   updateUserList() {
