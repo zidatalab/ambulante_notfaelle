@@ -54,16 +54,16 @@ export class UpdateUserDialog implements OnInit {
   updateuser(user, key, value) {
     let add = false;
 
-    if (key != "usergroups.kvuser" && key != "usergroups.public") {
+    if (key !== "usergroups.kvuser" && key !== "usergroups.public") {
       this.api.updateuser(user, key, value).subscribe(
         data => { });
     };
 
-    if (key == "usergroups.kvuser") {
+    if (key === "usergroups.kvuser") {
       add = value;
     };
 
-    if (key == "usergroups.public") {
+    if (key === "usergroups.public") {
       add = !value;
     };
 

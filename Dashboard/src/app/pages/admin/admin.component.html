@@ -15,101 +15,49 @@
     <h2>Nutzerliste</h2>
     <p class="mat-caption greycolor">In diesem Bereich können Nutzerberechtigungen geändert werden.</p>
     <mat-card>
-      <mat-list>
-        <mat-list-item>
-          <div mat-line fxLayout="row wrap">
-            <div fxFlex=5></div>
-            <div fxFlex=44 class="greycolor mat-caption">
-              Benutzer
-            </div>
-            <div fxFlex=50 class="greycolor mat-caption">
-              Rechte und Gruppen
-            </div>
-          </div>
-        </mat-list-item>
-        <ng-container *ngFor="let user of this.users">
-          <mat-list-item>
-            <mat-icon color="accent" fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')>=0"
-              mat-list-icon>admin_panel_settings
+      <table class="table" mat-table [dataSource]="this.users">
+        <ng-container matColumnDef="user">
+          <th mat-header-cell *matHeaderCellDef> Nutzer </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon color="accent" *ngIf="element['roles'].indexOf('superadmin')>=0" mat-list-icon>
+              admin_panel_settings
             </mat-icon>
-            <mat-icon fxHide.lt-md=true *ngIf="user['roles'].indexOf('superadmin')<0" mat-list-icon>
-              account_circle</mat-icon>
-            <div mat-line fxLayout="row wrap">
-              <div fxFlex=45><span *ngIf="user.stammdaten"><br>
-                </span>
-                <span *ngIf="this.currentuser['is_superadmin']"><strong><a
-                      (click)="user.stammdaten=!user.stammdaten">{{!user.lastname? 'k.A.':
-                      user.anrede+" "+user.lastname }} </a>
-                  </strong>
-                </span>
-                <span *ngIf="!this.currentuser['is_superadmin']"><strong>{{!user.lastname? 'k.A.':
-                    user.anrede+" "+user.lastname }}
-                  </strong>
-                </span>
-                <span *ngIf="user.stammdaten">({{user.email}})</span>
-              </div>
-              <div fxFlex=54 fxLayoutGap="10px" fxLayoutAlign="space-between">
-                <div>
-                  <mat-chip-list *ngIf="!user.stammdaten" class="smallchips">
-                    <mat-chip color="primary" (click)="this.updateuser(user.email,'user',!user['is_user'])"
-                      [selected]="user['is_user']">User</mat-chip>
-                    <mat-chip color="primary" (click)="this.updateuser(user.email,'admin',!user['is_admin'])"
-                      [selected]="user['is_admin']">Admin</mat-chip>
-                    <mat-chip color="primary" (click)="this.updateuser(user.email,'superadmin',!user['is_superadmin'])"
-                      [selected]="user['is_superadmin']">Superadmin</mat-chip>
-                  </mat-chip-list>
-                </div>
-                <div>
-                  <ng-container *ngIf="user['usergroups']">
-                    <ng-container *ngIf="user['usergroups']['smed_reporting']">
-                      <mat-chip-list class="smallchips">
-                        <mat-chip color="primary"
-                          (click)="this.updateuser(user.email,'usergroups.kvuser',!(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0))"
-                          [selected]="user['usergroups']['smed_reporting'].indexOf('kvuser')>=0">KV-User</mat-chip>
-                        <mat-chip color="accent"
-                          (click)="this.updateuser(user.email,'usergroups.public',(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0))"
-                          [selected]="!(user['usergroups']['smed_reporting'].indexOf('kvuser')>=0)">Public
-                          Access</mat-chip>
-                      </mat-chip-list>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngIf="!user['usergroups'] || !user['usergroups']['smed_reporting']">
-                    <mat-chip-list class="smallchips">
-                      <mat-chip color="primary" (click)="this.updateuser(user.email,'usergroups.kvuser',true)"
-                        [selected]="user['is_superadmin']">KV-User</mat-chip>
-                      <mat-chip color="accent" (click)="this.updateuser(user.email,'usergroups.public',true)"
-                        [selected]="user['is_user'] && !user['is_superadmin']">Public Access</mat-chip>
-                    </mat-chip-list>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-            <div>
-              <button (click)="openUpdateUserDialog(user)">UpdateU</button>
-            </div>
-            <div *ngIf="user.stammdaten" mat-line>
-              <mat-chip-list class="add-margin" *ngIf="user.stammdaten" class="smallchips">
-                <mat-chip *ngIf="!user.chpwd" color="primary" (click)="this.deletuser(user.email)" selected>
-                  löschen</mat-chip>
-                <mat-chip *ngIf="!user.chpwd" color="accent" (click)="user.chpwd=!user.chpwd;user.rndpwd=this.rndpwd();"
-                  selected>password
-                  zurücksetzen</mat-chip>
-              </mat-chip-list>
-            </div>
-            <div *ngIf="user.chpwd" mat-line>
-              <p>Neues Password: <strong>{{user.rndpwd}}</strong> <a class="add-margin"
-                  (click)="this.copy(user.rndpwd)">
-                  <mat-icon>content_copy</mat-icon>
-                </a>
-                <mat-chip color="accent" (click)="user.chpwd=!user.chpwd;" selected>abbrechen
-                </mat-chip>&nbsp;&nbsp;<mat-chip color="primary" (click)="chpwd(user.email,user.rndpwd)"
-                  selected>passwort setzen</mat-chip>
-              </p>
-            </div>
-            <mat-divider></mat-divider>
-          </mat-list-item>
+            <mat-icon *ngIf="element['roles'].indexOf('superadmin')<0" mat-list-icon>
+              account_circle
+            </mat-icon>
+            {{ fullName(element) }}
+          </td>
         </ng-container>
-      </mat-list>
+        <ng-container matColumnDef="rights">
+          <th mat-header-cell *matHeaderCellDef> Rechte </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-list class="smallchips" *ngFor="let role of element.roles">
+              <mat-chip>{{ toUpperCase(role) }}</mat-chip>
+            </mat-chip-list>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="group">
+          <th mat-header-cell *matHeaderCellDef> Gruppen </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element['usergroups']">
+              <mat-chip-list class="smallchips" *ngFor="let group of element.usergroups.smed_reporting">
+                <mat-chip>{{ toUpperCase(group) }}</mat-chip>
+              </mat-chip-list>
+            </ng-container>
+            <ng-container *ngIf="!element['usergroups'] || !element['usergroups']['smed_reporting']">
+              <mat-chip-list class="smallchips">
+                <mat-chip>Public Access</mat-chip>
+              </mat-chip-list>
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+          <td mat-cell *matCellDef="let element"> </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </mat-card>
   </div>
   <div *ngIf="this.adddata" fxLayout="column" fxLayoutGap="10px" fxShow.lt-md=false>

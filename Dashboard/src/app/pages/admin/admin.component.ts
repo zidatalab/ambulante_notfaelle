@@ -30,6 +30,7 @@ export class AdminComponent implements OnInit {
   currentuser: any;
   usergroupoptions = ['kvuser'];
   selectedDataLevel = []
+  displayedColumns = ['user','rights','group','actions']
 
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
@@ -155,11 +156,19 @@ export class AdminComponent implements OnInit {
     const dialogRef = this.dialog.open(UpdateUserDialog, {
       data: user
     })
-    
+
     dialogRef.afterClosed().subscribe(result => {
       this.updateUserList()
       // console.log('closed')
       // do something with result
     })
+  }
+
+  toUpperCase(value: string) {
+    return value.toLocaleUpperCase()
+  }
+
+  fullName(value) {
+    return `${value.anrede} ${value.firstname} ${value.lastname}`
   }
 }
