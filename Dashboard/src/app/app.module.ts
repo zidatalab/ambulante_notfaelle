@@ -27,6 +27,7 @@ import { AdminComponent } from './pages/admin/admin.component'
 import { ReplacePipe } from './services/replace_pipe';
 import { AddUserDialog } from './pages/admin/components/addUserDialog';
 import { UpdateUserDialog } from './pages/admin/components/updateUserDialog';
+import { DeleteUserDialog } from './pages/admin/components/deleteUserDialog';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -46,7 +47,8 @@ registerLocaleData(locales, 'de');
     AdminComponent,
     ReplacePipe,
     AddUserDialog,
-    UpdateUserDialog
+    UpdateUserDialog,
+    DeleteUserDialog
   ],
   imports: [
     BrowserModule,

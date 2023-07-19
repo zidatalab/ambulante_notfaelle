@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddUserDialog } from './components/addUserDialog';
 import { UpdateUserDialog } from './components/updateUserDialog';
+import { DeleteUserDialog } from './components/deleteUserDialog';
 
 @Component({
   selector: 'app-admin',
@@ -35,57 +36,6 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
     this.updateUserList();
-    this.buildForm();
-    this.getUserGroups()
-  }
-
-  async getUserGroups() : Promise<void> {
-    const metaData: Array<any> = await this.api.getmetadata("metadata")
-    const getLevelId = metaData.filter(item => item.varname === 'levelid')[0]
-    const levelRights = getLevelId.levelrights
-
-    if (levelRights) {
-      const getCustomerLevels = Object.keys(levelRights)
-        .filter((key) => !key.includes('kvuser') && !key.includes('public'))
-        .reduce((cur, key) => {
-          return Object.assign(cur, { [key]: levelRights[key] })
-        }, {})
-
-      const levelKeys = Object.keys(getCustomerLevels) 
-
-      for(const level of levelKeys) {
-        this.usergroupoptions.push(level)
-      }
-    }
-  }
-
-  updateuser(user, key, value) {
-    let add = false;
-
-    if (key != "usergroups.kvuser" && key != "usergroups.public") {
-      this.api.updateuser(user, key, value).subscribe(
-        data => { this.updateUserList() });
-    };
-
-    if (key == "usergroups.kvuser") {
-      add = value;
-    };
-
-    if (key == "usergroups.public") {
-      add = !value;
-    };
-
-    if (key == "usergroups.kvuser" || key == "usergroups.public") {
-      this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
-        data => { this.updateUserList() });
-    }
-  }
-
-  deletuser(user) {
-    alert('delete')
-    // open dialog to reinsure it wasn't a mistake
-    // this.api.deleteuser(user).subscribe(
-    //   data => { this.updateUserList() });
   }
 
   showData() {
@@ -96,42 +46,8 @@ export class AdminComponent implements OnInit {
     this.api.getTypeRequest('users/').subscribe(data => { this.users = data; })
   }
 
-  buildForm() {
-    this.myRegform = this.fb.group(
-      {
-        anrede: ["", [
-          Validators.required,
-          Validators.minLength(1)]],
-        password: ["", [Validators.minLength(12)]],
-        firstname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        lastname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        email: ["", [Validators.required, Validators.email]],
-        dataLevel: ['', [Validators.required]]
-      }
-    );
-    this.myRegform.patchValue({ "password": this.rndpwd() });
-  };
-
-  addusernow() {
-    let toadd = this.myRegform.value;
-    this.api.postTypeRequest("newuser", toadd).subscribe(
-      data => {
-        this.adduser = false;
-        this.updateUserList();
-      }
-    );
-  }
-
   chpwd(user, pwd) {
     this.api.changeuserpwd(user, pwd).subscribe(data => { this.updateUserList() })
-  }
-
-  rndpwd() {
-    return Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8);
   }
 
   copy(item) {
@@ -156,6 +72,18 @@ export class AdminComponent implements OnInit {
 
   openUpdateUserDialog(user) : void {
     const dialogRef = this.dialog.open(UpdateUserDialog, {
+      data: user
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.updateUserList()
+      // console.log('closed')
+      // do something with result
+    })
+  }
+
+  openDeleteUserDialog(user) : void {
+    const dialogRef = this.dialog.open(DeleteUserDialog, {
       data: user
     })
 

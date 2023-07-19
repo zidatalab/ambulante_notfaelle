@@ -98,6 +98,10 @@ export class UpdateUserDialog implements OnInit {
     return Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8);
   }
 
+  changePassword(user, pwd) {
+    this.api.changeuserpwd(user, pwd).subscribe(data => { })
+  }
+
   onNoClick(): void {
     this.dialogRef.close()
   }
