@@ -1,6 +1,8 @@
 <h2><strong>Nutzer Löschen</strong></h2>
 <mat-card>
   <p>Sind Sie sicher dass Sie den User {{ data.firstname }} löschen wollen?</p>
-  <button mat-button (click)="onNoClick()">Abrechen</button>
-  <button mat-button (click)="deletUser()">Löschen</button>
+  <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
+    <button mat-raised-button (click)="onNoClick()">Abrechen</button>
+    <button mat-raised-button (click)="deletUser()">Löschen</button>
+  </div>
 </mat-card>

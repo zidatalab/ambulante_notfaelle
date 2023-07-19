@@ -46,10 +46,6 @@ export class AdminComponent implements OnInit {
     this.api.getTypeRequest('users/').subscribe(data => { this.users = data; })
   }
 
-  chpwd(user, pwd) {
-    this.api.changeuserpwd(user, pwd).subscribe(data => { this.updateUserList() })
-  }
-
   copy(item) {
     document.addEventListener('copy', (e: ClipboardEvent) => {
       e.clipboardData.setData('text/plain', (item));
