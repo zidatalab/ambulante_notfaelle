@@ -25,6 +25,8 @@ import { InterceptorService } from './services/interceptor-service.service';
 import { PrivateComponent } from './pages/private/private.component';
 import { AdminComponent } from './pages/admin/admin.component' 
 import { ReplacePipe } from './services/replace_pipe';
+import { AddUserDialog } from './pages/admin/components/addUserDialog';
+import { UpdateUserDialog } from './pages/admin/components/updateUserDialog';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -42,7 +44,9 @@ registerLocaleData(locales, 'de');
     ProfileComponent,
     PrivateComponent,
     AdminComponent,
-    ReplacePipe
+    ReplacePipe,
+    AddUserDialog,
+    UpdateUserDialog
   ],
   imports: [
     BrowserModule,

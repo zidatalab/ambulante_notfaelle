@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddUserDialog } from './components/addUserDialog';
+import { UpdateUserDialog } from './components/updateUserDialog';
+
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -12,7 +16,9 @@ export class AdminComponent implements OnInit {
   constructor(
     private api: ApiService,
     private auth: AuthService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private dialog: MatDialog
+    ) { }
 
   users: any;
   myRegform: any;
@@ -27,7 +33,7 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
-    this.updateuserlist();
+    this.updateUserList();
     this.buildForm();
     this.getUserGroups()
   }
@@ -57,7 +63,7 @@ export class AdminComponent implements OnInit {
 
     if (key != "usergroups.kvuser" && key != "usergroups.public") {
       this.api.updateuser(user, key, value).subscribe(
-        data => { this.updateuserlist() });
+        data => { this.updateUserList() });
     };
 
     if (key == "usergroups.kvuser") {
@@ -70,21 +76,20 @@ export class AdminComponent implements OnInit {
 
     if (key == "usergroups.kvuser" || key == "usergroups.public") {
       this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
-        data => { this.updateuserlist() });
+        data => { this.updateUserList() });
     }
   }
 
   deletuser(user) {
     this.api.deleteuser(user).subscribe(
-      data => { this.updateuserlist() });
+      data => { this.updateUserList() });
   }
 
   showData() {
-    console.log('test')
     console.log(this.myRegform)
   }
 
-  updateuserlist() {
+  updateUserList() {
     this.api.getTypeRequest('users/').subscribe(data => { this.users = data; })
   }
 
@@ -113,13 +118,13 @@ export class AdminComponent implements OnInit {
     this.api.postTypeRequest("newuser", toadd).subscribe(
       data => {
         this.adduser = false;
-        this.updateuserlist();
+        this.updateUserList();
       }
     );
   }
 
   chpwd(user, pwd) {
-    this.api.changeuserpwd(user, pwd).subscribe(data => { this.updateuserlist() })
+    this.api.changeuserpwd(user, pwd).subscribe(data => { this.updateUserList() })
   }
 
   rndpwd() {
@@ -134,5 +139,27 @@ export class AdminComponent implements OnInit {
     });
 
     document.execCommand('copy');
+  }
+
+  openAddUserDialog() : void {
+    const dialogRef = this.dialog.open(AddUserDialog, {})
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.updateUserList()
+      // console.log('closed')
+      // do something with result
+    })
+  }
+
+  openUpdateUserDialog(user) : void {
+    const dialogRef = this.dialog.open(UpdateUserDialog, {
+      data: user
+    })
+    
+    dialogRef.afterClosed().subscribe(result => {
+      this.updateUserList()
+      // console.log('closed')
+      // do something with result
+    })
   }
 }
