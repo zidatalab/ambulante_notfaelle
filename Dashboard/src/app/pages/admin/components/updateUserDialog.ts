@@ -56,16 +56,24 @@ export class UpdateUserDialog implements OnInit {
   updateUser(type, user, key, value) {
     if(type === 'role') {
       if(key === 'user') {
-        this.api.updateuser(user, key, !user['is_user']).subscribe()
+        this.api.updateuser(user.email, key, !user['is_user']).subscribe()
       }
       if(key === 'admin') {
-        this.api.updateuser(user, key, !user['is_admin']).subscribe()
+        this.api.updateuser(user.email, key, !user['is_admin']).subscribe()
       }
       if(key === 'superadmin') {
-        this.api.updateuser(user, key, !user['is_superadmin']).subscribe()
+        this.api.updateuser(user.email, key, !user['is_superadmin']).subscribe()
       }
     } else {
-      this.api.updateuser(user, 'usergroups', true, value).subscribe()
+      let add = false
+
+      for(let item of key) {
+        if(item !== 'public') {
+          add = true
+        }
+
+        this.api.updateuser(user, `usergroups`, add, item).subscribe()
+      }
     }
 
     // let add = false;
@@ -95,7 +103,7 @@ export class UpdateUserDialog implements OnInit {
       firstname: new FormControl({ value: this.data.firstname, disabled: true }),
       lastname: new FormControl({ value: this.data.lastname, disabled: true }),
       email: new FormControl({ value: this.data.email, disabled: true }),
-      roles: new FormControl({ value: this.data.roles[0], disabled: false }),
+      roles: new FormControl({ value: this.data.roles[this.data.roles.length - 1], disabled: false }),
       dataLevel: new FormControl({ value: this.data.usergroups.smed_reporting, disabled: false }),
     })
   };

@@ -1,5 +1,6 @@
 <div fxLayout="row wrap">
   <div fxFlex=100>
+    {{ data | json }}
     <h2><strong>Nutzer Bearbeiten</strong></h2>
     <mat-card>
       <form autocomplete="on" [formGroup]="myRegform">
@@ -32,7 +33,7 @@
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select (selectionChange)="updateUser('role', data.email, $event.value, $event.value)" name="userRights" formControlName="roles">
+          <mat-select (selectionChange)="updateUser('role', data, $event.value, $event.value)" name="userRights" formControlName="roles">
             <mat-option *ngFor="let rights of userRights" [value]="rights.value">
               {{ rights.name }}
             </mat-option>
