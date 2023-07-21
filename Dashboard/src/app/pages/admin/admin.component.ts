@@ -29,7 +29,7 @@ export class AdminComponent implements OnInit {
   currentuser: any;
   usergroupoptions = ['kvuser'];
   selectedDataLevel = []
-  displayedColumns = ['user','rights','group','actions']
+  displayedColumns = ['symbol','user','rights','group','actions']
 
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
