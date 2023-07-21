@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -17,6 +17,8 @@ export class AddUserDialog implements OnInit {
 
   myRegform: any;
   usergroupoptions = [{ name: 'Public Access', value: 'public' }, { name: 'KV Benutzer', value: 'kvuser' }];
+  userRights = [{ name: 'User', value: 'user' }, { name: 'Admin', value: 'admin' }, { name: 'Superadmin', value: 'superadmin' }]
+  salutations = ['Herr', 'Frau', 'Frau Dr.', 'Herr Dr.', 'Dr.', ' ']
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
@@ -52,22 +54,15 @@ export class AddUserDialog implements OnInit {
   }
 
   buildForm() {
-    this.myRegform = this.fb.group(
-      {
-        anrede: ["", [
-          Validators.required,
-          Validators.minLength(1)]],
-        password: ["", [Validators.minLength(12)]],
-        firstname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        lastname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        email: ["", [Validators.required, Validators.email]],
-        dataLevel: ['', [Validators.required]]
-      }
-    );
+    this.myRegform = new FormGroup({
+      anrede: new FormControl({ value: '', disabled: false }, Validators.required),
+      firstname: new FormControl({ value: '', disabled: false }, Validators.required),
+      lastname: new FormControl({ value: '', disabled: false }, Validators.required),
+      email: new FormControl({ value: '', disabled: false }, Validators.required),
+      roles: new FormControl({ value: '', disabled: false }, Validators.required),
+      dataLevel: new FormControl({ value: '', disabled: false }, Validators.required),
+      password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(12)])
+    })
 
     this.myRegform.patchValue({ "password": this.randomPassword() });
   };

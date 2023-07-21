@@ -8,12 +8,9 @@
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Anrede</mat-label>
           <mat-select name="anredefeld" formControlName="anrede" required>
-            <mat-option value="Herr">Herr</mat-option><br>
-            <mat-option value="Frau">Frau</mat-option><br>
-            <mat-option value="Frau Dr.">Frau Dr.</mat-option><br>
-            <mat-option value="Herr Dr.">Herr Dr.</mat-option><br>
-            <mat-option value="Dr.">Dr.</mat-option><br>
-            <mat-option value=" ">Kein Anrede</mat-option><br>
+            <mat-option *ngFor="let salutation of salutations" [value]="salutation">
+              {{ salutation === ' ' ? 'keine Anrede' : salutation }}
+            </mat-option>
           </mat-select>
           <mat-error>Bitte wählen Sie eine bevorzugte Anrede für sich</mat-error>
         </mat-form-field>
@@ -33,6 +30,15 @@
           <mat-icon matSuffix>email</mat-icon>
           <mat-error>Die E-Mail-Adresse ist ungültig</mat-error>
         </mat-form-field>
+        <h4><strong>Rechte</strong></h4>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-select multiple name="roles" formControlName="roles">
+            <mat-option *ngFor="let rights of userRights" [value]="rights.value">
+              {{ rights.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error>
+        </mat-form-field>
         <h4><strong>Daten-Level</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
           <mat-select multiple name="dataLevel" formControlName="dataLevel">
@@ -40,6 +46,7 @@
               {{ dataLevel.name }}
             </mat-option>
           </mat-select>
+          <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error>
         </mat-form-field>
         <h4>Initiales <strong>Passwort</strong>:</h4>
         <mat-form-field appearance="fill" class="full-width">

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -20,6 +20,8 @@ export class UpdateUserDialog implements OnInit {
   users: any;
   myRegform: any;
   usergroupoptions = [{ name: 'Public Access', value: 'public' }, { name: 'KV Benutzer', value: 'kvuser' }];
+  userRights = [{ name: 'User', value: 'user' }, { name: 'Admin', value: 'admin' }, { name: 'Superadmin', value: 'superadmin' }]
+  salutations = ['Herr', 'Frau', 'Frau Dr.', 'Herr Dr.', 'Dr.', ' ']
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
@@ -74,24 +76,14 @@ export class UpdateUserDialog implements OnInit {
   }
 
   buildForm() {
-    this.myRegform = this.fb.group(
-      {
-        anrede: ["", [
-          Validators.required,
-          Validators.minLength(1)]],
-        password: ["", [Validators.minLength(12)]],
-        firstname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        lastname: ["", [
-          Validators.required,
-          Validators.minLength(2)]],
-        email: ["", [Validators.required, Validators.email]],
-        dataLevel: ['', [Validators.required]]
-      }
-    );
-
-    this.myRegform.patchValue({ "password": this.randomPassword() });
+    this.myRegform = new FormGroup({
+      anrede: new FormControl({ value: this.data.anrede, disabled: true }),
+      firstname: new FormControl({ value: this.data.firstname, disabled: true }),
+      lastname: new FormControl({ value: this.data.lastname, disabled: true }),
+      email: new FormControl({ value: this.data.email, disabled: true }),
+      roles: new FormControl({ value: this.data.roles[0], disabled: false }),
+      dataLevel: new FormControl({ value: this.data.usergroups.smed_reporting, disabled: false }),
+    })
   };
 
   randomPassword() {
