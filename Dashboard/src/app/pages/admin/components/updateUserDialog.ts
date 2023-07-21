@@ -29,10 +29,6 @@ export class UpdateUserDialog implements OnInit {
     this.getUserGroups()
   }
 
-  updateUser() {
-
-  }
-
   async getUserGroups(): Promise<void> {
     const metaData: Array<any> = await this.api.getmetadata("metadata")
     const getLevelId = metaData.filter(item => item.varname === 'levelid')[0]
@@ -53,26 +49,44 @@ export class UpdateUserDialog implements OnInit {
     }
   }
 
-  updateuser(user, key, value) {
-    let add = false;
+  test(user, key, value) {
+    console.log(user, key, value)
+  }
 
-    if (key !== "usergroups.kvuser" && key !== "usergroups.public") {
-      this.api.updateuser(user, key, value).subscribe(
-        data => { });
-    };
-
-    if (key === "usergroups.kvuser") {
-      add = value;
-    };
-
-    if (key === "usergroups.public") {
-      add = !value;
-    };
-
-    if (key == "usergroups.kvuser" || key == "usergroups.public") {
-      this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
-        data => { });
+  updateUser(type, user, key, value) {
+    if(type === 'role') {
+      if(key === 'user') {
+        this.api.updateuser(user, key, !user['is_user']).subscribe()
+      }
+      if(key === 'admin') {
+        this.api.updateuser(user, key, !user['is_admin']).subscribe()
+      }
+      if(key === 'superadmin') {
+        this.api.updateuser(user, key, !user['is_superadmin']).subscribe()
+      }
+    } else {
+      this.api.updateuser(user, 'usergroups', true, value).subscribe()
     }
+
+    // let add = false;
+
+    // if (key !== "usergroups.kvuser" && key !== "usergroups.public") {
+    //   this.api.updateuser(user, key, value).subscribe(
+    //     data => { });
+    // };
+
+    // if (key === "usergroups.kvuser") {
+    //   add = value;
+    // };
+
+    // if (key === "usergroups.public") {
+    //   add = !value;
+    // };
+
+    // if (key == "usergroups.kvuser" || key == "usergroups.public") {
+    //   this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
+    //     data => { });
+    // }
   }
 
   buildForm() {

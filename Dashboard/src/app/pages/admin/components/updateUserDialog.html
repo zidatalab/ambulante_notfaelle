@@ -32,27 +32,27 @@
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select name="userRights" formControlName="roles">
+          <mat-select (selectionChange)="updateUser('role', data.email, $event.value, $event.value)" name="userRights" formControlName="roles">
             <mat-option *ngFor="let rights of userRights" [value]="rights.value">
               {{ rights.name }}
             </mat-option>
-            <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error>
           </mat-select>
+          <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error>
         </mat-form-field>
         <h4><strong>Daten-Level</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select multiple name="dataLevel" formControlName="dataLevel">
+          <mat-select (selectionChange)="updateUser('dataLevel', data.email, $event.value, $event.value)" multiple name="dataLevel" formControlName="dataLevel">
             <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
               {{ dataLevel.name }}
             </mat-option>
-            <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error>
           </mat-select>
+          <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error>
         </mat-form-field>
       </form>
     </mat-card>
   </div>
   <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
-    <button mat-raised-button (click)="onNoClick()" color="warn">Abbrechen</button>
-    <button mat-raised-button (click)="this.updateUser();" color="primary">Hinzufügen</button>
+    <!-- <button mat-raised-button (click)="onNoClick()" color="warn">Abbrechen</button> -->
+    <button mat-raised-button (click)="onNoClick()" color="primary">Beenden</button>
   </div>
 </div>
