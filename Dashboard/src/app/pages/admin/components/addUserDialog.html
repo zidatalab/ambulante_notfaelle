@@ -32,7 +32,7 @@
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select multiple name="roles" formControlName="roles">
+          <mat-select name="roles" formControlName="roles">
             <mat-option *ngFor="let rights of userRights" [value]="rights.value">
               {{ rights.name }}
             </mat-option>

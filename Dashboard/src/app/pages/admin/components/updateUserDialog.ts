@@ -25,6 +25,7 @@ export class UpdateUserDialog implements OnInit {
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
+    console.log(this.data)
     this.buildForm();
     this.getUserGroups()
   }
@@ -53,22 +54,23 @@ export class UpdateUserDialog implements OnInit {
     console.log(user, key, value)
   }
 
-  updateUser(type, user, key, value) {
-    if(type === 'role') {
-      if(key === 'user') {
-        this.api.updateuser(user.email, key, !user['is_user']).subscribe()
+  updateUserRole(type, user, key, value) {
+    console.log(type, user, key, value)
+    if (type === 'role') {
+      if (value === 'user') {
+        this.api.updateuser(user.email, value, !user['is_user']).subscribe()
       }
-      if(key === 'admin') {
-        this.api.updateuser(user.email, key, !user['is_admin']).subscribe()
+      if (value === 'admin') {
+        this.api.updateuser(user.email, value, !user['is_admin']).subscribe()
       }
-      if(key === 'superadmin') {
-        this.api.updateuser(user.email, key, !user['is_superadmin']).subscribe()
+      if (value === 'superadmin') {
+        this.api.updateuser(user.email, value, !user['is_superadmin']).subscribe()
       }
     } else {
       let add = false
 
-      for(let item of key) {
-        if(item !== 'public') {
+      for (let item of key) {
+        if (item !== 'public') {
           add = true
         }
 
@@ -97,6 +99,18 @@ export class UpdateUserDialog implements OnInit {
     // }
   }
 
+  updateUserDataLevel(type, user, key, value) {
+    let add = false
+
+    for (let item of key) {
+      if (item !== 'public') {
+        add = true
+      }
+
+      this.api.updateuser(user, `usergroups`, add, item).subscribe()
+    }
+  }
+
   buildForm() {
     this.myRegform = new FormGroup({
       anrede: new FormControl({ value: this.data.anrede, disabled: true }),
@@ -104,7 +118,7 @@ export class UpdateUserDialog implements OnInit {
       lastname: new FormControl({ value: this.data.lastname, disabled: true }),
       email: new FormControl({ value: this.data.email, disabled: true }),
       roles: new FormControl({ value: this.data.roles[this.data.roles.length - 1], disabled: false }),
-      dataLevel: new FormControl({ value: this.data.usergroups.smed_reporting, disabled: false }),
+      dataLevel: new FormControl({ value: this.data.usergroups ? this.data.usergroups.smed_reporting : [], disabled: false }),
     })
   };
 
