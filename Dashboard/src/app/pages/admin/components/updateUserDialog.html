@@ -33,16 +33,25 @@
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select (selectionChange)="updateUser('role', data, $event.value, $event.value)" name="userRights" formControlName="roles">
+          <mat-chip-list class="smallchips" formControlName="roles" name="userRights">
+            {{ data | json }}
+            <mat-chip color="primary" *ngFor="let rights of userRights" [value]="rights.value"
+              [selected]="data.roles.includes(rights.value)"
+              (click)="updateUserRole('role', data, 'user', rights.value)">
+              {{ rights.name}}
+            </mat-chip>
+          </mat-chip-list>
+          <!-- <mat-select (selectionChange)="updateUserRole('role', data, 'user', $event.value)" name="userRights" formControlName="roles">
             <mat-option *ngFor="let rights of userRights" [value]="rights.value">
               {{ rights.name }}
             </mat-option>
-          </mat-select>
+          </mat-select> -->
           <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error>
         </mat-form-field>
         <h4><strong>Daten-Level</strong></h4>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-select (selectionChange)="updateUser('dataLevel', data.email, $event.value, $event.value)" multiple name="dataLevel" formControlName="dataLevel">
+          <mat-select (selectionChange)="updateUserDataLevel('dataLevel', data.email, 'usergroups', $event.value)"
+            multiple name="dataLevel" formControlName="dataLevel">
             <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
               {{ dataLevel.name }}
             </mat-option>
