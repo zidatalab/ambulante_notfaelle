@@ -31,10 +31,6 @@ export class ApiService {
     })).pipe(/*timeout(15000),*/retry(3));;
   }
 
-  public postTypeRequestWithoutObs(url: any, payload: any) {
-    return firstValueFrom(this.httpClient.post(`${this.apiServer}${url}`, payload).pipe())
-  }
-
   public getTypeRequestnotimeout(url) {
     return this.httpClient.get(this.REST_API_SERVER + url).pipe(map(res => {
       return res;

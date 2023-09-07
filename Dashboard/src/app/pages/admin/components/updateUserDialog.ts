@@ -71,9 +71,9 @@ export class UpdateUserDialog implements OnInit {
   reloadUser() {
     this.api.getTypeRequest('users/').subscribe(result => { 
       // this.data = result
-      for(let item of result) {
+      // for(let item of result) {
 
-      }
+      // }
     })
 
     console.log(this.data)
