@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { retry, timeout } from 'rxjs/operators';
 import * as chroma from "chroma-js";
+import {  } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,10 @@ export class ApiService {
     return this.httpClient.post(this.REST_API_SERVER + url, payload).pipe(map(res => {
       return res;
     })).pipe(/*timeout(15000),*/retry(3));;
+  }
+
+  public postTypeRequestWithoutObs(url: any, payload: any) {
+    return firstValueFrom(this.httpClient.post(`${this.apiServer}${url}`, payload).pipe())
   }
 
   public getTypeRequestnotimeout(url) {
