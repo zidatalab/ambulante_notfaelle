@@ -5,7 +5,8 @@ import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'updateUserDialog',
-  templateUrl: 'updateUserDialog.html'
+  templateUrl: 'updateUserDialog.html',
+  styleUrls: ['./updateUserDialog.scss']
 })
 
 export class UpdateUserDialog implements OnInit {
@@ -20,12 +21,11 @@ export class UpdateUserDialog implements OnInit {
   users: any;
   myRegform: any;
   usergroupoptions = [{ name: 'Public Access', value: 'public' }, { name: 'KV Benutzer', value: 'kvuser' }];
-  userRights = [{ name: 'User', value: 'user' }, { name: 'Admin', value: 'admin' }, { name: 'Superadmin', value: 'superadmin' }]
+  userRights = [{ name: 'User', value: 'user', selected: false }, { name: 'Admin', value: 'admin', selected: false }, { name: 'Superadmin', value: 'superadmin', selected: false }]
   salutations = ['Herr', 'Frau', 'Frau Dr.', 'Herr Dr.', 'Dr.', ' ']
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
-    console.log(this.data)
     this.buildForm();
     this.getUserGroups()
   }
@@ -48,14 +48,38 @@ export class UpdateUserDialog implements OnInit {
         this.usergroupoptions.push({ name: level, value: level })
       }
     }
+    this.rights()
   }
 
-  test(user, key, value) {
-    console.log(user, key, value)
+  rights() {
+    const result = []
+
+    for(let role of this.data.roles) {
+      for(let rights of this.userRights) {
+        if(role === rights.value) {
+          rights.selected = true
+        }
+        if(this.data.is_admin && rights.value === 'admin') {
+          rights.selected = true
+        }
+      }
+    }
+
+    return this.userRights
+  }
+
+  reloadUser() {
+    this.api.getTypeRequest('users/').subscribe(result => { 
+      // this.data = result
+      // for(let item of result) {
+
+      // }
+    })
+
+    console.log(this.data)
   }
 
   updateUserRole(type, user, key, value) {
-    console.log(type, user, key, value)
     if (type === 'role') {
       if (value === 'user') {
         this.api.updateuser(user.email, value, !user['is_user']).subscribe()
@@ -78,25 +102,7 @@ export class UpdateUserDialog implements OnInit {
       }
     }
 
-    // let add = false;
-
-    // if (key !== "usergroups.kvuser" && key !== "usergroups.public") {
-    //   this.api.updateuser(user, key, value).subscribe(
-    //     data => { });
-    // };
-
-    // if (key === "usergroups.kvuser") {
-    //   add = value;
-    // };
-
-    // if (key === "usergroups.public") {
-    //   add = !value;
-    // };
-
-    // if (key == "usergroups.kvuser" || key == "usergroups.public") {
-    //   this.api.updateuser(user, 'usergroups', add, 'kvuser').subscribe(
-    //     data => { });
-    // }
+    this.reloadUser()
   }
 
   updateUserDataLevel(type, user, key, value) {

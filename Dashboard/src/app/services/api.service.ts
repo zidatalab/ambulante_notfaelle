@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { retry, timeout } from 'rxjs/operators';
 import * as chroma from "chroma-js";
+import {  } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
