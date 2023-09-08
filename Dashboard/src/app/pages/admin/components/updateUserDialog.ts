@@ -28,6 +28,7 @@ export class UpdateUserDialog implements OnInit {
     // this.currentuser = this.auth.getUserDetails();
     this.buildForm();
     this.getUserGroups()
+    this.updateUsersList()
   }
 
   async getUserGroups(): Promise<void> {
@@ -52,8 +53,6 @@ export class UpdateUserDialog implements OnInit {
   }
 
   rights() {
-    const result = []
-
     for(let role of this.data.roles) {
       for(let rights of this.userRights) {
         if(role === rights.value) {
@@ -68,15 +67,18 @@ export class UpdateUserDialog implements OnInit {
     return this.userRights
   }
 
-  reloadUser() {
-    this.api.getTypeRequest('users/').subscribe(result => { 
-      // this.data = result
-      // for(let item of result) {
-
-      // }
+  updateUsersList() {
+    this.api.getTypeRequest('users/').subscribe(data => { 
+      this.users = data; 
     })
+  }
 
-    console.log(this.data)
+  updateUser(){
+    this.updateUsersList()
+
+    const res = this.users.filter(u => u.email === this.data.email)[0]
+    console.log(this.dialogRef.componentInstance)
+    
   }
 
   updateUserRole(type, user, key, value) {
@@ -102,7 +104,7 @@ export class UpdateUserDialog implements OnInit {
       }
     }
 
-    this.reloadUser()
+    this.updateUser()
   }
 
   updateUserDataLevel(type, user, key, value) {
