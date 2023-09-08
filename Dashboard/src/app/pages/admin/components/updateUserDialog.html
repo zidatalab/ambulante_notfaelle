@@ -32,8 +32,8 @@
           <mat-error>Die E-Mail-Adresse ist ungültig</mat-error>
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-chip-list class="smallchips" name="userRights" formControlName="roles">
+        <!-- <mat-form-field appearance="fill" class="full-width"> -->
+          <mat-chip-list class="smallchips">
             <mat-chip color="primary" *ngFor="let right of userRights" [value]="right.value"
               (click)="updateUserRole('role', data, 'user', right.value)">
               <mat-icon matListIcon *ngIf="right.selected">check</mat-icon>
@@ -46,17 +46,25 @@
             </mat-option>
           </mat-select> -->
           <!-- <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error> -->
-        </mat-form-field>
+        <!-- </mat-form-field> -->
         <h4><strong>Daten-Level</strong></h4>
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-select (selectionChange)="updateUserDataLevel('dataLevel', data.email, 'usergroups', $event.value)"
+        <!-- <mat-form-field appearance="fill" class="full-width"> -->
+          <mat-chip-list class="smallchips">
+            {{ usergroupoptions | json }}
+            <mat-chip color="primary" *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value"
+              (click)="updateUserDataLevel('dataLevel', data.email, 'usergroups', dataLevel.value)">
+              <!-- <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon> -->
+              {{ dataLevel.name }}
+            </mat-chip>
+          </mat-chip-list>
+          <!-- <mat-select (selectionChange)="updateUserDataLevel('dataLevel', data.email, 'usergroups', $event.value)"
             multiple name="dataLevel" formControlName="dataLevel">
             <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
               {{ dataLevel.name }}
             </mat-option>
           </mat-select>
-          <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error>
-        </mat-form-field>
+          <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error> -->
+        <!-- </mat-form-field> -->
       </form>
     </mat-card>
   </div>

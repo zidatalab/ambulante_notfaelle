@@ -53,12 +53,12 @@ export class UpdateUserDialog implements OnInit {
   }
 
   rights() {
-    for(let role of this.data.roles) {
-      for(let rights of this.userRights) {
-        if(role === rights.value) {
+    for (let role of this.data.roles) {
+      for (let rights of this.userRights) {
+        if (role === rights.value) {
           rights.selected = true
         }
-        if(this.data.is_admin && rights.value === 'admin') {
+        if (this.data.is_admin && rights.value === 'admin') {
           rights.selected = true
         }
       }
@@ -68,17 +68,16 @@ export class UpdateUserDialog implements OnInit {
   }
 
   updateUsersList() {
-    this.api.getTypeRequest('users/').subscribe(data => { 
-      this.users = data; 
+    this.api.getTypeRequest('users/').subscribe(data => {
+      this.users = data;
     })
   }
 
-  updateUser(){
+  updateUser() {
     this.updateUsersList()
 
     const res = this.users.filter(u => u.email === this.data.email)[0]
-    console.log(this.dialogRef.componentInstance)
-    
+    this.dialogRef.componentInstance.data = res
   }
 
   updateUserRole(type, user, key, value) {
@@ -92,16 +91,6 @@ export class UpdateUserDialog implements OnInit {
       if (value === 'superadmin') {
         this.api.updateuser(user.email, value, !user['is_superadmin']).subscribe()
       }
-    } else {
-      let add = false
-
-      for (let item of key) {
-        if (item !== 'public') {
-          add = true
-        }
-
-        this.api.updateuser(user, `usergroups`, add, item).subscribe()
-      }
     }
 
     this.updateUser()
@@ -110,13 +99,11 @@ export class UpdateUserDialog implements OnInit {
   updateUserDataLevel(type, user, key, value) {
     let add = false
 
-    for (let item of key) {
-      if (item !== 'public') {
-        add = true
-      }
-
-      this.api.updateuser(user, `usergroups`, add, item).subscribe()
+    if (value !== 'public') {
+      add = true
     }
+
+    this.api.updateuser(user, key, add, value).subscribe()
   }
 
   buildForm() {
