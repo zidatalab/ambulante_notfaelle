@@ -20,7 +20,7 @@ export class UpdateUserDialog implements OnInit {
 
   users: any;
   myRegform: any;
-  usergroupoptions = [{ name: 'Public Access', value: 'public' }, { name: 'KV Benutzer', value: 'kvuser' }];
+  userGroupOptions = [{ name: 'Public Access', value: 'public', selected: false }, { name: 'KV Benutzer', value: 'kvuser', selected: false }];
   userRights = [{ name: 'User', value: 'user', selected: false }, { name: 'Admin', value: 'admin', selected: false }, { name: 'Superadmin', value: 'superadmin', selected: false }]
   salutations = ['Herr', 'Frau', 'Frau Dr.', 'Herr Dr.', 'Dr.', ' ']
 
@@ -46,7 +46,7 @@ export class UpdateUserDialog implements OnInit {
       const levelKeys = Object.keys(getCustomerLevels)
 
       for (const level of levelKeys) {
-        this.usergroupoptions.push({ name: level, value: level })
+        this.userGroupOptions.push({ name: level, value: level, selected: false })
       }
     }
     this.rights()
@@ -83,17 +83,20 @@ export class UpdateUserDialog implements OnInit {
   updateUserRole(type, user, key, value) {
     if (type === 'role') {
       if (value === 'user') {
+        this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
         this.api.updateuser(user.email, value, !user['is_user']).subscribe()
       }
       if (value === 'admin') {
+        this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
         this.api.updateuser(user.email, value, !user['is_admin']).subscribe()
       }
       if (value === 'superadmin') {
+        this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
         this.api.updateuser(user.email, value, !user['is_superadmin']).subscribe()
       }
     }
 
-    this.updateUser()
+    // this.updateUser()
   }
 
   updateUserDataLevel(type, user, key, value) {
@@ -102,6 +105,8 @@ export class UpdateUserDialog implements OnInit {
     if (value !== 'public') {
       add = true
     }
+
+    this.userGroupOptions.filter(i => { if (i.value === value) i.selected = !i.selected })
 
     this.api.updateuser(user, key, add, value).subscribe()
   }

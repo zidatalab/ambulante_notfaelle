@@ -50,9 +50,9 @@
         <h4><strong>Daten-Level</strong></h4>
         <!-- <mat-form-field appearance="fill" class="full-width"> -->
           <mat-chip-list class="smallchips">
-            <mat-chip color="primary" *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value"
+            <mat-chip color="primary" *ngFor="let dataLevel of userGroupOptions" [value]="dataLevel.value"
               (click)="updateUserDataLevel('dataLevel', data.email, 'usergroups', dataLevel.value)">
-              <!-- <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon> -->
+              <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon>
               {{ dataLevel.name }}
             </mat-chip>
           </mat-chip-list>
