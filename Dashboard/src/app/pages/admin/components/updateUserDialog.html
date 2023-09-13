@@ -32,43 +32,26 @@
           <mat-error>Die E-Mail-Adresse ist ungültig</mat-error>
         </mat-form-field>
         <h4><strong>Rechte</strong></h4>
-        <!-- <mat-form-field appearance="fill" class="full-width"> -->
-          <mat-chip-list class="smallchips">
-            <mat-chip color="primary" *ngFor="let right of userRights" [value]="right.value"
-              (click)="updateUserRole('role', data, 'user', right.value)">
-              <mat-icon matListIcon *ngIf="right.selected">check</mat-icon>
-              {{ right.name }}
-            </mat-chip>
-          </mat-chip-list>
-          <!-- <mat-select (selectionChange)="updateUserRole('role', data, 'user', $event.value)" name="userRights" formControlName="roles">
-            <mat-option *ngFor="let rights of userRights" [value]="rights.value">
-              {{ rights.name }}
-            </mat-option>
-          </mat-select> -->
-          <!-- <mat-error>Bitte wählen Sie eine Bereichtungsstufe aus.</mat-error> -->
-        <!-- </mat-form-field> -->
+        <mat-chip-list class="smallchips">
+          <mat-chip color="primary" *ngFor="let right of userRights" [value]="right.value"
+            (click)="updateUserRole('role', data, 'user', right.value)">
+            <mat-icon matListIcon *ngIf="right.selected">check</mat-icon>
+            {{ right.name }}
+          </mat-chip>
+        </mat-chip-list>
         <h4><strong>Daten-Level</strong></h4>
-        <!-- <mat-form-field appearance="fill" class="full-width"> -->
-          <mat-chip-list class="smallchips">
-            <mat-chip color="primary" *ngFor="let dataLevel of userGroupOptions" [value]="dataLevel.value"
-              (click)="updateUserDataLevel('dataLevel', data.email, 'usergroups', dataLevel.value)">
-              <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon>
-              {{ dataLevel.name }}
-            </mat-chip>
-          </mat-chip-list>
-          <!-- <mat-select (selectionChange)="updateUserDataLevel('dataLevel', data.email, 'usergroups', $event.value)"
-            multiple name="dataLevel" formControlName="dataLevel">
-            <mat-option *ngFor="let dataLevel of usergroupoptions" [value]="dataLevel.value">
-              {{ dataLevel.name }}
-            </mat-option>
-          </mat-select>
-          <mat-error>Bitte wählen Sie mindestens ein Datenlevel aus.</mat-error> -->
-        <!-- </mat-form-field> -->
+        <mat-chip-list class="smallchips">
+          <mat-chip color="primary" *ngFor="let dataLevel of userGroupOptions" [value]="dataLevel.value"
+            (click)="updateUserDataLevel('dataLevel', data.email, 'usergroups', dataLevel.value)">
+            <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon>
+            {{ dataLevel.name }}
+          </mat-chip>
+        </mat-chip-list>
       </form>
     </mat-card>
   </div>
   <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
     <!-- <button mat-raised-button (click)="onNoClick()" color="warn">Abbrechen</button> -->
-    <button mat-raised-button (click)="onNoClick()" color="primary">Beenden</button>
+    <button mat-raised-button (click)="onNoClick()" color="primary">Schließen</button>
   </div>
 </div>
