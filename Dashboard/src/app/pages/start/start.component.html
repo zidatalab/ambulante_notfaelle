@@ -52,7 +52,7 @@
   </div>
   <div *ngIf="(this.timetogo>=0) || this.currentuser">
     <div *ngIf="this.currentuser">
-      <div *ngIf="(this.isRKIUser || this.isRKIKVUser); then rkiUser else kvUser"></div>
+      <div *ngIf="this.isExtern; then rkiUser else kvUser"></div>
       <ng-template #kvUser>
         <h3>Bundesland</h3>
         <p>
@@ -68,9 +68,9 @@
         <h3>Einsatzort</h3>
         <p>
           <mat-chip-list>
-            <mat-chip (click)="this.setlevel('levelvalues',item);" *ngFor="let item of this.rkiLevelvalues"
-              [selected]="(this.levelsettings['levelvalues']==item)" color="primary">
-              {{item.replace('Gesamt','116117')}}
+            <mat-chip (click)="this.setlevel('levelvalues',item); chipSelectedIndex = index;" *ngFor="let item of this.rkiLevelvalues; let index = index"
+            [selected]="index === chipSelectedIndex" color="primary">
+              {{item}}
             </mat-chip>
           </mat-chip-list>
         </p>

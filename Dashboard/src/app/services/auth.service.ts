@@ -144,4 +144,18 @@ export class AuthService {
 
     return false
   }
+
+  public isExtern() {
+    if(this.currentUserValue) {
+      const usergroup = this.currentUserValue.usergroups.smed_reporting
+
+      if(!usergroup.includes('kvuser')) {
+        return true
+      }
+
+      return false
+    }
+
+    return false
+  }
 }

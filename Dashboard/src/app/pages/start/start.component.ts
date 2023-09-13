@@ -78,6 +78,8 @@ export class StartComponent implements OnInit {
   absoluteNumbers: boolean = false
   isRKIUser: boolean = false
   isRKIKVUser: boolean = false
+  isExtern: boolean = false
+  chipSelectedIndex : number = 0
 
   ngOnInit(): void {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
@@ -90,14 +92,22 @@ export class StartComponent implements OnInit {
 
     this.isRKIUser = this.auth.isRKIUser()
     this.isRKIKVUser = this.auth.isRKIKVUser()
+    this.isExtern = this.auth.isExtern()
     this.buildLevelValuesForCustomers()
 
-    if (this.isRKIUser || this.isRKIKVUser) {
-      if (this.levelsettings['levelvalues'] === 'rki') {
+    if (this.isExtern) {
+      if (this.levelsettings['levelvalues'] !== 'kvuser') {
         this.levelsettings['level'] = 'customer'
       }
+
       this.absoluteNumbers = true
     }
+
+    // if(this.isExtern) {
+    //   if(this.levelsettings['levelvalues'] !== 'kvuser') {
+    //     this.levelsettings['level'] = 'customer'
+    //   }
+    // }
 
     this.updatemetadata();
     window.scroll(0, 0);
@@ -133,9 +143,9 @@ export class StartComponent implements OnInit {
         this.rkiLevelvalues.push(item)
       }
 
-      if (this.isRKIUser) {
-        this.rkiLevelvalues.push('Gesamt')
-      }
+      // if (this.isRKIUser) {
+      //   this.rkiLevelvalues.push('Gesamt')
+      // }
 
       if (this.isRKIKVUser) {
         for (const item of this.levelvalues) {
