@@ -28,7 +28,6 @@ export class UpdateUserDialog implements OnInit {
     // this.currentuser = this.auth.getUserDetails();
     this.buildForm();
     this.getUserGroups()
-    this.updateUsersList()
   }
 
   async getUserGroups(): Promise<void> {
@@ -49,7 +48,9 @@ export class UpdateUserDialog implements OnInit {
         this.userGroupOptions.push({ name: level, value: level, selected: false })
       }
     }
+
     this.rights()
+    this.dataLevel()
   }
 
   rights() {
@@ -67,17 +68,16 @@ export class UpdateUserDialog implements OnInit {
     return this.userRights
   }
 
-  updateUsersList() {
-    this.api.getTypeRequest('users/').subscribe(data => {
-      this.users = data;
-    })
-  }
+  dataLevel() {
+    for(let group of this.data.usergroups.smed_reporting) {
+      for(let group_ of this.userGroupOptions) {
+        if(group === group_.value) {
+          group_.selected = true
+        }
+      }
+    }
 
-  updateUser() {
-    this.updateUsersList()
-
-    const res = this.users.filter(u => u.email === this.data.email)[0]
-    this.dialogRef.componentInstance.data = res
+    return this.userGroupOptions
   }
 
   updateUserRole(type, user, key, value) {
@@ -95,8 +95,6 @@ export class UpdateUserDialog implements OnInit {
         this.api.updateuser(user.email, value, !user['is_superadmin']).subscribe()
       }
     }
-
-    // this.updateUser()
   }
 
   updateUserDataLevel(type, user, key, value) {
