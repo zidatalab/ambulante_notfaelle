@@ -79,7 +79,7 @@ export class StartComponent implements OnInit {
   isRKIUser: boolean = false
   isRKIKVUser: boolean = false
   isExtern: boolean = false
-  chipSelectedIndex : number = 0
+  chipSelectedIndex: number = 0
 
   ngOnInit(): void {
     this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
@@ -96,18 +96,11 @@ export class StartComponent implements OnInit {
     this.buildLevelValuesForCustomers()
 
     if (this.isExtern) {
-      if (this.levelsettings['levelvalues'] !== 'kvuser') {
-        this.levelsettings['level'] = 'customer'
-      }
+      this.levelsettings['level'] = 'customer'
+      this.levelsettings['levelvalues'] = this.externLevelValues[0]
 
       this.absoluteNumbers = true
     }
-
-    // if(this.isExtern) {
-    //   if(this.levelsettings['levelvalues'] !== 'kvuser') {
-    //     this.levelsettings['level'] = 'customer'
-    //   }
-    // }
 
     this.updatemetadata();
     window.scroll(0, 0);
@@ -143,10 +136,6 @@ export class StartComponent implements OnInit {
         this.externLevelValues.push(item)
       }
 
-      // if (this.isRKIUser) {
-      //   this.rkiLevelvalues.push('Gesamt')
-      // }
-
       if (this.isRKIKVUser) {
         for (const item of this.levelvalues) {
           this.externLevelValues.push(item)
@@ -163,10 +152,6 @@ export class StartComponent implements OnInit {
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-
-      if (this.levelsettings['levelvalues'] === 'rki') {
-        this.levelsettings['level'] = 'customer'
-      }
     };
 
     this.summaryinfo = [];
@@ -238,7 +223,7 @@ export class StartComponent implements OnInit {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
     };
-    query["groupinfo"]["level"] = (this.isRKIUser || this.isRKIKVUser) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
+    query["groupinfo"]["level"] = (this.isExtern) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
     query["groupinfo"]["Jahr"] = {

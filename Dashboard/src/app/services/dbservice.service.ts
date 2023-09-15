@@ -91,7 +91,6 @@ export class DBService {
   };
 
   async adddata({ level, levelid, Jahr, Monat, KW, Datum, Indicator, data, KM6Versicherte, BEVSTAND, resolution }) {
-    console.log(level, levelid)
     return await db.datadb
       .put({
         Indicator: Indicator,

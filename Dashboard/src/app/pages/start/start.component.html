@@ -151,7 +151,7 @@
         <mat-card>
           <div class="sliderHeader">
             <h3>SmED Assessments </h3>
-            <mat-slide-toggle *ngIf="!this.isRKIUser" input [(ngModel)]="absoluteNumbers">Absolute
+            <mat-slide-toggle *ngIf="!this.isExtern" input [(ngModel)]="absoluteNumbers">Absolute
               Zahlen</mat-slide-toggle>
           </div>
           <br><span *ngIf="!absoluteNumbers" class="lightgreycolor">pro 100.000 Einwohner</span>
