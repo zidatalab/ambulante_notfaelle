@@ -43,7 +43,7 @@ export class StartComponent implements OnInit {
     'Schleswig-Holstein',
     'Thüringen'
   ];
-  rkiLevelvalues = [
+  externLevelValues = [
   ]
   subgroups: any;
   outcomes: any;
@@ -136,11 +136,11 @@ export class StartComponent implements OnInit {
   }
 
   buildLevelValuesForCustomers() {
-    if (this.isRKIUser || this.isRKIKVUser) {
+    if (this.isExtern) {
       for (const item of this.currentuser.usergroups.smed_reporting) {
         if (item === 'kvuser') continue
 
-        this.rkiLevelvalues.push(item)
+        this.externLevelValues.push(item)
       }
 
       // if (this.isRKIUser) {
@@ -149,7 +149,7 @@ export class StartComponent implements OnInit {
 
       if (this.isRKIKVUser) {
         for (const item of this.levelvalues) {
-          this.rkiLevelvalues.push(item)
+          this.externLevelValues.push(item)
         }
       }
     }

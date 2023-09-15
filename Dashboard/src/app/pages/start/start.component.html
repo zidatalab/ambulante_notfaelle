@@ -3,8 +3,13 @@
     <p *ngIf="this.currentuser" class="mat-caption lightgreycolor right">
       Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
         "+this.currentuser.lastname:"" }}</span></p>
-    <div class="brandingpicture" [ngClass]="{'smallheader': this.currentuser || this.summaryinfo['done']}">
+    <div *ngIf="!isExtern" class="brandingpicture"
+      [ngClass]="{'smallheader': this.currentuser || this.summaryinfo['done']}">
       <h1>Akut- und Notfälle bei der 116117</h1>
+    </div>
+    <div *ngIf="isExtern" class="brandingpicture"
+      [ngClass]="{'smallheader': this.currentuser || this.summaryinfo['done']}">
+      <h1>Ersteinschätzung von Akut- und Notfällen mit SmED</h1>
     </div>
     <ng-container *ngIf="this.metadata && !this.currentuser">
       <!-- Text anpassen -->
@@ -34,7 +39,7 @@
       </ng-container>
     </ng-container>
     <ng-container *ngIf="(this.timetogo>=0) || this.currentuser">
-      <ng-container *ngIf="((this.timetogo>=0) || this.currentuser) && !this.isRKIUser">
+      <ng-container *ngIf="((this.timetogo>=0) || this.currentuser) && !this.isExtern">
         <p class="lightgreycolor"> Dashboard des Zentralinstituts für die kassenärztliche Versorgung in Deutschland
           (<strong><a style="color:white;" href="https://www.zi.de">Zi</a></strong>) mit aktuellen Ergebnissen aus der
           Strukturierten medizinischen Ersteinschätzung in Deutschland
@@ -45,6 +50,12 @@
             *ngIf="this.summaryinfo && this.levelsettings['resolution']=='weekly'">Daten für vollständige
             Kalenderwochen beginnend mit der Woche vom {{this.summaryinfo["Beginn"] | date}} bis zur Woche beginnend am
             {{this.summaryinfo["Ende"] | date}}.</span></p>
+        <p class="lightgreycolor" *ngIf="this.currentuser">Als registrierter Nutzer steht Ihnen unser <a
+            routerLink="/private">interner Analysebereich</a> zur Verfügung.</p>
+      </ng-container>
+      <ng-container *ngIf="((this.timetogo>=0) || this.currentuser) && this.isExtern">
+        <p class="lightgreycolor"> Dashboard mit aktuellen Ergebnissen aus der Strukturierten medizinischen
+          Ersteinschätzung in Deutschland (SmED) im Rahmen der Anwendung am eigenen Standort. </p>
         <p class="lightgreycolor" *ngIf="this.currentuser">Als registrierter Nutzer steht Ihnen unser <a
             routerLink="/private">interner Analysebereich</a> zur Verfügung.</p>
       </ng-container>
@@ -68,8 +79,9 @@
         <h3>Einsatzort</h3>
         <p>
           <mat-chip-list>
-            <mat-chip (click)="this.setlevel('levelvalues',item); chipSelectedIndex = index;" *ngFor="let item of this.rkiLevelvalues; let index = index"
-            [selected]="index === chipSelectedIndex" color="primary">
+            <mat-chip (click)="this.setlevel('levelvalues',item); chipSelectedIndex = index;"
+              *ngFor="let item of this.externLevelValues; let index = index" [selected]="index === chipSelectedIndex"
+              color="primary">
               {{item}}
             </mat-chip>
           </mat-chip-list>

@@ -84,14 +84,17 @@ export class UpdateUserDialog implements OnInit {
     if (type === 'role') {
       if (value === 'user') {
         this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
+
         this.api.updateuser(user.email, value, !user['is_user']).subscribe()
       }
       if (value === 'admin') {
         this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
+
         this.api.updateuser(user.email, value, !user['is_admin']).subscribe()
       }
       if (value === 'superadmin') {
         this.userRights.filter(i => { if (i.value === value) i.selected = !i.selected })
+
         this.api.updateuser(user.email, value, !user['is_superadmin']).subscribe()
       }
     }

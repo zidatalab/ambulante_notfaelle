@@ -17,7 +17,7 @@ export class AdminComponent implements OnInit {
     private api: ApiService,
     private auth: AuthService,
     private dialog: MatDialog
-    ) { }
+  ) { }
 
   users: any;
   myRegform: any;
@@ -29,7 +29,7 @@ export class AdminComponent implements OnInit {
   currentuser: any;
   usergroupoptions = ['kvuser'];
   selectedDataLevel = []
-  displayedColumns = ['symbol','user','rights','group','actions']
+  displayedColumns = ['symbol', 'user', 'rights', 'group', 'actions']
 
   ngOnInit(): void {
     this.currentuser = this.auth.getUserDetails();
@@ -50,37 +50,31 @@ export class AdminComponent implements OnInit {
     document.execCommand('copy');
   }
 
-  openAddUserDialog() : void {
+  openAddUserDialog(): void {
     const dialogRef = this.dialog.open(AddUserDialog, {})
 
     dialogRef.afterClosed().subscribe(result => {
       this.updateUserList()
-      // console.log('closed')
-      // do something with result
     })
   }
 
-  openUpdateUserDialog(user) : void {
+  openUpdateUserDialog(user): void {
     const dialogRef = this.dialog.open(UpdateUserDialog, {
       data: user
     })
 
     dialogRef.afterClosed().subscribe(result => {
       this.updateUserList()
-      // console.log('closed')
-      // do something with result
     })
   }
 
-  openDeleteUserDialog(user) : void {
+  openDeleteUserDialog(user): void {
     const dialogRef = this.dialog.open(DeleteUserDialog, {
       data: user
     })
 
     dialogRef.afterClosed().subscribe(result => {
       this.updateUserList()
-      // console.log('closed')
-      // do something with result
     })
   }
 
@@ -89,7 +83,7 @@ export class AdminComponent implements OnInit {
   }
 
   fullName(value) {
-    if(value.full_name) {
+    if (value.full_name) {
       return value.full_name
     }
     return `${value.anrede} ${value.firstname} ${value.lastname}`
