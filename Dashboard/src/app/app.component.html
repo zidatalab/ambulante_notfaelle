@@ -7,24 +7,23 @@
       </button>
       <!-- <span>{{this.title}}</span> -->
       <span class="example-spacer"></span>
-      <div fxShow="true" fxHide.lt-sm="true">  
+      <div fxShow="true" fxHide.lt-sm="true">
         <a href="https://www.zi.de/smed">
-       <img src="./assets/branding/logo_project.png"
-      class="brandinglogo" >
-      </a>
-      <a href="https://www.zi.de">
-        <img src="https://ziwebstorage.blob.core.windows.net/appradar/assets/logo_zi_small_transparent.png"
-          class="brandinglogo">       
-      </a>
+          <img src="./assets/branding/logo_project.png" class="brandinglogo">
+        </a>
+        <a href="https://www.zi.de">
+          <img src="https://ziwebstorage.blob.core.windows.net/appradar/assets/logo_zi_small_transparent.png"
+            class="brandinglogo">
+        </a>
       </div>
-      <div fxShow="false" fxShow.lt-sm="true">  
-<!--          <img  src="./assets/branding/logo_project.png"
+      <div fxShow="false" fxShow.lt-sm="true">
+        <!--          <img  src="./assets/branding/logo_project.png"
         class="brandinglogotiny" >  -->
         <a href="https://www.zi.de">
           <img src="https://ziwebstorage.blob.core.windows.net/appradar/assets/logo_zi_small_transparent.png"
-            class="brandinglogotiny">       
+            class="brandinglogotiny">
         </a>
-        </div>
+      </div>
     </mat-toolbar>
     <main>
       <section class="mat-typography">
@@ -46,7 +45,7 @@
                 </a>
 
               </div>
-              <div *ngIf="this.loginoption && !this.loginstatus" >
+              <div *ngIf="this.loginoption && !this.loginstatus">
 
                 <a mat-icon-button (click)="drawer.toggle()" routerLink="/login">
                   <mat-icon class="icon">login</mat-icon>
@@ -54,7 +53,7 @@
                 </a>
 
               </div>
-<!--               <div *ngIf="this.loginstatus">
+              <!--               <div *ngIf="this.loginstatus">
 
                 <a mat-icon-button (click)="drawer.toggle();" routerLink="/private">
                   <mat-icon class="icon">lock_open</mat-icon>
@@ -70,7 +69,7 @@
                 </a>
 
               </div>
-              <div *ngIf="this.currentuser">
+              <div *ngIf="this.currentuser && !this.isExtern">
 
                 <a mat-icon-button (click)="drawer.toggle();" routerLink="/private">
                   <mat-icon class="icon">dashboard</mat-icon>
@@ -86,7 +85,7 @@
                 </a>
 
               </div>
-              
+
               <div *ngIf="this.loginstatus">
 
                 <a mat-icon-button (click)="drawer.toggle();logout();" href="./">
@@ -103,8 +102,9 @@
             <!-- Offline message-->
             <div class="offlinemsg" *ngIf="false"><strong>Keine Internetverbindung</strong><br>Dieses Portal benötigt
               eine aktive Internetverbindung.</div>
-              <div class="offlinemsg" *ngIf="this.apiconnection==2"><strong>Keine Verbindung zur API</strong><br>Dieses Portal benötigt
-                eine aktive Internetverbindung.</div>              
+            <div class="offlinemsg" *ngIf="this.apiconnection==2"><strong>Keine Verbindung zur API</strong><br>Dieses
+              Portal benötigt
+              eine aktive Internetverbindung.</div>
             <router-outlet></router-outlet>
           </mat-drawer-content>
         </mat-drawer-container>
@@ -115,7 +115,7 @@
 
 
 <!-- Footer nur für Desktop Screen -->
-<footer >
+<footer>
   <div class="footerstyle">
     <div fxLayout="column" fxLayoutGap="0.5rem">
 
@@ -141,8 +141,9 @@
             <br>
           </div>
           <div style="padding:0.5rem;text-align: center;">
-            <p>© {{this.currentdate | date:'Y'}} Zentralinstitut für die kassenärztliche Versorgung in der Bundesrepublik
-              Deutschland</p>              
+            <p>© {{this.currentdate | date:'Y'}} Zentralinstitut für die kassenärztliche Versorgung in der
+              Bundesrepublik
+              Deutschland</p>
           </div>
         </div>
 

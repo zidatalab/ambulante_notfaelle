@@ -20,6 +20,7 @@ export class AppComponent {
   public adminstatus: boolean;
   currentdate: any;
   public apiconnection: number = 0;
+  isExtern: boolean = false
 
   constructor(
     private _auth: AuthService,
@@ -40,6 +41,7 @@ export class AppComponent {
     this.db.clean();
     this.checkapiconnection();
     this.currentdate = new Date();
+    this.isExtern = this._auth.isExtern()
 
     this._auth.currentUser.subscribe(data => {
       if (data) {
