@@ -149,6 +149,8 @@ export class StartComponent implements OnInit {
       return null;
     }
 
+    this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
+
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
