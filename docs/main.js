@@ -5740,6 +5740,7 @@ class StartComponent {
             if (!this.currentuser && (this.timetogo < 0)) {
                 return null;
             }
+            this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
             if (level !== "__init") {
                 this.levelsettings[level] = value;
                 this.levelsettings = this.smed.updatestartstop(this.levelsettings);
