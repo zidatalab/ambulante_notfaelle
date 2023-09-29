@@ -16,7 +16,8 @@ constructor(
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     let result = false;
     let userdata = this._authService.getUserDetails()
-    if (userdata) {
+    let isExtern = this._authService.isExtern()
+    if (userdata && !isExtern) {
       result = true;
     }
     else {
