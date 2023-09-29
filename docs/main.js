@@ -183,12 +183,12 @@ class AppComponent {
         this.db.clean();
         this.checkapiconnection();
         this.currentdate = new Date();
-        this.isExtern = this._auth.isExtern();
         this._auth.currentUser.subscribe(data => {
             if (data) {
                 this.currentuser = data;
                 this.loginstatus = true;
                 this.adminstatus = this.currentuser["is_admin"] || this.currentuser["is_superadmin"];
+                this.isExtern = this._auth.isExtern();
                 setTimeout(() => { this.autorefreshdata(); }, 1000);
                 setInterval(() => { this._auth.refreshToken(); this.checkapiconnection(); }, 1000 * 60 * 10);
             }
@@ -6524,7 +6524,8 @@ class AuthGuardService {
     canActivate(next, state) {
         let result = false;
         let userdata = this._authService.getUserDetails();
-        if (userdata) {
+        let isExtern = this._authService.isExtern();
+        if (userdata && !isExtern) {
             result = true;
         }
         else {
