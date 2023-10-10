@@ -118,30 +118,124 @@
         Keine Daten verfügbar
       </p>
     </div>
-    <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
+    <div class="grid-container">
+      <mat-grid-list cols="4" rowHeight="200px">
+        <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title="" [numberformat]="'1.0-0'"
+          [maincolor]="this.colorsscheme[4].concat('80')" [description]="'Gesamtanzahl der Assessments'"></app-box>
+        <mat-grid-tile>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'" [maincolor]="this.colorsscheme[3].concat('80')"
+            [value]="this.summaryinfo['Mittlere Dauer']"
+            description="Mittlere Dauer pro Assessment (in Sekunden)"></app-box>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'" [maincolor]="this.colorsscheme[2].concat('80')"
+            [value]="this.summaryinfo['Anzahl Beschwerden']" description="Mittlere Anzahl Beschwerden pro Asssessment">
+          </app-box>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'" [maincolor]="this.colorsscheme[1].concat('80')"
+            [value]="this.summaryinfo['Anzahl Fragen']"
+            description="Mittlere Anzahl beantworteter Fragen pro Asssessment">
+          </app-box>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+    <div class="grid-container">
+      <mat-grid-list cols="2" rowHeight="100%">
+        <mat-grid-tile>
+          <mat-card>
+            <div class="sliderHeader">
+              <h3>SmED Assessments </h3>
+              <mat-slide-toggle *ngIf="!this.isExtern" input [(ngModel)]="absoluteNumbers">Absolute
+                Zahlen</mat-slide-toggle>
+            </div>
+            <br><span *ngIf="!absoluteNumbers" class="lightgreycolor">pro 100.000 Einwohner</span>
+            <span class="lightgreycolor" *ngIf="absoluteNumbers">Absolute Zahlen</span>
+            <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
+              [outcomes]="!absoluteNumbers ? ['Assessments pro 100 Tsd. Einw.'] : ['totaleNumbers']" [sortx]="true"
+              [fontcolor]="'white'" plottype="area"></app-plot>
+            <div>
+              <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                </mat-expansion-panel-header>
+                <div class="mat-caption">
+                  <p *ngIf="this.currentuser">
+                    <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
+                      <mat-icon inline=true>file_download</mat-icon>
+                      Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                    </a>
+                  </p>
+                  <h3> Weitere Informationen zum Indikator</h3>
+                  <p>Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen bei der 116117
+                    monatlich
+                    durchgeführt wurden.</p>
+                </div>
+              </mat-expansion-panel>
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-card>
+            <h3>Aktivität respiratorischer Erkrankungen<br><span class="lightgreycolor">Abweichung von der
+                Hintergrundaktivität in Prozent</span></h3>
+            <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'"
+              [outcomes]="['Anteil ARE Assessments']" [sortx]="true" [fontcolor]="'white'" [colorscheme]="['crimson']"
+              plottype="area"></app-plot>
+            <div>
+              <mat-expansion-panel (opened)="panelOpenState = true" class="mat-elevation-z0"
+                (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-icon *ngIf="!panelOpenState">info_outline</mat-icon>
+                </mat-expansion-panel-header>
+                <div class="mat-caption">
+                  <p *ngIf="this.currentuser">
+                    <a (click)="this.exportascsv('zeitreihe.csv',this.stats_ts)">
+                      <mat-icon inline=true>file_download</mat-icon>
+                      Angezeigte Daten als CSV-Datei herunterladen &nbsp;
+                    </a>
+                  </p>
+                  <h3> Weitere Informationen zum Indikator</h3>
+                  <p>Anzahl der Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE)
+                    ausgewiesen als prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25%
+                    ARE-Assessments).
+                    Berücksichtigt wurden folgende SmED-Beschwerdebilder: Atembeschwerden, Covid 19, Erkältung/Grippaler
+                    Infekt, Fieber, Hals-/Rachenschmerzen, Husten, Kopfschmerzen, Ohrenschmerzen und Schluckbeschwerden
+                    (Liste ist aktuell noch in Entwicklung, Änderungen sind möglich).</p>
+                </div>
+              </mat-expansion-panel>
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+    <!-- <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
       <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
         <mat-card>
           <div fxLayout="row wrap">
             <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
               <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
                 [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
-                [description]="'Assessments'"></app-box>
+                [description]="'Gesamtanzahl der Assessments'"></app-box>
             </div>
             <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[3].concat('80')" [value]="this.summaryinfo['Mittlere Dauer']"
-                description="Dauer in Sekunden"></app-box>
+                description="Mittlere Dauer pro Assessment (in Sekunden)"></app-box>
             </div>
             <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[2].concat('80')" [value]="this.summaryinfo['Anzahl Beschwerden']"
-                description="Anzahl Beschwerden">
+                description="Mittlere Anzahl Beschwerden pro Asssessment">
               </app-box>
             </div>
             <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100 *ngIf="this.currentuser">
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[1].concat('80')" [value]="this.summaryinfo['Anzahl Fragen']"
-                description="Anzahl Fragen">
+                description="Mittlere Anzahl beantworteter Fragen pro Asssessment">
               </app-box>
             </div>
           </div>
@@ -173,7 +267,6 @@
                   </a>
                 </p>
                 <h3> Weitere Informationen zum Indikator</h3>
-                <!-- Text anpassen -->
                 <p>Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen bei der 116117 monatlich
                   durchgeführt wurden.</p>
               </div>
@@ -202,7 +295,6 @@
                   </a>
                 </p>
                 <h3> Weitere Informationen zum Indikator</h3>
-                <!-- Text anpassen -->
                 <p>Anzahl der Assessments mit typischen Symptomen von Akuten Respiratorischen Erkrankungen (ARE)
                   ausgewiesen als prozentuale Abweichung von ARE Hintergrundaktivität (erwartet werden 25%
                   ARE-Assessments).
@@ -237,7 +329,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Prozentuelle Häufigkeit der im Rahmen der SmED-Assessments dokumentierten Beschwerden, sortiert
                     nach der Häufigkeit, anteilig an allen SmED-Assessments, in denen eine Angabe zur Beschwerde
                     vorliegt.
@@ -273,7 +364,6 @@
                       </a>
                     </p>
                     <h3> Weitere Informationen zum Indikator</h3>
-                    <!-- Text anpassen -->
                     <p>Prozentuale Verteilung der SmED-Assessments nach Wochentag und Uhrzeit (Drei-Stunden-Intervalle).
                     </p>
                   </div>
@@ -305,7 +395,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsdringlichkeit.</p>
                 </div>
               </mat-panel-description>
@@ -334,7 +423,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Angaben zur Dauer liegen erst seit Mai 2020 vor. In die Berechnung der Dauer fließen nur
                     Assessments ein, die mit dem klassischen SmED-Modul (nicht COVID-spezifische Module) erfasst wurden.
                     Weiterhin wurden Assessments mit einer Dauer von über 1000 Sekunden ausgeschlossen, da bei diesen
@@ -367,7 +455,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Die Anzahl der Beschwerden umfasst die im Rahmen des SmED-Assessments dokumentierten vorliegenden
                     Beschwerden der Anrufenden.
                     Bisher nicht enthalten sind Beschwerden, die im Rahmen der Vortriage erfasst wurden.</p>
@@ -400,7 +487,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>In die Anzahl der Fragen fließen alle im Rahmen des SmED-Assessments dokumentierten Fragen ein,
                     sowohl
                     allgemeine (Alter, Geschlecht, Schwangerschaft) als auch symptomspezifische Fragen (Vorliegen,
@@ -437,7 +523,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Prozentuale Verteilung der SmED-Assessments nach von SmED empfohlener Versorgungsebene und
                     Versorgungsdringlichkeit.</p>
                 </div>
@@ -468,7 +553,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Prozentuale Verteilung der SmED-Assessments nach QM-Kategorien.</p>
                 </div>
               </mat-panel-description>
@@ -476,8 +560,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100
-        *ngIf="(this.currentuser && this.decisions_ttt) && (!this.isExtern)">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && (!this.isExtern)">
         <mat-card *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -502,7 +585,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Abgleich der SmED-Empfehlung mit der Entscheidung des/der Disponent*in hinsichtlich der
                     Versorgungsdringlichkeit.
                     Die Entscheidung des/der Disponent*in wird in SmED bisher nur bei einem kleinen Anteil der
@@ -516,9 +598,7 @@
           </div>
         </mat-card>
       </div>
-
-      <div fxFlex=50 fxFlex.lt-md=100
-        *ngIf="(this.decisions_poc && this.currentuser) && (!this.isExtern)">
+      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && (!this.isExtern)">
         <mat-card *ngIf="this.decisions_poc.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -543,7 +623,6 @@
                     </a>
                   </p>
                   <h3> Weitere Informationen zum Indikator</h3>
-                  <!-- Text anpassen -->
                   <p>Abgleich der SmED-Empfehlung mit der Entscheidung des/der Disponent*in hinsichtlich der
                     Versorgungsebene.
                     Die Entscheidung des/der Disponent*in wird in SmED bisher nur bei einem kleinen Anteil der
@@ -557,6 +636,6 @@
           </div>
         </mat-card>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>

@@ -1,4 +1,4 @@
-<mat-card [style.background-color]="this.itemcolor">
+<!-- <mat-card [style.background-color]="this.itemcolor">
   <div fxLayout="row">
     <div fxFlex>
       <h1 *ngIf="!this.textbehind">{{this.title}}{{this.value | number: this.numberformat : "de"}}</h1>
@@ -9,4 +9,18 @@
       <span class="mat-headline"><mat-icon inline=true>{{this.maticon}}</mat-icon></span>
     </div>
   </div>
+</mat-card> -->
+
+<mat-card class="dashboard-card">
+  <mat-card-header class="dashboard-card-title">
+    <mat-card-title *ngIf="!this.textbehind">
+      {{this.title}}{{this.value | number: this.numberformat : "de"}}
+    </mat-card-title>
+    <mat-card-title *ngIf="this.textbehind">
+      {{this.value | number: this.numberformat : "de"}} {{this.title}}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="dashboard-card-content">
+    {{this.description}}
+  </mat-card-content>
 </mat-card>
