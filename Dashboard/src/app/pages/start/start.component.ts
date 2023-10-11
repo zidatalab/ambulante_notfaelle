@@ -280,6 +280,12 @@ export class StartComponent implements OnInit {
         data => {
           let res = data["data"];
 
+          const trunketData = []
+
+          for(let trunk of res) {
+            console.log(Object.values(trunk))
+          }
+
           if (thefield === "") {
             for (const item of res) {
               if (!item.mainsymptoms_ts) {
