@@ -118,7 +118,7 @@
         Keine Daten verfügbar
       </p>
     </div>
-    <div class="grid-container">
+    <!-- <div class="grid-container">
       <mat-grid-list cols="4" rowHeight="200px">
         <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title="" [numberformat]="'1.0-0'"
           [maincolor]="this.colorsscheme[4].concat('80')" [description]="'Gesamtanzahl der Assessments'"></app-box>
@@ -211,28 +211,28 @@
           </mat-card>
         </mat-grid-tile>
       </mat-grid-list>
-    </div>
-    <!-- <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
+    </div> -->
+    <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
       <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
         <mat-card>
-          <div fxLayout="row wrap">
-            <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
+          <div fxLayout="row wrap" fxLayoutAlign="stretch">
+            <div fxFlex>
               <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
                 [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
                 [description]="'Gesamtanzahl der Assessments'"></app-box>
             </div>
-            <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
+            <div fxFlex>
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[3].concat('80')" [value]="this.summaryinfo['Mittlere Dauer']"
                 description="Mittlere Dauer pro Assessment (in Sekunden)"></app-box>
             </div>
-            <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100>
+            <div fxFlex>
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[2].concat('80')" [value]="this.summaryinfo['Anzahl Beschwerden']"
                 description="Mittlere Anzahl Beschwerden pro Asssessment">
               </app-box>
             </div>
-            <div fxFlex fxFlex.lt-md=50 fxFlex.lt-sm=100 *ngIf="this.currentuser">
+            <div fxFlex *ngIf="this.currentuser">
               <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
                 [maincolor]="this.colorsscheme[1].concat('80')" [value]="this.summaryinfo['Anzahl Fragen']"
                 description="Mittlere Anzahl beantworteter Fragen pro Asssessment">
@@ -636,6 +636,6 @@
           </div>
         </mat-card>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
