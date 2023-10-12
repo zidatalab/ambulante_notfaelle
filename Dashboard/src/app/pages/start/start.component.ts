@@ -151,6 +151,8 @@ export class StartComponent implements OnInit {
 
     this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
 
+    console.log(this.levelsettings)
+
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -280,12 +282,6 @@ export class StartComponent implements OnInit {
         data => {
           let res = data["data"];
 
-          const trunketData = []
-
-          for(let trunk of res) {
-            console.log(Object.values(trunk))
-          }
-
           if (thefield === "") {
             for (const item of res) {
               if (!item.mainsymptoms_ts) {
@@ -339,9 +335,11 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {
       this.stats_ts = [];
       this.summaryinfo = [];
+      console.log(this.levelsettings['start'], this.levelsettings['stop'])
       let statswdate = await this.db.listdata('stats', this.levelsettings['level'],
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
         this.levelsettings["resolution"]);
+        console.log(statswdate)
 
       if (statswdate.length > 0) {
 
@@ -368,6 +366,7 @@ export class StartComponent implements OnInit {
         };
 
         this.stats_ts = statswdate;
+        console.log(this.stats_ts)
         let theid = this.stats_ts[0]['levelid'];
 
         if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
