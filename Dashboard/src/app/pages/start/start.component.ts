@@ -151,8 +151,6 @@ export class StartComponent implements OnInit {
 
     this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
 
-    console.log(this.levelsettings)
-
     if (level !== "__init") {
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
@@ -335,7 +333,6 @@ export class StartComponent implements OnInit {
     if (thefield == "stats") {
       this.stats_ts = [];
       this.summaryinfo = [];
-      console.log(this.levelsettings['start'], this.levelsettings['stop'])
       let statswdate = await this.db.listdata('stats', this.levelsettings['level'],
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
         this.levelsettings["resolution"]);

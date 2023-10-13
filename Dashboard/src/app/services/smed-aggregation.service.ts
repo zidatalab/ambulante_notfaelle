@@ -39,6 +39,7 @@ async newcombine(array,fieldname){
     }
   };
   }
+  console.log(dbarray)
   //if (fieldname=="stats"){console.log("newcombine res",fieldname,dbarray);};
   await this.db.adddatabulk(dbarray);
 }

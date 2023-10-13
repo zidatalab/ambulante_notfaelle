@@ -38,6 +38,7 @@ export class DBService {
       levelid: levelid
     }
 
+    console.log(start, stop)
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
       return db.datadb
