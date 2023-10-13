@@ -88,13 +88,15 @@ export class ApiService {
   objectkeystocolumns(array, objectname) {
     for (let item of array) {
       let theobject = item[objectname];
+
       for (let key of Object.keys(theobject)) {
         item[key] = theobject[key];
       }
+
       theobject[objectname] = NaN;
       delete theobject[objectname];
     }
-    console.log(array)
+
     return array;
   }
 
