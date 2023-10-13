@@ -94,6 +94,7 @@ export class ApiService {
       theobject[objectname] = NaN;
       delete theobject[objectname];
     }
+    console.log(array)
     return array;
   }
 

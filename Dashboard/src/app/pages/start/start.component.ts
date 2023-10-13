@@ -335,8 +335,7 @@ export class StartComponent implements OnInit {
       this.summaryinfo = [];
       let statswdate = await this.db.listdata('stats', this.levelsettings['level'],
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
-        this.levelsettings["resolution"]);
-        console.log(statswdate)
+        this.levelsettings["resolution"], this.levelsettings['zeitraum']);
 
       if (statswdate.length > 0) {
 

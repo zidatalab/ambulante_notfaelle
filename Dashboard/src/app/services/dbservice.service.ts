@@ -31,14 +31,22 @@ export class DBService {
       .equals([level, levelid, Indicator, resolution]).first();
   }
 
-  listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution) {
+  listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution, timeframe = '') {
     let tosearch = {
       Indicator: Indicator,
       level: level,
       levelid: levelid
     }
 
-    console.log(start, stop)
+    if (timeframe === 'Letztes Jahr') {
+      let date = new Date(stop)
+      let day = 60 * 60 * 24 * 1000;
+
+      let newDate = new Date(date.getTime() + day).toISOString().substring(0, 10);
+      console.log(newDate)
+      stop = newDate
+    }
+
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
       return db.datadb
