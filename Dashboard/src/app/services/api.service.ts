@@ -86,6 +86,7 @@ export class ApiService {
   }
 
   objectkeystocolumns(array, objectname) {
+    console.log(array, objectname)
     for (let item of array) {
       let theobject = item[objectname];
 

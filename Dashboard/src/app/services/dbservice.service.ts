@@ -38,6 +38,17 @@ export class DBService {
       levelid: levelid
     }
 
+    // if (timeframe === 'Letztes Jahr') {
+    //   let date = new Date(stop)
+    //   let day = (60 * 60 * 24 * 1000) * 10 ;
+
+    //   let newDate = new Date(date.getTime() + day).toISOString().substring(0, 10);
+    //   console.log(newDate)
+    //   stop = newDate
+    // }
+
+    console.log(stop)
+
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
       return db.datadb
