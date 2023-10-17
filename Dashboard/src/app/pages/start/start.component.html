@@ -173,8 +173,10 @@
                   </a>
                 </p>
                 <h3> Weitere Informationen zum Indikator</h3>
-                <p>Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen bei der 116117 monatlich
+                <p *ngIf="!absoluteNumbers">Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen
+                  bei der 116117 monatlich
                   durchgeführt wurden.</p>
+                <p *ngIf="absoluteNumbers"></p>
               </div>
             </mat-expansion-panel>
           </div>
