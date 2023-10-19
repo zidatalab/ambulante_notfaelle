@@ -13,9 +13,9 @@ export class ApiService {
   public itsatest = false;
   public REST_API_SERVER = "https://api.zidatasciencelab.de/"; // "https://barebonedashboardapi.azurewebsites.net/"; "https://dashboardapi.ziapp.de/"; "http://localhost:8000/"; 
   public REST_API_SERVER_CLIENTID = "smed_reporting";
-  public primarycolor = "#2196f3"; // "#e91e63";
-  public accentcolor = "#e3714e1";
-  public warncolor = "#e1149b";
+  public primarycolor = '#3c9bfa' //"#2196f3"; // "#e91e63";
+  public accentcolor = '#2dcd73' //"#e3714e1";
+  public warncolor = '#f0194b' //"#e1149b";
 
   constructor(private httpClient: HttpClient) { }
 
