@@ -85,17 +85,19 @@ export class ApiService {
     return Object.keys(array[0]);
   }
 
-  objectkeystocolumns(array, objectname) {
-    console.log(array, objectname)
+  objectkeystocolumns(array, targetData) {
+    console.log(array)
     for (let item of array) {
-      let theobject = item[objectname];
+      let obj = item[targetData];
+      // console.log(item)
 
-      for (let key of Object.keys(theobject)) {
-        item[key] = theobject[key];
+      for (let key of Object.keys(obj)) {
+        // console.log(key, item[key], obj[key])
+        item[key] = obj[key];
       }
 
-      theobject[objectname] = NaN;
-      delete theobject[objectname];
+      obj[targetData] = NaN;
+      delete obj[targetData];
     }
 
     return array;

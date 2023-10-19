@@ -38,19 +38,18 @@ export class DBService {
       levelid: levelid
     }
 
-    // if (timeframe === 'Letztes Jahr') {
-    //   let date = new Date(stop)
-    //   let day = (60 * 60 * 24 * 1000) * 10 ;
-
-    //   let newDate = new Date(date.getTime() + day).toISOString().substring(0, 10);
-    //   console.log(newDate)
-    //   stop = newDate
-    // }
-
-    console.log(stop)
-
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
+      if(timeframe === 'Letztes Jahr') {
+        const lastYear = Number(start.slice(0,4))
+        console.log(db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray())
+        return db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray()
+        .then(data => {
+          console.log(data)
+          return this.api.objectkeystocolumns(data, 'data')
+        });
+      }
+
       return db.datadb
         .where('[level+levelid+Indicator+timeframe+Datum]')
         .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
