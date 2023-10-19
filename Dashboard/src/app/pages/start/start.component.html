@@ -173,10 +173,18 @@
                   </a>
                 </p>
                 <h3> Weitere Informationen zum Indikator</h3>
-                <p *ngIf="!absoluteNumbers">Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen
-                  bei der 116117 monatlich
+                <p></p>
+                <p *ngIf="!absoluteNumbers && !isExtern">Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen
+                  bei der 116117 {{ this.levelsettings['resolution'] === 'weekly' ? 'wöchentlich' : 'monatlich' }}
                   durchgeführt wurden.</p>
-                <p *ngIf="absoluteNumbers"></p>
+                <p *ngIf="absoluteNumbers && !isExtern">
+                  Anzahl der SmED-Assessments (in Tausend), die im Rahmen von Anrufen
+                  bei der 116117 {{ this.levelsettings['resolution'] === 'weekly' ? 'wöchentlich' : 'monatlich' }}
+                  durchgeführt wurden.
+                </p>
+                <p *ngIf="this.isExtern">
+                  Anzahl der SmED-Assessments pro {{ this.levelsettings['resolution'] === 'weekly' ? 'Kalenderwoche' : 'Monat' }}.
+                </p>
               </div>
             </mat-expansion-panel>
           </div>
