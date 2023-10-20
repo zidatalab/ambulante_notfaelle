@@ -6028,7 +6028,7 @@ class StartComponent {
                     ;
                     if (thefield == "" && res.length > 0) {
                         for (let fielditem of this.allpublicfields) {
-                            this.db.deletewhere(fielditem, this.levelsettings['level'], this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"]).then(() => {
+                            this.db.deletewhere(fielditem, this.levelsettings['level'], this.levelsettings["levelvalues"], this.levelsettings["resolution"], this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings['zeitraum']).then(() => {
                                 this.updatedb(res, fielditem);
                             });
                             this.db.storestand(fielditem, this.levelsettings['level'], this.levelsettings["levelvalues"], now.toISOString(), this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
@@ -6059,7 +6059,7 @@ class StartComponent {
             if (thefield == "stats") {
                 this.stats_ts = [];
                 this.summaryinfo = [];
-                let statswdate = yield this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                let statswdate = yield this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 if (statswdate.length > 0) {
                     for (let item of statswdate) {
                         item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["DAUERsmedFaelle"]);
@@ -6103,7 +6103,7 @@ class StartComponent {
             ;
             if (thefield == "mainsymptoms_ts") {
                 let symptoms_list = [];
-                symptoms_list = yield this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                symptoms_list = yield this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 symptoms_list = this.api.getValues(symptoms_list, 'data');
                 this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
                 for (let item of this.symptoms_list_export) {
@@ -6115,7 +6115,7 @@ class StartComponent {
             ;
             if (thefield == "timestats") {
                 let utiltimes = [];
-                let dbutiltimes = yield this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"]);
+                let dbutiltimes = yield this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 dbutiltimes = this.api.getValues(dbutiltimes, 'data');
                 utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
                 let ntotal = this.api.sumArray(this.api.getValues(utiltimes, 'n'));
@@ -6164,7 +6164,7 @@ class StartComponent {
                         Anteil: 0
                     }
                 ];
-                result = yield this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                result = yield this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
                 const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
                 for (let item of result) {
@@ -6192,7 +6192,7 @@ class StartComponent {
             }
             if (thefield == "decisions") {
                 let decisions = [];
-                decisions = yield this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                decisions = yield this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 let total = this.api.sumArray(this.api.getValues(decisions, 'Anzahl'));
                 this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
                 this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");
@@ -6222,7 +6222,7 @@ class StartComponent {
                         data: 0,
                     },
                 ];
-                const data = yield this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+                const data = yield this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
                 let total = 0;
                 if (data.length > 0) {
                     for (const item of data) {
@@ -6414,14 +6414,14 @@ class ApiService {
     getKeys(array) {
         return Object.keys(array[0]);
     }
-    objectkeystocolumns(array, objectname) {
+    objectkeystocolumns(array, targetData) {
         for (let item of array) {
-            let theobject = item[objectname];
-            for (let key of Object.keys(theobject)) {
-                item[key] = theobject[key];
+            let obj = item[targetData];
+            for (let key of Object.keys(obj)) {
+                item[key] = obj[key];
             }
-            theobject[objectname] = NaN;
-            delete theobject[objectname];
+            obj[targetData] = NaN;
+            delete obj[targetData];
         }
         return array;
     }
@@ -6923,7 +6923,7 @@ class AppDB extends dexie__WEBPACK_IMPORTED_MODULE_0__["default"] {
             db.close();
         });
         db.version(11).stores({
-            datadb: 'id++,[level+levelid+Indicator+timeframe+Datum],[level+levelid+Indicator+timeframe]',
+            datadb: 'id++,[level+levelid+Indicator+timeframe+Datum],[level+levelid+Indicator+timeframe],[level+levelid+Indicator+timeframe+Jahr]',
             standdb: 'id++,[level+levelid+Indicator+timeframe]',
         });
         db.datadb.mapToClass(DataItem);
@@ -6978,7 +6978,7 @@ class DBService {
         return _db__WEBPACK_IMPORTED_MODULE_0__.db.standdb.where('[level+levelid+Indicator+timeframe]')
             .equals([level, levelid, Indicator, resolution]).first();
     }
-    listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution) {
+    listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution, timeframe = '') {
         let tosearch = {
             Indicator: Indicator,
             level: level,
@@ -6986,6 +6986,13 @@ class DBService {
         };
         // Can be implemented later to restrict results
         if (start !== "" && stop !== "" && expand == true) {
+            if (timeframe === 'Letztes Jahr') {
+                const lastYear = Number(start.slice(0, 4));
+                return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray()
+                    .then(data => {
+                    return this.api.objectkeystocolumns(data, 'data');
+                });
+            }
             return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Datum]')
                 .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
                 .toArray()
@@ -7005,7 +7012,7 @@ class DBService {
             return res;
         });
     }
-    deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "") {
+    deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "", timeframe = "") {
         let tosearch = {
             Indicator: Indicator,
             level: level,
@@ -7014,6 +7021,10 @@ class DBService {
         };
         // Can be implemented later to restrict results
         if (start !== "" && stop !== "") {
+            const lastYear = Number(start.slice(0, 4));
+            if (timeframe === 'Letztes Jahr') {
+                return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).delete();
+            }
             return _db__WEBPACK_IMPORTED_MODULE_0__.db.datadb.where('[level+levelid+Indicator+timeframe+Datum]').between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop]).delete();
         }
         else {
