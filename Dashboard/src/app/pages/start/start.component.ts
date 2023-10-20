@@ -387,7 +387,7 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
 
-      symptoms_list = await this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      symptoms_list = await this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
 
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
@@ -402,7 +402,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"]);
+      let dbutiltimes = await this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
       dbutiltimes = this.api.getValues(dbutiltimes, 'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       let ntotal = this.api.sumArray(this.api.getValues(utiltimes, 'n'));
@@ -453,7 +453,7 @@ export class StartComponent implements OnInit {
         }
       ]
 
-      result = await this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      result = await this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
       result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
       const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
 
@@ -487,7 +487,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "decisions") {
       let decisions = [];
-      decisions = await this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      decisions = await this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
       let total = this.api.sumArray(this.api.getValues(decisions, 'Anzahl'));
       this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
       this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");;
@@ -518,7 +518,7 @@ export class StartComponent implements OnInit {
         },
       ]
 
-      const data = await this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"]);
+      const data = await this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
       let total = 0
 
       if (data.length > 0) {
