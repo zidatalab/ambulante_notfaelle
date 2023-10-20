@@ -40,14 +40,12 @@ export class DBService {
 
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "" && expand == true) {
-      if(timeframe === 'Letztes Jahr') {
-        const lastYear = Number(start.slice(0,4))
-        console.log(db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray())
+      if (timeframe === 'Letztes Jahr') {
+        const lastYear = Number(start.slice(0, 4))
         return db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray()
-        .then(data => {
-          console.log(data)
-          return this.api.objectkeystocolumns(data, 'data')
-        });
+          .then(data => {
+            return this.api.objectkeystocolumns(data, 'data')
+          });
       }
 
       return db.datadb
@@ -74,7 +72,7 @@ export class DBService {
     return res
   }
 
-  deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "") {
+  deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "", timeframe = "") {
     let tosearch = {
       Indicator: Indicator,
       level: level,
@@ -84,6 +82,14 @@ export class DBService {
 
     // Can be implemented later to restrict results
     if (start !== "" && stop !== "") {
+      const lastYear = Number(start.slice(0, 4))
+
+      if (timeframe === 'Letztes Jahr') {
+        return db.datadb
+          .where('[level+levelid+Indicator+timeframe+Jahr]').equals(
+            [level, levelid, Indicator, resolution, lastYear]).delete();
+      }
+
       return db.datadb
         .where('[level+levelid+Indicator+timeframe+Datum]').between(
           [level, levelid, Indicator, resolution, start],

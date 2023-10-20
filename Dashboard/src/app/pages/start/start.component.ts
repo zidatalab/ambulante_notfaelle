@@ -294,17 +294,20 @@ export class StartComponent implements OnInit {
             ).then(() => {
               this.updatedb(res, thefield)
             });
+
             this.db.storestand(thefield, this.levelsettings['level'],
               this.levelsettings["levelvalues"], now.toISOString(),
               this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
           };
+
           if (thefield == "" && res.length > 0) {
             for (let fielditem of this.allpublicfields) {
               this.db.deletewhere(fielditem, this.levelsettings['level'], this.levelsettings["levelvalues"], this.levelsettings["resolution"],
-                this.levelsettings["start"], this.levelsettings["stop"],
+                this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings['zeitraum']
               ).then(() => {
                 this.updatedb(res, fielditem)
               });
+
               this.db.storestand(fielditem, this.levelsettings['level'],
                 this.levelsettings["levelvalues"], now.toISOString(),
                 this.levelsettings["start"], this.levelsettings["stop"], this.levelsettings["resolution"]);
@@ -362,7 +365,6 @@ export class StartComponent implements OnInit {
         };
 
         this.stats_ts = statswdate;
-        console.log(this.stats_ts)
         let theid = this.stats_ts[0]['levelid'];
 
         if (theid != "Gesamt") { this.summaryinfo["levelid"] = " in ".concat(theid); }
