@@ -20,9 +20,11 @@ export class UpdateUserDialog implements OnInit {
 
   users: any;
   myRegform: any;
+  isPasswordChange: boolean = false
   userGroupOptions = [{ name: 'Public Access', value: 'public', selected: false }, { name: 'KV Benutzer', value: 'kvuser', selected: false }];
   userRights = [{ name: 'User', value: 'user', selected: false }, { name: 'Admin', value: 'admin', selected: false }, { name: 'Superadmin', value: 'superadmin', selected: false }]
   salutations = ['Herr', 'Frau', 'Frau Dr.', 'Herr Dr.', 'Dr.', ' ']
+  strongPasswordRegx: RegExp = /^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=\D*\d).{8,}$/;
 
   ngOnInit(): void {
     // this.currentuser = this.auth.getUserDetails();
@@ -69,9 +71,9 @@ export class UpdateUserDialog implements OnInit {
   }
 
   dataLevel() {
-    for(let group of this.data.usergroups.smed_reporting) {
-      for(let group_ of this.userGroupOptions) {
-        if(group === group_.value) {
+    for (let group of this.data.usergroups.smed_reporting) {
+      for (let group_ of this.userGroupOptions) {
+        if (group === group_.value) {
           group_.selected = true
         }
       }
@@ -117,6 +119,7 @@ export class UpdateUserDialog implements OnInit {
       anrede: new FormControl({ value: this.data.anrede, disabled: true }),
       firstname: new FormControl({ value: this.data.firstname, disabled: true }),
       lastname: new FormControl({ value: this.data.lastname, disabled: true }),
+      password: new FormControl('', { validators: [Validators.required, Validators.pattern(this.strongPasswordRegx)] }),
       email: new FormControl({ value: this.data.email, disabled: true }),
       roles: new FormControl({ value: this.data.roles[this.data.roles.length - 1], disabled: false }),
       dataLevel: new FormControl({ value: this.data.usergroups ? this.data.usergroups.smed_reporting : [], disabled: false }),
@@ -127,8 +130,15 @@ export class UpdateUserDialog implements OnInit {
     return Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8) + "-" + Math.random().toString(36).slice(4, 8);
   }
 
-  changePassword(user, pwd) {
-    this.api.changeuserpwd(user, pwd).subscribe(data => { })
+  togglePasswordChange() {
+    this.isPasswordChange = !this.isPasswordChange
+  }
+
+  changePassword() {
+    const password = this.myRegform.value.password
+    
+    this.api.changeuserpwd(this.data.email, password).subscribe(data => { })
+    this.togglePasswordChange()
   }
 
   onNoClick(): void {

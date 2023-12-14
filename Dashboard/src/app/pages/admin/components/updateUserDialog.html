@@ -31,6 +31,19 @@
           <mat-icon matSuffix>email</mat-icon>
           <mat-error>Die E-Mail-Adresse ist ungültig</mat-error>
         </mat-form-field>
+        <div *ngIf="!isPasswordChange">
+          <button mat-raised-button (click)="togglePasswordChange()">Passwort ändern</button>
+        </div>
+        <div *ngIf="isPasswordChange">
+          <mat-form-field appearance="fill" class="full-width">
+            <input matInput type="password" placeholder="Passwort" formControlName="password">
+          </mat-form-field>
+          <div style="font-size: small; font-style: italic; color: gray;">Passwort muss 8 Zeichen lang sein, min. einen
+            Groß.- und Kleinbuchstaben, eine Zahl und ein
+            Sonderzeichen enthalten.</div>
+          <button mat-raised-button (click)="togglePasswordChange()">Abbrechen</button>
+          <button mat-raised-button (click)="changePassword()">Ändern</button>
+        </div>
         <h4><strong>Rechte</strong></h4>
         <mat-chip-list class="smallchips">
           <mat-chip color="primary" *ngFor="let right of userRights" [value]="right.value"
