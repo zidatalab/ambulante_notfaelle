@@ -128,11 +128,14 @@ export class PlotComponent implements OnInit {
         xaxis: { side: 'top' },
         yaxis: { autosize: true },
         autosize: false, padding: 0,
-        //legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
+        legend: { x: 1, xanchor: this.legendposx , y: this.legendposy,  bgcolor: this.legendbg},
         margin: { l: 50, r: 50, b: 0, t: 50 },
         paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         //annotations: this.annotations
       };
+
+      // intermediate fix for bugging xaxis placement
+      this.plotlayout.yaxis.autorange = 'reversed'
 
       let plotdata = this.data;
       plotdata['type'] = "heatmap";
