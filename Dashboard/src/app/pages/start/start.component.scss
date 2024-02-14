@@ -56,12 +56,19 @@
 }
 
 .grey {
-
   stroke: rgba(255, 255, 255, 0.466) !important;
-
-
 }
 
 .backgroundicon {
   color: rgb(114, 114, 114);
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.app-box {
+  display: flex;
+  flex: 1;
 }

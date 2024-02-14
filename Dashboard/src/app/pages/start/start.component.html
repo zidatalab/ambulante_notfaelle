@@ -119,34 +119,24 @@
       </p>
     </div>
     <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
-      <div fxFlex=100 *ngIf="this.summaryinfo['Assessments Gesamt']">
-        <mat-card>
-          <div fxLayout="row wrap" fxLayoutAlign="center stretch">
-            <div fxFlex>
-              <app-box [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
-                [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
-                [description]="'Gesamtanzahl der Assessments'"></app-box>
-            </div>
-            <div fxFlex>
-              <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
-                [maincolor]="this.colorsscheme[3].concat('80')" [value]="this.summaryinfo['Mittlere Dauer']"
-                description="Mittlere Dauer pro Assessment (in Sekunden)"></app-box>
-            </div>
-            <div fxFlex>
-              <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
-                [maincolor]="this.colorsscheme[2].concat('80')" [value]="this.summaryinfo['Anzahl Beschwerden']"
-                description="Mittlere Anzahl Beschwerden pro Asssessment">
-              </app-box>
-            </div>
-            <div fxFlex *ngIf="this.currentuser">
-              <app-box [textbehind]="true" title="" [numberformat]="'1.1-1'"
-                [maincolor]="this.colorsscheme[1].concat('80')" [value]="this.summaryinfo['Anzahl Fragen']"
-                description="Mittlere Anzahl beantworteter Fragen pro Asssessment">
-              </app-box>
-            </div>
-          </div>
-        </mat-card>
-      </div>
+      <mat-card *ngIf="this.summaryinfo['Assessments Gesamt']" class="key-wrapper">
+        <div class="card-wrapper">
+          <app-box class="app-box" [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
+            [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
+            [description]="'Gesamtanzahl der Assessments'"></app-box>
+          <app-box class="app-box" [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
+            [numberformat]="'1.0-0'" [maincolor]="this.colorsscheme[4].concat('80')"
+            [description]="'Gesamtanzahl der Assessments'"></app-box>
+          <app-box class="app-box" [textbehind]="true" title="" [numberformat]="'1.1-1'"
+            [maincolor]="this.colorsscheme[2].concat('80')" [value]="this.summaryinfo['Anzahl Beschwerden']"
+            description="Mittlere Anzahl Beschwerden pro Asssessment">
+          </app-box>
+          <app-box class="app-box" [textbehind]="true" title="" [numberformat]="'1.1-1'"
+            [maincolor]="this.colorsscheme[1].concat('80')" [value]="this.summaryinfo['Anzahl Fragen']"
+            description="Mittlere Anzahl beantworteter Fragen pro Asssessment">
+          </app-box>
+        </div>
+      </mat-card>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
         <mat-card>
           <div class="sliderHeader">
@@ -174,7 +164,8 @@
                 </p>
                 <h3> Weitere Informationen zum Indikator</h3>
                 <p></p>
-                <p *ngIf="!absoluteNumbers && !isExtern">Anzahl der SmED-Assessments pro 100.000 Einwohner, die im Rahmen von Anrufen
+                <p *ngIf="!absoluteNumbers && !isExtern">Anzahl der SmED-Assessments pro 100.000 Einwohner, die im
+                  Rahmen von Anrufen
                   bei der 116117 {{ this.levelsettings['resolution'] === 'weekly' ? 'wöchentlich' : 'monatlich' }}
                   durchgeführt wurden.</p>
                 <p *ngIf="absoluteNumbers && !isExtern">
@@ -183,7 +174,8 @@
                   durchgeführt wurden.
                 </p>
                 <p *ngIf="this.isExtern">
-                  Anzahl der SmED-Assessments pro {{ this.levelsettings['resolution'] === 'weekly' ? 'Kalenderwoche' : 'Monat' }}.
+                  Anzahl der SmED-Assessments pro {{ this.levelsettings['resolution'] === 'weekly' ? 'Kalenderwoche' :
+                  'Monat' }}.
                 </p>
               </div>
             </mat-expansion-panel>
