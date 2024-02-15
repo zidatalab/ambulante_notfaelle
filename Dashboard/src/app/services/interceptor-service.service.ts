@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
-import { catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

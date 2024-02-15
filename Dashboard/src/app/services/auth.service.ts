@@ -3,7 +3,7 @@ import { ApiService } from './api.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Observer, fromEvent, merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +26,16 @@ export class AuthService {
   }
 
   OnlineStatus() {
-    return merge<boolean>(
+    const statusObservables = [
       fromEvent(window, 'offline').pipe(map(() => false)),
       fromEvent(window, 'online').pipe(map(() => true)),
       new Observable((sub: Observer<boolean>) => {
         sub.next(navigator.onLine);
         sub.complete();
-      }));
+      })
+    ];
+
+    return merge(...statusObservables);
   }
 
   login(formdata) {
@@ -118,10 +121,10 @@ export class AuthService {
   }
 
   public isRKIUser() {
-    if(this.currentUserValue) {
+    if (this.currentUserValue) {
       const userGroup = this.currentUserValue.usergroups.smed_reporting
-      
-      if(userGroup.includes('rki') && !(userGroup.includes('kvuser'))) {
+
+      if (userGroup.includes('rki') && !(userGroup.includes('kvuser'))) {
         return true
       }
 
@@ -132,10 +135,10 @@ export class AuthService {
   }
 
   public isRKIKVUser() {
-    if(this.currentUserValue) {
+    if (this.currentUserValue) {
       const userGroup = this.currentUserValue.usergroups.smed_reporting
-      
-      if(userGroup.includes('rki') && userGroup.includes('kvuser')) {
+
+      if (userGroup.includes('rki') && userGroup.includes('kvuser')) {
         return true
       }
 
@@ -146,10 +149,10 @@ export class AuthService {
   }
 
   public isExtern() {
-    if(this.currentUserValue) {
+    if (this.currentUserValue) {
       const usergroup = this.currentUserValue.usergroups.smed_reporting
 
-      if(!usergroup.includes('kvuser')) {
+      if (!usergroup.includes('kvuser')) {
         return true
       }
 

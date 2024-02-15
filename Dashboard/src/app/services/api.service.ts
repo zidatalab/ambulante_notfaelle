@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { retry, timeout } from 'rxjs/operators';
+import { map, Observable, of, retry, timeout } from 'rxjs';
 import * as chroma from "chroma-js";
-import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
