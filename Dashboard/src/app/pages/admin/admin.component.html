@@ -14,7 +14,7 @@
   <div *ngIf="!this.adduser && !this.adddata">
     <h2>Nutzerliste</h2>
     <p class="mat-caption greycolor">In diesem Bereich können Nutzerberechtigungen geändert werden.</p>
-    <mat-card>
+    <mat-card appearance="outlined">
       <table class="table" mat-table [dataSource]="this.users">
         <ng-container matColumnDef="symbol">
           <th mat-header-cell *matHeaderCellDef></th>
@@ -37,27 +37,27 @@
         <ng-container matColumnDef="rights">
           <th mat-header-cell *matHeaderCellDef> Rechte </th>
           <td mat-cell *matCellDef="let element">
-            <mat-chip-list class="smallchips">
+            <mat-chip-listbox class="smallchips">
               <span *ngFor="let role of element.roles">
-                <mat-chip>{{ toUpperCase(role) }}</mat-chip>
+                <mat-chip-option>{{ toUpperCase(role) }}</mat-chip-option>
               </span>
-            </mat-chip-list>
+            </mat-chip-listbox>
           </td>
         </ng-container>
         <ng-container matColumnDef="group">
           <th mat-header-cell *matHeaderCellDef> Gruppen </th>
           <td mat-cell *matCellDef="let element">
             <ng-container *ngIf="element['usergroups']">
-              <mat-chip-list class="smallchips">
+              <mat-chip-listbox class="smallchips">
                 <span *ngFor="let group of element.usergroups.smed_reporting">
-                  <mat-chip>{{ toUpperCase(group) }}</mat-chip>
+                  <mat-chip-option>{{ toUpperCase(group) }}</mat-chip-option>
                 </span>
-              </mat-chip-list>
+              </mat-chip-listbox>
             </ng-container>
             <ng-container *ngIf="!element['usergroups'] || !element['usergroups']['smed_reporting']">
-              <mat-chip-list class="smallchips">
-                <mat-chip>Public Access</mat-chip>
-              </mat-chip-list>
+              <mat-chip-listbox class="smallchips">
+                <mat-chip-option>Public Access</mat-chip-option>
+              </mat-chip-listbox>
             </ng-container>
           </td>
         </ng-container>
@@ -84,7 +84,7 @@
   <div *ngIf="this.adddata" fxLayout="column" fxLayoutGap="10px" fxShow.lt-md=false>
     <h2><strong>Daten hinzufügen</strong></h2>
     <p>Mehr Informationen <a href="./assets/docs/Upload_Dateien.html">hier</a></p>
-    <mat-card>
+    <mat-card appearance="outlined">
       <div>
         <h3><strong>Was soll hochgeladen werden?</strong></h3>
         <mat-radio-group [(ngModel)]="this.dataintend">
@@ -149,7 +149,7 @@
         </div>
       </div>
     </mat-card>
-    <mat-card *ngIf="this.metadatafile && this.dataintend=='dataupload'">
+    <mat-card appearance="outlined" *ngIf="this.metadatafile && this.dataintend=='dataupload'">
       <div>
         <h3><strong>2. Daten beschreiben</strong><span *ngIf="this.metadone">
             <mat-icon color="primary">check_circle</mat-icon>
@@ -222,16 +222,16 @@
             </ng-container>
           </div>
           <div fxFlex=15>
-            <mat-chip-list>
-              <mat-chip color="primary" (change)="this.checkmetadata()" [selected]="row.public"
+            <mat-chip-listbox>
+              <mat-chip-option color="primary" (change)="this.checkmetadata()" [selected]="row.public"
                 (click)="row.public=!row.public">
                 <span *ngIf="row.public">Öffentlich</span>
                 <span *ngIf="!row.public">Privat</span>
-              </mat-chip>
-              <mat-chip color="primary" [selected]="row.adddescr" (click)="row.adddescr=!row.adddescr">
+              </mat-chip-option>
+              <mat-chip-option color="primary" [selected]="row.adddescr" (click)="row.adddescr=!row.adddescr">
                 Beschreibung
-              </mat-chip>
-            </mat-chip-list>
+              </mat-chip-option>
+            </mat-chip-listbox>
           </div>
           <div *ngIf="row.adddescr" fxFlex=100>
             <mat-form-field appearance="outline" style="width: 100%;">
@@ -249,7 +249,7 @@
       </div>
     </mat-card>
     <div *ngIf="this.metadone">
-      <mat-card>
+      <mat-card appearance="outlined">
         <h3><strong>3. Sollen die aktuellen Daten überschrieben werden?</strong></h3>
         <p>
           <mat-slide-toggle [(ngModel)]="this.replacedata"></mat-slide-toggle>
@@ -268,7 +268,7 @@
       <div><button mat-raised-button (click)="this.resetall();" color="primary">Abbrechen</button></div>
     </div>
     <div *ngIf="this.uploadres">
-      <mat-card>
+      <mat-card appearance="outlined">
         <h1>Datenupload</h1>
         <mat-spinner *ngIf="this.uploadres=='pending'" [diameter]="50"></mat-spinner>
         <p *ngIf="this.uploadres=='pending'">Hinweis: Bitte haben Sie Geduld: Es kann etwas dauern wenn viele

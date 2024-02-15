@@ -117,24 +117,24 @@ $apptheme:   mat.define-dark-theme($primary, $accent);
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
-$custom-typography: mat.define-typography-config(
-  $font-family: 'Lato',
-  $headline: mat.define-typography-level(32px, 48px, 700),
-  $body-1: mat.define-typography-level(16px, 24px, 400)
-);
+// $custom-typography: mat.define-typography-config(
+//   $font-family: 'Lato',
+//   $headline: mat.define-typography-level(32px, 48px, 700),
+//   $body-1: mat.define-typography-level(16px, 24px, 400)
+// );
 
 // Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
-@include mat.typography-hierarchy($custom-typography);
+// @include mat.typography-hierarchy($custom-typography);
 
 // Override typography for a specific Angular Material components.
-@include mat.checkbox-typography($custom-typography);
+// @include mat.checkbox-typography($custom-typography);
 
 // Override typography for all Angular Material, including mat-base-typography and all components.
-@include mat.all-component-typographies($custom-typography);
+// @include mat.all-component-typographies($custom-typography);
 
 
 // Override the typography in the core CSS.
-@include mat.core($custom-typography);
+// @include mat.core($custom-typography);
 
 
 
@@ -161,7 +161,7 @@ body {
   
  
 
-.mat-card {
+.mat-mdc-card {
   border-color: black;
   margin: 5px;    
   @include mat.elevation(8); 
@@ -186,7 +186,7 @@ a:visited {
     background: #fafafa00;
 }
 
-.mat-card-avatar {
+.mat-mdc-card-avatar {
  height: 140px; 
  width:140px;
 }
@@ -332,6 +332,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field-appearance-outline .mat-form-field-outline {
      background-color: white !important;
   }

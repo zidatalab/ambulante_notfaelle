@@ -46,59 +46,59 @@
     <div>
       <h3>Region</h3>
       <p>
-        <mat-chip-list>
-          <mat-chip (click)="this.updatequery('levelid',item);" *ngFor="let item of this.levelvalues"
+        <mat-chip-listbox>
+          <mat-chip-option (click)="this.updatequery('levelid',item);" *ngFor="let item of this.levelvalues"
             [selected]="(this.settings['levelid']==item)" color="primary">
             {{item}}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </p>
     </div>
     <div>
       <h3>Level</h3>
       <p>
-        <mat-chip-list>
-          <mat-chip (click)="this.updatequery('SmED_Level',item);"
+        <mat-chip-listbox>
+          <mat-chip-option (click)="this.updatequery('SmED_Level',item);"
             *ngFor="let item of ['Alle','Telefon','Tresen','Patient']" [selected]="(this.SmED_Level==item)"
             color="primary">
             {{item}}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </p>
       <p class="mat-caption lightgreycolor" *ngIf="this.SmED_Level=='Patient'">Hinweis Assessments mit SmED-Patient sind
         ab dem 6.12.21 enthalten. Sie können aktuell noch nicht KVen zugeordnet werden. Bitte wählen Sie "Gesamt" als
         Region aus.</p>
       <h3>Modul</h3>
       <p>
-        <mat-chip-list>
-          <mat-chip (click)="this.updatequery('SmED_Modul',item);"
+        <mat-chip-listbox>
+          <mat-chip-option (click)="this.updatequery('SmED_Modul',item);"
             *ngFor="let item of ['Alle','SmED-Triage','SmED-COVID-kurz','SmED-COVID-integriert','SmED-Kontakt+']"
             [selected]="(this.SmED_Modul==item)" color="primary">
             {{item}}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </p>
     </div>
     <div>
       <h3>Outcome</h3>
       <p>
-        <mat-chip-list>
-          <mat-chip (click)="this.updatequery('outcome',item);" *ngFor="let item of this.outcomes"
+        <mat-chip-listbox>
+          <mat-chip-option (click)="this.updatequery('outcome',item);" *ngFor="let item of this.outcomes"
             [selected]="(this.settings['outcome']==item)" color="primary">
             {{item}}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </p>
     </div>
     <div *ngIf="this.settings['outcome']">
       <h3>Differenzierungsmerkmale <span class="lightgreycolor">(max. 2 Merkmale möglich)</span></h3>
       <p>
-        <mat-chip-list multiple>
-          <mat-chip (click)="this.updatequery('diffmerkmale',item);" *ngFor="let item of this.diffmerkmale"
+        <mat-chip-listbox multiple>
+          <mat-chip-option (click)="this.updatequery('diffmerkmale',item);" *ngFor="let item of this.diffmerkmale"
             [selected]="(this.settings['diffmerkmale'].includes(item))" color="primary">
             {{item}}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </p>
     </div>
     <div *ngIf="this.progress">
@@ -134,7 +134,7 @@
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==1 && this.tsqueryresult.length>0" fxLayout="row wrap">
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>Anzahl Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
             [outcomes]="['count']" plottype="bar"></app-plot>
@@ -161,7 +161,7 @@
         </mat-card>
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>Anteil Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
             [colorscheme]="['#d0f321']" [outcomes]="['Anteil']" [percent]="true" plottype="bar"></app-plot>
@@ -191,7 +191,7 @@
                     (this.tsquery['outcome']) || (this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                     || (this.settings['diffmerkmale'].includes('Beschwerde'))
                     ">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>{{this.settings['outcome']}}</h3>
           <ng-container *ngIf="!(this.settings['diffmerkmale'].includes('Hauptbeschwerde')) &&
                         !(this.settings['diffmerkmale'].includes('Beschwerde'))">
@@ -233,7 +233,7 @@
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==2 && this.tsqueryresult.length>0" fxLayout="row wrap">
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>Anzahl Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
             [outcomes]="['count']" [colorby]="this.settings['diffmerkmale'][1]" plottype="bar"></app-plot>
@@ -260,7 +260,7 @@
         </mat-card>
       </div>
       <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>Anteil Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
             [colorscheme]="['#d0f321']" [colorby]="this.settings['diffmerkmale'][1]" [outcomes]="['Anteil']"
@@ -291,7 +291,7 @@
                     || ((this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                     || (this.settings['diffmerkmale'].includes('Beschwerde')))
                     )">
-        <mat-card>
+        <mat-card appearance="outlined">
           <h3>{{this.settings['outcome']}}</h3>
           <ng-container *ngIf="!(this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                         && !(this.settings['diffmerkmale'].includes('Beschwerde'))">

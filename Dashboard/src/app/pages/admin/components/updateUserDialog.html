@@ -2,7 +2,7 @@
   <div fxFlex=100>
     <!-- {{ data | json }} -->
     <h2><strong>Nutzer Bearbeiten</strong></h2>
-    <mat-card>
+    <mat-card appearance="outlined">
       <form autocomplete="on" [formGroup]="myRegform">
         <h2><strong>Informationen</strong></h2>
         <h4><strong>Name</strong>:</h4>
@@ -45,21 +45,21 @@
           <button mat-raised-button (click)="changePassword()">Ändern</button>
         </div>
         <h4><strong>Rechte</strong></h4>
-        <mat-chip-list class="smallchips">
-          <mat-chip color="primary" *ngFor="let right of userRights" [value]="right.value"
+        <mat-chip-listbox class="smallchips">
+          <mat-chip-option color="primary" *ngFor="let right of userRights" [value]="right.value"
             (click)="updateUserRole('role', data, 'user', right.value)">
             <mat-icon matListIcon *ngIf="right.selected">check</mat-icon>
             {{ right.name }}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
         <h4><strong>Daten-Level</strong></h4>
-        <mat-chip-list class="smallchips">
-          <mat-chip color="primary" *ngFor="let dataLevel of userGroupOptions" [value]="dataLevel.value"
+        <mat-chip-listbox class="smallchips">
+          <mat-chip-option color="primary" *ngFor="let dataLevel of userGroupOptions" [value]="dataLevel.value"
             (click)="updateUserDataLevel('dataLevel', data.email, 'usergroups', dataLevel.value)">
             <mat-icon matListIcon *ngIf="dataLevel.selected">check</mat-icon>
             {{ dataLevel.name }}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </form>
     </mat-card>
   </div>

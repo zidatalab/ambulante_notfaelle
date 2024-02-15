@@ -17,7 +17,7 @@
   font-weight: bold;
 }
 
-.mat-form-field {
+.mat-mdc-form-field {
   font-weight: bold;
 }
 
@@ -26,7 +26,7 @@ textarea {
 }
 
 .smallchips {
-  .mat-chip {
+  .mat-mdc-chip {
     font-size: 9px;
     margin-top: 8px;
     margin-right: 2px;
@@ -34,7 +34,7 @@ textarea {
     margin-left: 8px;
   }
 
-  .mat-standard-chip {
+  .mat-mdc-standard-chip {
     min-height: 18px;
   }
 }

@@ -11,11 +11,11 @@
   </div>
 </mat-card> -->
 
-<mat-card class="box-card" [style.background-color]="this.itemcolor">
+<mat-card appearance="outlined" class="box-card" [style.background-color]="this.itemcolor">
   <h1 *ngIf="!this.textbehind">{{this.title}}{{this.value | number: this.numberformat : "de"}}</h1>
   <h1 *ngIf="this.textbehind">{{this.value | number: this.numberformat : "de"}} {{this.title}}</h1>
   <p><span>{{this.description}}</span></p>
   <div *ngIf="this.maticon">
-    <span class="mat-headline"><mat-icon inline=true>{{this.maticon}}</mat-icon></span>
+    <span class="mat-headline-5"><mat-icon inline=true>{{this.maticon}}</mat-icon></span>
   </div>
 </mat-card>
