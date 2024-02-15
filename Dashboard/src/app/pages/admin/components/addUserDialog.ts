@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class AddUserDialog implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddUserDialog>,
     private api: ApiService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
   ) { }
 
   myRegform: any;
@@ -54,14 +54,14 @@ export class AddUserDialog implements OnInit {
   }
 
   buildForm() {
-    this.myRegform = new FormGroup({
-      anrede: new FormControl({ value: '', disabled: false }, Validators.required),
-      firstname: new FormControl({ value: '', disabled: false }, Validators.required),
-      lastname: new FormControl({ value: '', disabled: false }, Validators.required),
-      email: new FormControl({ value: '', disabled: false }, Validators.required),
-      roles: new FormControl({ value: '', disabled: false }, Validators.required),
-      dataLevel: new FormControl({ value: '', disabled: false }, Validators.required),
-      password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(12)])
+    this.myRegform = new UntypedFormGroup({
+      anrede: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      firstname: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      lastname: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      email: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      roles: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      dataLevel: new UntypedFormControl({ value: '', disabled: false }, Validators.required),
+      password: new UntypedFormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(12)])
     })
 
     this.myRegform.patchValue({ "password": this.randomPassword() });

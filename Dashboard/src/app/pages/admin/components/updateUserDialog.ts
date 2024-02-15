@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class UpdateUserDialog implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<UpdateUserDialog>,
     private api: ApiService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA)
     public data: any
   ) { }
@@ -115,14 +115,14 @@ export class UpdateUserDialog implements OnInit {
   }
 
   buildForm() {
-    this.myRegform = new FormGroup({
-      anrede: new FormControl({ value: this.data.anrede, disabled: true }),
-      firstname: new FormControl({ value: this.data.firstname, disabled: true }),
-      lastname: new FormControl({ value: this.data.lastname, disabled: true }),
-      password: new FormControl('', { validators: [Validators.required, Validators.pattern(this.strongPasswordRegx)] }),
-      email: new FormControl({ value: this.data.email, disabled: true }),
-      roles: new FormControl({ value: this.data.roles[this.data.roles.length - 1], disabled: false }),
-      dataLevel: new FormControl({ value: this.data.usergroups ? this.data.usergroups.smed_reporting : [], disabled: false }),
+    this.myRegform = new UntypedFormGroup({
+      anrede: new UntypedFormControl({ value: this.data.anrede, disabled: true }),
+      firstname: new UntypedFormControl({ value: this.data.firstname, disabled: true }),
+      lastname: new UntypedFormControl({ value: this.data.lastname, disabled: true }),
+      password: new UntypedFormControl('', { validators: [Validators.required, Validators.pattern(this.strongPasswordRegx)] }),
+      email: new UntypedFormControl({ value: this.data.email, disabled: true }),
+      roles: new UntypedFormControl({ value: this.data.roles[this.data.roles.length - 1], disabled: false }),
+      dataLevel: new UntypedFormControl({ value: this.data.usergroups ? this.data.usergroups.smed_reporting : [], disabled: false }),
     })
   };
 
