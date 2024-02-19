@@ -1,5 +1,5 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem">
-    <div fxFlex=100 style="max-width: 500px;" *ngIf="!this.loggedin">
+<div class="container">
+    <div style="max-width: 500px;" *ngIf="!this.loggedin">
         <mat-card appearance="outlined">
             <form  [formGroup]='form' (ngSubmit)='login()'>
                 <h1>Login</h1>
@@ -11,7 +11,7 @@
                     <mat-label>Kennwort</mat-label>
                     <input matInput type="password" name="current-password" formControlName='password' required autocomplete="false">
                 </mat-form-field>
-                <div *ngIf="!this.login_pending" fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="space-between">
+                <div *ngIf="!this.login_pending">
                     <div>
                         <button mat-raised-button color="accent" type="button" (click)="logout()">
                             Abbrechen

@@ -1,4 +1,4 @@
-<div class="container" fxLayout="column" fxLayoutGap="30px">
+<div class="container">
   <div>
     <h1 ngClass.lt-sm="mobileheading">Tool für erweiterte Analysen</h1>
     <p class="lightgreycolor">In diesem Bereich nur für KV-Mitarbeiter ist ein Zugriff auf faktisch anonymisierte
@@ -108,8 +108,6 @@
       <p>Keine Ergebnisse zur Anzeige</p>
     </div>
     <div *ngIf="this.settings['diffmerkmale'].length==0 && this.tsqueryresult.length>0">
-
-
       <div>
         <app-box [value]="this.tsqueryresult[0]['count']" [numberformat]="'1.0-0'"
           [maincolor]="this.colorsscheme[4].concat('80')"
@@ -127,13 +125,9 @@
         <app-box [value]="this.tsqueryresult[0]['Anzahl_Fragen']" [numberformat]="'1.0-0'"
           [maincolor]="this.colorsscheme[1].concat('80')" [description]="'Mittlere Anzahl Fragen SmED'"></app-box>
       </div>
-
-
-
-
     </div>
-    <div *ngIf="this.settings['diffmerkmale'].length==1 && this.tsqueryresult.length>0" fxLayout="row wrap">
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+    <div *ngIf="this.settings['diffmerkmale'].length==1 && this.tsqueryresult.length>0">
+      <div *ngIf="this.tsqueryresult">
         <mat-card appearance="outlined">
           <h3>Anzahl Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
@@ -160,7 +154,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+      <div *ngIf="this.tsqueryresult">
         <mat-card appearance="outlined">
           <h3>Anteil Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
@@ -187,7 +181,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="(this.tsqueryresult.length>0) && 
+      <div *ngIf="(this.tsqueryresult.length>0) && 
                     (this.tsquery['outcome']) || (this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                     || (this.settings['diffmerkmale'].includes('Beschwerde'))
                     ">
@@ -231,8 +225,8 @@
 
 
     </div>
-    <div *ngIf="this.settings['diffmerkmale'].length==2 && this.tsqueryresult.length>0" fxLayout="row wrap">
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+    <div *ngIf="this.settings['diffmerkmale'].length==2 && this.tsqueryresult.length>0">
+      <div *ngIf="this.tsqueryresult">
         <mat-card appearance="outlined">
           <h3>Anzahl Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
@@ -259,7 +253,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.tsqueryresult">
+      <div *ngIf="this.tsqueryresult">
         <mat-card appearance="outlined">
           <h3>Anteil Assessments</h3>
           <app-plot [(data)]="this.tsqueryresult" [xvalue]="this.settings['diffmerkmale'][0]" [fontcolor]="'white'"
@@ -287,7 +281,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="(this.tsqueryresult.length>0) && (this.tsquery['outcome']
+      <div *ngIf="(this.tsqueryresult.length>0) && (this.tsquery['outcome']
                     || ((this.settings['diffmerkmale'].includes('Hauptbeschwerde'))
                     || (this.settings['diffmerkmale'].includes('Beschwerde')))
                     )">

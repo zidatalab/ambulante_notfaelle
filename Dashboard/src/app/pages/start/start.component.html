@@ -1,4 +1,4 @@
-<div class="container" fxLayout="column" fxLayoutGap="1rem" fxLayoutAllign="space-around">
+<div class="container">
   <div>
     <p *ngIf="this.currentuser" class="mat-caption lightgreycolor right">
       Angemeldet als <span> {{this.currentuser.anrede?this.currentuser.anrede+"
@@ -118,7 +118,7 @@
         Keine Daten verfügbar
       </p>
     </div>
-    <div *ngIf="this.summaryinfo['done']" fxLayout="row wrap">
+    <div *ngIf="this.summaryinfo['done']">
       <mat-card appearance="outlined" *ngIf="this.summaryinfo['Assessments Gesamt']" class="key-wrapper">
         <div class="card-wrapper">
           <app-box class="app-box" [value]="this.summaryinfo['Assessments Gesamt']" [textbehind]="true" title=""
@@ -136,7 +136,7 @@
           </app-box>
         </div>
       </mat-card>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+      <div *ngIf="this.stats_ts">
         <mat-card appearance="outlined">
           <div class="sliderHeader">
             <h3>SmED Assessments </h3>
@@ -181,7 +181,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts && (!this.isExtern)">
+      <div *ngIf="this.stats_ts && (!this.isExtern)">
         <mat-card appearance="outlined">
           <h3>Aktivität respiratorischer Erkrankungen<br><span class="lightgreycolor">Abweichung von der
               Hintergrundaktivität in Prozent</span></h3>
@@ -213,7 +213,7 @@
           </div>
         </mat-card>
       </div>
-      <div [fxFlex]="isExtern ? 50 : 100" fxFlex.lt-md=100 *ngIf="this.symptoms_list">
+      <div [fxFlex]="isExtern ? 50 : 100" *ngIf="this.symptoms_list">
         <mat-card appearance="outlined" *ngIf="this.symptoms_list.length>0">
           <h3>Häufigste Beschwerden</h3>
           <br>
@@ -248,7 +248,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.utiltimes['z']">
+      <div *ngIf="this.utiltimes['z']">
         <ng-container *ngIf="this.utiltimes['z'].length>0">
           <mat-card appearance="outlined">
             <h3>Aufkommen nach Tag und Uhrzeit<br><span class="lightgreycolor">Anteil Assessments zum angegebenen
@@ -284,7 +284,7 @@
           </mat-card>
         </ng-container>
       </div>
-      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat">
+      <div *ngIf="this.timetotreat">
         <mat-card appearance="outlined" *ngIf="this.timetotreat.length>0">
           <h3>SmED Empfehlungen zur Dringlichkeit<br><span class="lightgreycolor">Anteil Assessments mit angegebener
               Dringlichkeit an allen Assessments in Prozent</span>
@@ -330,7 +330,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+      <div *ngIf="this.stats_ts">
         <mat-card appearance="outlined">
           <h3>Mittlere Dauer <br><span class="lightgreycolor">Dauer in Sekunden pro Assessment</span></h3>
           <app-plot [(data)]="this.stats_ts" xtickformat="%d.%m.<br>%Y" [xvalue]="'Datum'" [fontcolor]="'white'"
@@ -361,7 +361,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts">
+      <div *ngIf="this.stats_ts">
         <mat-card appearance="outlined">
           <h3>Mittlere Anzahl Beschwerden<br><span class="lightgreycolor">Mittlere Anzahl unterschiedlicher Beschwerden
               pro Assessment</span></h3>
@@ -392,7 +392,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts && this.currentuser">
+      <div *ngIf="this.stats_ts && this.currentuser">
         <mat-card appearance="outlined">
           <h3>Mittlere Anzahl Fragen<br><span class="lightgreycolor">Mittlere Anzahl beantworteter Fragen pro
               Assessment</span>
@@ -425,7 +425,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_pocvsttt">
+      <div *ngIf="this.currentuser && this.decisions_pocvsttt">
         <mat-card appearance="outlined" *ngIf="this.decisions_pocvsttt.length>0">
           <h3>Empfehlung Behandlungsort nach Dringlichkeit <br><span class="lightgreycolor">Anzahl Assessment<mat-icon
                 class="backgroundicon">lock_open
@@ -458,7 +458,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.timetotreat && this.currentuser">
+      <div *ngIf="this.timetotreat && this.currentuser">
         <mat-card appearance="outlined" *ngIf="this.timetotreat.length>0">
           <h3>SmED-Assessments nach QM-Kategorien<br><span class="lightgreycolor">Anteil Assessments in der angegebenen
               QM-Kategorie an allen Assessments in Prozent, basierend auf Daten seit 14.04.2023, ohne
@@ -507,7 +507,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.currentuser && this.decisions_ttt) && (!this.isExtern)">
+      <div *ngIf="(this.currentuser && this.decisions_ttt) && (!this.isExtern)">
         <mat-card appearance="outlined" *ngIf="this.decisions_ttt.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Dringlichkeit<br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
@@ -545,7 +545,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="(this.decisions_poc && this.currentuser) && (!this.isExtern)">
+      <div *ngIf="(this.decisions_poc && this.currentuser) && (!this.isExtern)">
         <mat-card appearance="outlined" *ngIf="this.decisions_poc.length>0">
           <h3>Abgleich Empfehlung vs. Entscheidung Behandlungsort <br><span class="lightgreycolor">Anzahl
               Assessment<mat-icon class="backgroundicon">lock_open
