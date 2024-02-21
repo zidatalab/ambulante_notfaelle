@@ -1,0 +1,28 @@
+.grid-container {
+  margin: 20px;
+}
+
+.tile-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 2rem;
+}
+
+.grid-tile {
+  min-height: 250px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 2px 16px;
+  border-radius: 5px;
+  background: #ddd;
+}
+
+.has-no-data-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #212121;
+}
+
+.no-data-text {
+  font-size: x-large;
+}
