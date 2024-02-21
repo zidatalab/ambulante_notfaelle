@@ -25,6 +25,19 @@ import { ReplacePipe } from './services/replace_pipe';
 import { AddUserDialog } from './pages/admin/components/addUserDialog';
 import { UpdateUserDialog } from './pages/admin/components/updateUserDialog';
 import { DeleteUserDialog } from './pages/admin/components/deleteUserDialog';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RenderTrunkComponent } from './components/dashboard/render-trunk/render-trunk.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { HeaderComponent } from './components/header/header.component';
+import { KeyDataContainerComponent } from './components/key-data-container/key-data-container.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { NoDataComponent } from './components/no-data/no-data.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { PlotContainerComponent } from './components/plot-container/plot-container.component';
+import { BarChartComponent } from './components/plots/bar-chart/bar-chart.component';
+import { LineChartComponent } from './components/plots/line-chart/line-chart.component';
+import { PrivateAnalysisComponent } from './components/private-analysis/private-analysis.component';
+import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -45,7 +58,20 @@ registerLocaleData(locales, 'de');
     ReplacePipe,
     AddUserDialog,
     UpdateUserDialog,
-    DeleteUserDialog
+    DeleteUserDialog,
+    DashboardComponent,
+    RenderTrunkComponent,
+    FooterComponent,
+    HeaderComponent,
+    KeyDataContainerComponent,
+    NavigationComponent,
+    NoDataComponent,
+    PageNotFoundComponent,
+    PlotContainerComponent,
+    BarChartComponent,
+    LineChartComponent,
+    PrivateAnalysisComponent,
+    SkeletonLoaderComponent
   ],
   imports: [
     BrowserModule,
