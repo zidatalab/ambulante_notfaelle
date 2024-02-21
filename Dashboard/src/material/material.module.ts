@@ -61,8 +61,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatStepperModule,
     MatProgressBarModule,
     MatExpansionModule
-
-
   ],
   exports: [
     MatSidenavModule,
@@ -93,8 +91,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatStepperModule,
     MatProgressBarModule,
     MatExpansionModule
-
-
   ]
 })
 export class MaterialModule { }

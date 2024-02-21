@@ -1,1 +1,283 @@
-<p>admin works!</p>
+<div class="container">
+  <h1 ngClass.lt-sm="mobileheading">Administration</h1>
+  <div *ngIf="!this.adduser && !this.adddata">
+    <div>
+      <h2>Administrationsaufgaben</h2>
+      <p class="mat-caption greycolor">In diesem Bereich können Dashboard Administratoren ("Admin") und
+        Zi-Administratoren ("Superadmin") Daten oder Nutzer*innen hinzufügen.</p>
+    </div>
+    <div>
+      <button mat-raised-button (click)="openAddUserDialog(userAddDialog)" color="primary">Nutzer hinzufügen</button>
+    </div>
+  </div>
+  <div *ngIf="!this.adduser && !this.adddata">
+    <h2>Nutzerliste</h2>
+    <p class="mat-caption greycolor">In diesem Bereich können Nutzerberechtigungen geändert werden.</p>
+    <mat-card appearance="outlined">
+      <table class="table" mat-table [dataSource]="this.users">
+        <ng-container matColumnDef="symbol">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon class="matListIcon" color="accent" *ngIf="element['roles'].indexOf('superadmin')>=0"
+              mat-list-icon>
+              admin_panel_settings
+            </mat-icon>
+            <mat-icon *ngIf="element['roles'].indexOf('superadmin')<0" mat-list-icon>
+              account_circle
+            </mat-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="user">
+          <th mat-header-cell *matHeaderCellDef> Nutzer </th>
+          <td mat-cell *matCellDef="let element">
+            {{ fullName(element) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="rights">
+          <th mat-header-cell *matHeaderCellDef> Rechte </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-listbox class="smallchips">
+              <span *ngFor="let role of element.roles">
+                <mat-chip-option>{{ toUpperCase(role) }}</mat-chip-option>
+              </span>
+            </mat-chip-listbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="group">
+          <th mat-header-cell *matHeaderCellDef> Gruppen </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element['usergroups']">
+              <mat-chip-listbox class="smallchips">
+                <span *ngFor="let group of element.usergroups.smed_reporting">
+                  <mat-chip-option>{{ toUpperCase(group) }}</mat-chip-option>
+                </span>
+              </mat-chip-listbox>
+            </ng-container>
+            <ng-container *ngIf="!element['usergroups'] || !element['usergroups']['smed_reporting']">
+              <mat-chip-listbox class="smallchips">
+                <mat-chip-option>Public Access</mat-chip-option>
+              </mat-chip-listbox>
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button>
+              <mat-icon (click)="openUpdateUserDialog(element)" mat-list-icon>
+                settings
+              </mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon (click)="openDeleteUserDialog(element)" color="warn" mat-list-icon>
+                delete
+              </mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card>
+  </div>
+  <div *ngIf="this.adddata">
+    <h2><strong>Daten hinzufügen</strong></h2>
+    <p>Mehr Informationen <a href="./assets/docs/Upload_Dateien.html">hier</a></p>
+    <mat-card appearance="outlined">
+      <div>
+        <h3><strong>Was soll hochgeladen werden?</strong></h3>
+        <mat-radio-group [(ngModel)]="this.dataintend">
+          <mat-radio-button value="dataupload">Daten hinzufügen&nbsp;&nbsp;</mat-radio-button>
+          <mat-radio-button *ngIf="this.areavalues" value="geodataupload">Geodaten hinzufügen&nbsp;
+          </mat-radio-button>
+        </mat-radio-group>
+        <br><br>
+      </div>
+      <div *ngIf="this.dataintend=='geodataupload'">
+        <div>
+          <h3><strong>1. GEOJSON Datei hochladen</strong> <span *ngIf="this.geojsonfile">
+              <mat-icon color="primary">check_circle</mat-icon>
+            </span></h3>
+        </div>
+        <div *ngIf="!this.geojsonfile">
+          <div>
+            <mat-form-field appearance="outline" *ngIf="true">
+              <mat-label>Gebiet für Geodatendatei festlegen</mat-label>
+              <mat-select [(value)]="this.uploadarea">
+                <mat-option *ngFor="let option of this.areavalues" [value]="option">{{option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <input type="file" accept='.geojson' style="display: none" (change)="this.changeListenerGEOJSON($event);"
+              #dataInput>
+            <br><br>
+            <button [disabled]="!this.uploadarea" mat-raised-button color="primary" (click)="dataInput.click()">Daten
+              Auswählen</button>
+          </div>
+        </div>
+        <div *ngIf="this.geojsonfile">
+          <div>
+            <h3><strong>2. GEOJSON beschreiben</strong> <span *ngIf="this.geodatafile">
+                <mat-icon color="primary">check_circle</mat-icon>
+              </span></h3>
+          </div>
+          <div>
+            <p>Die Datei hat {{this.geojsonfile['features'].length | number}} Regionen.</p>
+            <mat-form-field appearance="outline" *ngIf="true">
+              <mat-label>Wie lautet die Bezeichnung Regionen im geojson?</mat-label>
+              <mat-select [(value)]="this.uploadareaid">
+                <mat-option *ngFor="let option of this.areafeatures" [value]="option">{{option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="this.dataintend=='dataupload'">
+        <h3><strong>1. CSV Datei hochladen</strong> <span *ngIf="this.datafile">
+            <mat-icon color="primary">check_circle</mat-icon>
+          </span></h3>
+        <div *ngIf="!this.datafile">
+          <input type="file" accept='.csv' style="display: none" (change)="this.datafile=this.changeListener($event);"
+            #dataInput>
+          <br><br>
+          <button mat-raised-button color="primary" (click)="dataInput.click()">Daten
+            Auswählen</button>
+        </div>
+      </div>
+    </mat-card>
+    <mat-card appearance="outlined" *ngIf="this.metadatafile && this.dataintend=='dataupload'">
+      <div>
+        <h3><strong>2. Daten beschreiben</strong><span *ngIf="this.metadone">
+            <mat-icon color="primary">check_circle</mat-icon>
+          </span></h3>
+        <p>Bitte prüfen Sie die initinale Zuordnung sorgfältig. Jeder Upload muss mindestens zwei Variablen vom
+          Bereich "ordering" enthalten
+          (Typen: level,levelid). Ebenso sollten alle Subgruppenvariablen vom Typ Gruppe sein. Jede Variable
+          aus den Bereichen "ordering" oder "sungroups" muss Angaben zur Referenzkategorie machen.
+          Zellen für diese Kategorie müssen auch in der Tabelle zu finden sein. Die Variablen aus den
+          Bereichen Outcomes oder
+          Demography sollten vom Typ 'rate' oder 'number' sein. Das Hinzufügen einer Indikatorenbeschreibung
+          ist optional.</p>
+      </div>
+      <div *ngIf="(this.datacheck.length>0)">
+        <mat-list>
+          <h3 matSubheader><strong>Gefundene Fehler:</strong></h3>
+          <mat-list-item *ngFor="let hinweis of this.datacheck">
+            <mat-icon color="primary" mat-list-icon>error</mat-icon>
+            <div mat-line><span class="primarycolor">{{hinweis}}</span></div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="smalltab" *ngIf="this.metadatafile && !this.metadone">
+        <div class="tabheader">
+          <div>Name</div>
+          <div>Thema</div>
+          <div>Typ</div>
+          <div>Referenzkategorie</div>
+          <div></div>
+        </div>
+        <div class="tabvalues primarycolor" *ngFor="let row of this.metadatafile">
+          <div><br>{{row.varname}}</div>
+          <div>
+            <mat-form-field appearance="outline" *ngIf="true">
+              <mat-label>Bereich</mat-label>
+              <mat-select [(value)]="row.topic" (selectionChange)="this.checkmetadata()">
+                <mat-option *ngFor="let option of this.topicoptions" [value]="option">{{option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="outline" *ngIf="true">
+              <mat-label>Art</mat-label>
+              <mat-select [(value)]="row.type" (selectionChange)="this.checkmetadata()">
+                <mat-option *ngFor="let option of this.typeoptions" [value]="option">{{option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <ng-container *ngIf="['ordering','subgroups'].indexOf(row.topic)>=0">
+              <mat-form-field appearance="outline" *ngIf="true">
+                <mat-label>Referenzkategorie</mat-label>
+                <mat-select [(value)]="row.allforlevel" (selectionChange)="this.checkmetadata()">
+                  <mat-option *ngFor="let option of this.getrefvalues(row.varname)" [value]="option">
+                    {{option}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" *ngIf="row.type=='level'">
+                <mat-label>Öffentliche Raumebenen</mat-label>
+                <mat-select [(value)]="row.publiclevels" (selectionChange)="this.checkmetadata()" multiple>
+                  <mat-option *ngFor="let option of this.getrefvalues(row.varname)" [value]="option">
+                    {{option}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-container>
+            <ng-container *ngIf="['ordering','subgroups'].indexOf(row.topic)<0">
+            </ng-container>
+          </div>
+          <div>
+            <mat-chip-listbox>
+              <mat-chip-option color="primary" (change)="this.checkmetadata()" [selected]="row.public"
+                (click)="row.public=!row.public">
+                <span *ngIf="row.public">Öffentlich</span>
+                <span *ngIf="!row.public">Privat</span>
+              </mat-chip-option>
+              <mat-chip-option color="primary" [selected]="row.adddescr" (click)="row.adddescr=!row.adddescr">
+                Beschreibung
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          <div *ngIf="row.adddescr">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Indikatorenbeschreibung</mat-label>
+              <textarea style="color:black" [(ngModel)]="row.description" matInput rows="10" cols="40"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div>
+          <div><button mat-raised-button [disabled]="!(this.datacheck.length==0)" (click)="this.metadone=true"
+              color="accent">Beschreibung
+              Fertig</button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+    <div *ngIf="this.metadone">
+      <mat-card appearance="outlined">
+        <h3><strong>3. Sollen die aktuellen Daten überschrieben werden?</strong></h3>
+        <p>
+          <mat-slide-toggle [(ngModel)]="this.replacedata"></mat-slide-toggle>
+          <span style="color:crimson;" *ngIf="this.replacedata">überschreiben</span>
+          <span *ngIf="!this.replacedata">nicht überschreiben.</span>
+        </p>
+        <p *ngIf="!this.replacedata"><em>Achtung: Das Ergänzen der Daten ist aufwändig und erfordert ggf. viel
+            Zeit. Bitte ergänzen Sie nur kleine Datenkörper!</em>
+        </p>
+      </mat-card>
+    </div>
+    <div class="add-margin" *ngIf="(!this.uploadres || this.uploadres=='error')">
+      <div><button mat-raised-button (click)="uploadnewdata()" [disabled]="(!this.metadone) && (!this.uploadareaid)"
+          color="accent">Hinzufügen
+        </button></div>
+      <div><button mat-raised-button (click)="this.resetall();" color="primary">Abbrechen</button></div>
+    </div>
+    <div *ngIf="this.uploadres">
+      <mat-card appearance="outlined">
+        <h1>Datenupload</h1>
+        <mat-spinner *ngIf="this.uploadres=='pending'" [diameter]="50"></mat-spinner>
+        <p *ngIf="this.uploadres=='pending'">Hinweis: Bitte haben Sie Geduld: Es kann etwas dauern wenn viele
+          Daten aktualisiert oder gelöscht werden müssen.</p>
+        <p *ngIf="this.uploadres=='success'">
+          <strong>Upload erfolgreich!</strong>
+        </p>
+        <p *ngIf="this.uploadres=='error'">
+          <strong>Fehler beim Upload</strong> Fehlermeldung: <span class="primarycolor">{{this.uploaderror}}</span>
+        </p>
+      </mat-card>
+    </div>
+  </div>
+</div>

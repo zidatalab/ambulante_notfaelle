@@ -1,0 +1,52 @@
+.tabheader {
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px;
+  border-color: darkgray;
+}
+
+.smalltab {
+  font-size: .9rem;
+  line-height: .9rem;
+  background-color: white;
+  padding: 1.2em;
+  border-radius: 15px;
+}
+
+.tabvalues {
+  font-weight: bold;
+}
+
+.mat-mdc-form-field {
+  font-weight: bold;
+}
+
+textarea {
+  width: 100%;
+}
+
+.smallchips {
+  .mat-mdc-chip {
+    font-size: 9px;
+    margin-top: 8px;
+    margin-right: 2px;
+    margin-bottom: 4px;
+    margin-left: 8px;
+  }
+
+  .mat-mdc-standard-chip {
+    min-height: 18px;
+  }
+}
+
+.listbox {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.table {
+  width: 100%
+}
+
+.matListIcon {
+  vertical-align: top;
+}
