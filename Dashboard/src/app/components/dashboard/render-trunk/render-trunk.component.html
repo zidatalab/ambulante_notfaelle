@@ -1,1 +1,67 @@
-<p>render-trunk works!</p>
+<div class="dashboard-container" style="padding: 0 20px;">
+  <header>
+    <div class="head-container">
+      <h2></h2>
+      <div>
+        <div>
+          <img src="" alt="">
+        </div>
+        <div>
+          <img src="" alt="">
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- not logged in section -->
+  <div>
+    <p>not logged handling</p>
+  </div>
+  <div class="dashboard-main">
+    <div class="dashboard-content-settings-wrapper">
+      <!-- could be set by iterating over the settings -->
+      <!-- should be extracted to a component for reusability -->
+      <div class="dashboard-settings-wrapper">
+        <app-search-settings></app-search-settings>
+      </div>
+    </div>
+    <app-skeleton-loader></app-skeleton-loader>
+    <app-no-data></app-no-data>
+    <div class="information-wrapper">
+      <!-- defined by settings -->
+      <!-- extracted to component -->
+      <!-- extra information container -->
+      <app-information-text></app-information-text>
+    </div>
+    <div class="key-data-section-wrapper">
+      <!-- key data section -->
+      <!-- same as settings wrapper should be defined by given settings per dashboard -->
+      <mat-grid-list>
+        <!-- iterate over settings given for dashboard -->
+        <mat-grid-tile>
+          <app-key-data-container></app-key-data-container>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+    <div class="information-wrapper">
+      <!-- defined by settings -->
+      <!-- extracted to component -->
+      <!-- extra information container -->
+      <app-information-text></app-information-text>
+    </div>
+    <div class="dashbaord-chart-wrapper">
+      <!-- for eTS it needs condinitial selection to render or coming up with other solution -->
+      <div class="charts-container">
+        <div class="chart-wrapper">
+          <h3>Title</h3>
+          <app-line-chart></app-line-chart>
+        </div>
+      </div>
+    </div>
+    <div class="information-wrapper">
+      <!-- defined by settings -->
+      <!-- extracted to component -->
+      <!-- extra information container -->
+      <app-information-text></app-information-text>
+    </div>
+  </div>
+</div>

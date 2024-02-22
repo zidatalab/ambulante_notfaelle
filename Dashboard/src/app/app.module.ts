@@ -38,6 +38,8 @@ import { BarChartComponent } from './components/plots/bar-chart/bar-chart.compon
 import { LineChartComponent } from './components/plots/line-chart/line-chart.component';
 import { PrivateAnalysisComponent } from './components/private-analysis/private-analysis.component';
 import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
+import { SearchSettingsComponent } from './components/dashboard/render-trunk/components/search-settings/search-settings.component';
+import { InformationTextComponent } from './components/dashboard/render-trunk/components/information-text/information-text.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -71,7 +73,9 @@ registerLocaleData(locales, 'de');
     BarChartComponent,
     LineChartComponent,
     PrivateAnalysisComponent,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    SearchSettingsComponent,
+    InformationTextComponent
   ],
   imports: [
     BrowserModule,
