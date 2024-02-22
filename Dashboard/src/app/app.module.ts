@@ -40,6 +40,8 @@ import { PrivateAnalysisComponent } from './components/private-analysis/private-
 import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
 import { SearchSettingsComponent } from './components/dashboard/render-trunk/components/search-settings/search-settings.component';
 import { InformationTextComponent } from './components/dashboard/render-trunk/components/information-text/information-text.component';
+import { HomeComponent } from './components/layout/home.component';
+import { LayoutComponent } from './components/layout/layout.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -75,7 +77,9 @@ registerLocaleData(locales, 'de');
     PrivateAnalysisComponent,
     SkeletonLoaderComponent,
     SearchSettingsComponent,
-    InformationTextComponent
+    InformationTextComponent,
+    HomeComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
