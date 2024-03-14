@@ -1280,7 +1280,7 @@ class PlotComponent {
             this.plotlytype = "bar";
             this.plotlayout = {
                 barmode: "stack",
-                xaxis: { fixedrange: false, showgrid: false, type: 'category', automargin: false },
+                xaxis: { fixedrange: false, showgrid: false, type: 'category', automargin: false, tickfont: { size: 10 } },
                 yaxis: {
                     fixedrange: true, title: '', autosize: true, automargin: true,
                     rangemode: 'tozero', ticksuffix: " ",
@@ -1289,7 +1289,7 @@ class PlotComponent {
                     nticks: this.n_yticks
                 },
                 padding: 0,
-                legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
+                // legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
                 margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
                 annotations: this.annotations
             };
@@ -5407,7 +5407,7 @@ function StartComponent_div_7_div_18_div_9_p_16_Template(rf, ctx) { if (rf & 1) 
 const _c10 = function () { return ["Mittlere Anzahl Fragen"]; };
 function StartComponent_div_7_div_18_div_9_Template(rf, ctx) { if (rf & 1) {
     const _r120 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 30)(1, "mat-card")(2, "h3");
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 42)(1, "mat-card")(2, "h3");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](3, "Mittlere Anzahl Fragen");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](4, "br");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](5, "span", 9);
@@ -5449,7 +5449,7 @@ function StartComponent_div_7_div_18_div_10_mat_card_1_mat_icon_12_Template(rf, 
 function StartComponent_div_7_div_18_div_10_mat_card_1_p_15_Template(rf, ctx) { if (rf & 1) {
     const _r127 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "p")(1, "a", 37);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function StartComponent_div_7_div_18_div_10_mat_card_1_p_15_Template_a_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r127); const ctx_r126 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](5); return ctx_r126.exportascsv("timetotreat.csv", ctx_r126.timetotreat); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function StartComponent_div_7_div_18_div_10_mat_card_1_p_15_Template_a_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵrestoreView"](_r127); const ctx_r126 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵnextContext"](5); return ctx_r126.exportascsv("timetotreat.csv", ctx_r126.decisions_pocvsttt); });
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](2, "mat-icon", 38);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](3, "file_download");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
@@ -5494,7 +5494,7 @@ function StartComponent_div_7_div_18_div_10_mat_card_1_Template(rf, ctx) { if (r
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx_r123.currentuser);
 } }
 function StartComponent_div_7_div_18_div_10_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 30);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div", 42);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](1, StartComponent_div_7_div_18_div_10_mat_card_1_Template, 20, 11, "mat-card", 3);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
 } if (rf & 2) {
@@ -5718,8 +5718,8 @@ function StartComponent_div_7_div_18_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](6, StartComponent_div_7_div_18_div_6_Template, 2, 1, "div", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](7, StartComponent_div_7_div_18_div_7_Template, 19, 11, "div", 21);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](8, StartComponent_div_7_div_18_div_8_Template, 19, 11, "div", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](9, StartComponent_div_7_div_18_div_9_Template, 21, 11, "div", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](10, StartComponent_div_7_div_18_div_10_Template, 2, 1, "div", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](9, StartComponent_div_7_div_18_div_9_Template, 21, 11, "div", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](10, StartComponent_div_7_div_18_div_10_Template, 2, 1, "div", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](11, StartComponent_div_7_div_18_div_11_Template, 2, 1, "div", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](12, StartComponent_div_7_div_18_div_12_Template, 2, 1, "div", 21);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](13, StartComponent_div_7_div_18_div_13_Template, 2, 1, "div", 21);
@@ -6069,6 +6069,8 @@ class StartComponent {
         });
     }
     exportascsv(name, data) {
+        console.log("exportascsv name", name);
+        console.log("exportascsv data", data);
         this.csv.exportToCsv(name, data);
         this.csv.exportToCsv(name + "_settings.csv", [this.levelsettings]);
     }
