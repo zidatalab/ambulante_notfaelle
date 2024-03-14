@@ -167,7 +167,7 @@ export class PlotComponent implements OnInit {
       this.plotlytype = "bar";
       this.plotlayout = {
         barmode: "stack",
-        xaxis: { fixedrange: false, showgrid: false, type: 'category', automargin: false },
+        xaxis: { fixedrange: false, showgrid: false, type: 'category', automargin: false, tickfont: { size: 10 } },
         yaxis: {
           fixedrange: true, title: '', autosize: true, automargin: true,
           rangemode: 'tozero', ticksuffix: " ",
@@ -176,7 +176,7 @@ export class PlotComponent implements OnInit {
           nticks: this.n_yticks
         },
         padding: 0,
-        legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
+        // legend: { x: 1, xanchor: this.legendposx, y: this.legendposy, bgcolor: this.legendbg },
         margin: { l: 0, r: 100, b: 100, t: 0 }, paper_bgcolor: "transparent", plot_bgcolor: "transparent",
         annotations: this.annotations
       };

@@ -392,7 +392,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.stats_ts && this.currentuser">
+      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.stats_ts && this.currentuser">
         <mat-card>
           <h3>Mittlere Anzahl Fragen<br><span class="lightgreycolor">Mittlere Anzahl beantworteter Fragen pro
               Assessment</span>
@@ -425,7 +425,7 @@
           </div>
         </mat-card>
       </div>
-      <div fxFlex=50 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_pocvsttt">
+      <div fxFlex=100 fxFlex.lt-md=100 *ngIf="this.currentuser && this.decisions_pocvsttt">
         <mat-card *ngIf="this.decisions_pocvsttt.length>0">
           <h3>Empfehlung Behandlungsort nach Dringlichkeit <br><span class="lightgreycolor">Anzahl Assessment<mat-icon
                 class="backgroundicon">lock_open
@@ -444,7 +444,7 @@
               <mat-panel-description>
                 <div class="mat-caption">
                   <p *ngIf="this.currentuser">
-                    <a (click)="this.exportascsv('timetotreat.csv',this.timetotreat)">
+                    <a (click)="this.exportascsv('timetotreat.csv',this.decisions_pocvsttt)">
                       <mat-icon inline=true>file_download</mat-icon>
                       Angezeigte Daten als CSV-Datei herunterladen &nbsp;
                     </a>

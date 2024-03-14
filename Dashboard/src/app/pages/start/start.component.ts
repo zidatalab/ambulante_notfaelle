@@ -324,6 +324,8 @@ export class StartComponent implements OnInit {
   }
 
   exportascsv(name, data) {
+    console.log("exportascsv name", name);
+    console.log("exportascsv data", data);
     this.csv.exportToCsv(name, data);
     this.csv.exportToCsv(name + "_settings.csv", [this.levelsettings]);
   }
