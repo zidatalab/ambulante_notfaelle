@@ -43,6 +43,7 @@ export class StartComponent implements OnInit {
     'Schleswig-Holstein',
     'Thüringen'
   ];
+  smedLevels = ['Gesamt', 'Patient', 'Telefon', 'Tresen']
   externLevelValues = [
   ]
   subgroups: any;
@@ -82,7 +83,7 @@ export class StartComponent implements OnInit {
   chipSelectedIndex: number = 0
 
   ngOnInit(): void {
-    this.levelsettings = { "level": "KV", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly' };
+    this.levelsettings = { "level": "KV_v2", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly', 'smedLevel': 'Gesamt' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
@@ -96,7 +97,7 @@ export class StartComponent implements OnInit {
     this.buildLevelValuesForCustomers()
 
     if (this.isExtern) {
-      this.levelsettings['level'] = 'customer'
+      this.levelsettings['level'] = 'customer_v2'
       this.levelsettings['levelvalues'] = this.externLevelValues[0]
 
       this.absoluteNumbers = true
@@ -152,6 +153,7 @@ export class StartComponent implements OnInit {
     this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
 
     if (level !== "__init") {
+      console.log('setlevel', level, value);
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
@@ -225,9 +227,14 @@ export class StartComponent implements OnInit {
       "client_id": this.api.REST_API_SERVER_CLIENTID,
       "groupinfo": {}
     };
-    query["groupinfo"]["level"] = (this.isExtern) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer" : "KV"
+    query["groupinfo"]["level"] = (this.isExtern) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer_v2" : "KV_v2"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
+    if (this.levelsettings["smedLevel"] === 'Gesamt') {
+      delete query["groupinfo"]["SmED_level"];
+    } else {
+      query["groupinfo"]["SmED_level"] = this.levelsettings['smedLevel'];
+    }
     query["groupinfo"]["Jahr"] = {
       "$gte": parseInt(this.levelsettings["start"].slice(0, 4)),
       "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
@@ -332,8 +339,6 @@ export class StartComponent implements OnInit {
 
   async makesmeditems(thefield) {
     this.levelsettings = this.smed.updatestartstop(this.levelsettings);
-    let startdate = this.levelsettings['startdate'];
-    let enddate = this.levelsettings['enddate'];
 
     if (thefield == "stats") {
       this.stats_ts = [];
@@ -342,27 +347,46 @@ export class StartComponent implements OnInit {
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
         this.levelsettings["resolution"], this.levelsettings['zeitraum']);
 
-      if (statswdate.length > 0) {
+      if (this.levelsettings['smedLevel'] === 'Gesamt') {
+        statswdate = Object.values(statswdate.reduce((acc, curr) => {
+          if (!acc[curr['Monat']]) {
+            acc[curr['Monat']] = { ...curr };
+          } else {
+            acc[curr['Monat']]["DAUERsmed"] += curr["DAUERsmed"];
+            acc[curr['Monat']]["DAUERsmedFaelle"] += curr["DAUERsmedFaelle"];
+            acc[curr['Monat']]["Anzahl_Beschwerden"] += curr["Anzahl_Beschwerden"];
+            acc[curr['Monat']]["Assessments"] += curr["Assessments"];
+            acc[curr['Monat']]["Anzahl_Fragen"] += curr["Anzahl_Fragen"];
+            acc[curr['Monat']]["BEVSTAND"] += curr["BEVSTAND"];
+            acc[curr['Monat']]["Assessments_mit_ARE_v3"] += curr["Assessments_mit_ARE_v3"];
+            acc[curr['Monat']]["Dauer_sek"] += curr["Dauer_sek"];
+            acc[curr['Monat']]["QMFaelle"] += curr["QMFaelle"];
+            acc[curr['Monat']]["QM_Kat_Assessment_abgekuerzt"] += curr["QM_Kat_Assessment_abgekuerzt"];
+            acc[curr['Monat']]["QM_Kat_Assessment_vollst"] += curr["QM_Kat_Assessment_vollst"];
+            acc[curr['Monat']]["QM_Kat_SmED_nicht_anwendbar"] += curr["QM_Kat_SmED_nicht_anwendbar"];
+            acc[curr['Monat']]["KM6Versicherte"] += curr["KM6Versicherte"];
+          }
+          return acc;
+        }, {}));
+      }
 
+      console.log(statswdate)
+
+      if (statswdate.length > 0) {
         for (let item of statswdate) {
           item["Mittlere Dauer (Sek.)"] = (item["DAUERsmed"] / item["DAUERsmedFaelle"]);
-
           if (item["Dauer_sek"] == 0) {
             item["Mittlere Dauer (Sek.)"] = null;
           }
-
           item["Mittlere Anzahl Beschwerden"] = item["Anzahl_Beschwerden"] / item["Assessments"];
           item["Mittlere Anzahl Fragen"] = item["Anzahl_Fragen"] / item["Assessments"];
-
           if (item["Anzahl_Beschwerden"] == 0) {
             item["Mittlere Anzahl Beschwerden"] = null;
           }
-
           item["Assessments pro 100 Tsd. Einw."] = item["Assessments"] / (item["BEVSTAND"] / 1e5);
           // item["ARE Assessments pro 100 Tsd. Einw."] = item["Assessments_mit_ARE"] / (item["BEVSTAND"] / 1e5);
           // item["ARE Assessments (v2) pro 100 Tsd. Einw."] = item["Assessments_mit_ARE_v2"] / (item["BEVSTAND"] / 1e5);
           item["Anteil ARE Assessments"] = (100 * ((item["Assessments_mit_ARE_v3"] / item["Assessments"]) / .25)) - 100;
-
           item['totaleNumbers'] = item['Assessments']
         };
 

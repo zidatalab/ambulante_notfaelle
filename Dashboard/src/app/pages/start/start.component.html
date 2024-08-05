@@ -86,6 +86,16 @@
         </p>
       </ng-template>
     </div>
+    <h3>SmED-Level</h3>
+    <p>
+      <mat-chip-list>
+        <mat-chip (click)="this.setlevel('smedLevel',item);" *ngFor="let item of this.smedLevels"
+          [selected]="(this.levelsettings['smedLevel']==item)" color="primary">
+          {{item}}
+        </mat-chip>
+      </mat-chip-list>
+    </p>
+    <div>
     <h3>Analysezeitraum</h3>
     <p>
       <mat-chip-list>
