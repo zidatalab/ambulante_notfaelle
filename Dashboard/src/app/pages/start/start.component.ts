@@ -153,7 +153,6 @@ export class StartComponent implements OnInit {
     this.levelsettings["resolution"] = this.isExtern ? 'weekly' : this.levelsettings["resolution"];
 
     if (level !== "__init") {
-      console.log('setlevel', level, value);
       this.levelsettings[level] = value;
       this.levelsettings = this.smed.updatestartstop(this.levelsettings);
     };
@@ -173,7 +172,6 @@ export class StartComponent implements OnInit {
     }
 
     if (this.levelsettings['start'] && this.levelsettings['stop']) {
-      console.log('setlevel', level, value);
       this.progress = true;
       await this.querydatasmed();
       if (this.currentuser) {
@@ -280,7 +278,6 @@ export class StartComponent implements OnInit {
       };
     }
     else {
-      console.log('querydatasmed', 'not up to date');
       await this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
@@ -367,8 +364,6 @@ export class StartComponent implements OnInit {
       //     return acc;
       //   }, {}));
       // }
-
-      console.log(statswdate)
 
       if (statswdate.length > 0) {
         for (let item of statswdate) {
