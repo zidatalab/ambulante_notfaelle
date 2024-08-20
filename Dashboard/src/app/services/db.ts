@@ -10,6 +10,7 @@ export class DataItem {
   Indicator:string;
   timeframe:string;
   data:any;
+  SmED_level:string;
 }
 
 export class StandItem {
@@ -20,6 +21,7 @@ export class StandItem {
   startdate:string;
   stopdate:string;
   timeframe:string;
+  SmED_level:string;
 }
 
 export class AppDB extends Dexie {
@@ -33,8 +35,8 @@ export class AppDB extends Dexie {
       db.close();        
     });
     db.version(11).stores({
-      datadb: 'id++,[level+levelid+Indicator+timeframe+Datum],[level+levelid+Indicator+timeframe],[level+levelid+Indicator+timeframe+Jahr]',
-      standdb: 'id++,[level+levelid+Indicator+timeframe]',
+      datadb: 'id++,[level+levelid+Indicator+timeframe+SmED_level+Datum],[level+levelid+Indicator+timeframe+SmED_level],[level+levelid+Indicator+timeframe+SmED_level+Jahr]',
+      standdb: 'id++,[level+levelid+Indicator+timeframe+SmED_level]',
     }); 
     db.datadb.mapToClass(DataItem); 
     db.standdb.mapToClass(StandItem); 

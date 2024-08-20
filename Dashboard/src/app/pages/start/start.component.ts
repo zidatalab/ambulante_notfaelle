@@ -43,7 +43,7 @@ export class StartComponent implements OnInit {
     'Schleswig-Holstein',
     'Thüringen'
   ];
-  smedLevels = ['Gesamt', 'Patient', 'Telefon', 'Tresen']
+  smedLevels = ['Patient', 'Telefon', 'Tresen']
   externLevelValues = [
   ]
   subgroups: any;
@@ -83,7 +83,7 @@ export class StartComponent implements OnInit {
   chipSelectedIndex: number = 0
 
   ngOnInit(): void {
-    this.levelsettings = { "level": "KV_v2", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly', 'smedLevel': 'Gesamt' };
+    this.levelsettings = { "level": "KV_v2", "levelvalues": "Gesamt", "zeitraum": "Letzte 12 Monate", 'resolution': 'monthly', 'smedLevel': 'Patient' };
     this.summaryinfo["done"] = false;
     this.colorsscheme = this.api.makescale(5);
     this.mapdatafor = "";
@@ -173,6 +173,7 @@ export class StartComponent implements OnInit {
     }
 
     if (this.levelsettings['start'] && this.levelsettings['stop']) {
+      console.log('setlevel', level, value);
       this.progress = true;
       await this.querydatasmed();
       if (this.currentuser) {
@@ -230,11 +231,7 @@ export class StartComponent implements OnInit {
     query["groupinfo"]["level"] = (this.isExtern) && this.levelsettings['levelvalues'] !== 'Gesamt' ? "customer_v2" : "KV_v2"
     query["groupinfo"]["levelid"] = this.levelsettings["levelvalues"];
     query["groupinfo"]["timeframe"] = this.levelsettings["resolution"];
-    if (this.levelsettings["smedLevel"] === 'Gesamt') {
-      delete query["groupinfo"]["SmED_level"];
-    } else {
-      query["groupinfo"]["SmED_level"] = this.levelsettings['smedLevel'];
-    }
+    query["groupinfo"]["SmED_level"] = this.levelsettings['smedLevel'];
     query["groupinfo"]["Jahr"] = {
       "$gte": parseInt(this.levelsettings["start"].slice(0, 4)),
       "$lte": parseInt(this.levelsettings["stop"].slice(0, 4))
@@ -251,14 +248,14 @@ export class StartComponent implements OnInit {
 
     if (thefield != "") {
       await this.db.querydatadates(
-        this.levelsettings['level'], this.levelsettings["levelvalues"], thefield, this.levelsettings["resolution"]).then(data => {
+        this.levelsettings['level'], this.levelsettings["levelvalues"], thefield, this.levelsettings["resolution"], this.levelsettings['smedLevel']).then(data => {
           if (data.length > 0) { dbdaterange = Object.create(data[0]); }
         }
         );
     }
     else {
       await this.db.querydatadates(
-        this.levelsettings['level'], this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"]).then(data => {
+        this.levelsettings['level'], this.levelsettings["levelvalues"], this.allpublicfields[0], this.levelsettings["resolution"], this.levelsettings['smedLevel']).then(data => {
           if (data.length > 0) { dbdaterange = Object.create(data[0]); }
         });
     };
@@ -283,6 +280,7 @@ export class StartComponent implements OnInit {
       };
     }
     else {
+      console.log('querydatasmed', 'not up to date');
       await this.api.postTypeRequest('get_data/', query).subscribe(
         data => {
           let res = data["data"];
@@ -345,30 +343,30 @@ export class StartComponent implements OnInit {
       this.summaryinfo = [];
       let statswdate = await this.db.listdata('stats', this.levelsettings['level'],
         this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true,
-        this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+        this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
 
-      if (this.levelsettings['smedLevel'] === 'Gesamt') {
-        statswdate = Object.values(statswdate.reduce((acc, curr) => {
-          if (!acc[curr['Monat']]) {
-            acc[curr['Monat']] = { ...curr };
-          } else {
-            acc[curr['Monat']]["DAUERsmed"] += curr["DAUERsmed"];
-            acc[curr['Monat']]["DAUERsmedFaelle"] += curr["DAUERsmedFaelle"];
-            acc[curr['Monat']]["Anzahl_Beschwerden"] += curr["Anzahl_Beschwerden"];
-            acc[curr['Monat']]["Assessments"] += curr["Assessments"];
-            acc[curr['Monat']]["Anzahl_Fragen"] += curr["Anzahl_Fragen"];
-            acc[curr['Monat']]["BEVSTAND"] += curr["BEVSTAND"];
-            acc[curr['Monat']]["Assessments_mit_ARE_v3"] += curr["Assessments_mit_ARE_v3"];
-            acc[curr['Monat']]["Dauer_sek"] += curr["Dauer_sek"];
-            acc[curr['Monat']]["QMFaelle"] += curr["QMFaelle"];
-            acc[curr['Monat']]["QM_Kat_Assessment_abgekuerzt"] += curr["QM_Kat_Assessment_abgekuerzt"];
-            acc[curr['Monat']]["QM_Kat_Assessment_vollst"] += curr["QM_Kat_Assessment_vollst"];
-            acc[curr['Monat']]["QM_Kat_SmED_nicht_anwendbar"] += curr["QM_Kat_SmED_nicht_anwendbar"];
-            acc[curr['Monat']]["KM6Versicherte"] += curr["KM6Versicherte"];
-          }
-          return acc;
-        }, {}));
-      }
+      // if (this.levelsettings['smedLevel'] === 'Gesamt') {
+      //   statswdate = Object.values(statswdate.reduce((acc, curr) => {
+      //     if (!acc[curr['Monat']]) {
+      //       acc[curr['Monat']] = { ...curr };
+      //     } else {
+      //       acc[curr['Monat']]["DAUERsmed"] += curr["DAUERsmed"];
+      //       acc[curr['Monat']]["DAUERsmedFaelle"] += curr["DAUERsmedFaelle"];
+      //       acc[curr['Monat']]["Anzahl_Beschwerden"] += curr["Anzahl_Beschwerden"];
+      //       acc[curr['Monat']]["Assessments"] += curr["Assessments"];
+      //       acc[curr['Monat']]["Anzahl_Fragen"] += curr["Anzahl_Fragen"];
+      //       acc[curr['Monat']]["BEVSTAND"] += curr["BEVSTAND"];
+      //       acc[curr['Monat']]["Assessments_mit_ARE_v3"] += curr["Assessments_mit_ARE_v3"];
+      //       acc[curr['Monat']]["Dauer_sek"] += curr["Dauer_sek"];
+      //       acc[curr['Monat']]["QMFaelle"] += curr["QMFaelle"];
+      //       acc[curr['Monat']]["QM_Kat_Assessment_abgekuerzt"] += curr["QM_Kat_Assessment_abgekuerzt"];
+      //       acc[curr['Monat']]["QM_Kat_Assessment_vollst"] += curr["QM_Kat_Assessment_vollst"];
+      //       acc[curr['Monat']]["QM_Kat_SmED_nicht_anwendbar"] += curr["QM_Kat_SmED_nicht_anwendbar"];
+      //       acc[curr['Monat']]["KM6Versicherte"] += curr["KM6Versicherte"];
+      //     }
+      //     return acc;
+      //   }, {}));
+      // }
 
       console.log(statswdate)
 
@@ -413,7 +411,7 @@ export class StartComponent implements OnInit {
     if (thefield == "mainsymptoms_ts") {
       let symptoms_list = [];
 
-      symptoms_list = await this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+      symptoms_list = await this.db.listdata('mainsymptoms_ts', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
       symptoms_list = this.api.getValues(symptoms_list, 'data');
 
       this.symptoms_list_export = this.api.sortArray(this.api.groupbysum(symptoms_list, 'Sympt', '', 'n'), 'n', "descending");
@@ -428,7 +426,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "timestats") {
       let utiltimes = [];
-      let dbutiltimes = await this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+      let dbutiltimes = await this.db.listdata('timestats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], false, this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
       dbutiltimes = this.api.getValues(dbutiltimes, 'data');
       utiltimes = this.api.groupbysum(dbutiltimes, "wt", "h", "n");
       let ntotal = this.api.sumArray(this.api.getValues(utiltimes, 'n'));
@@ -479,7 +477,7 @@ export class StartComponent implements OnInit {
         }
       ]
 
-      result = await this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+      result = await this.db.listdata('timetotreat', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
       result = this.api.groupbysum(result, 'TTTsmed_text', '', 'Anzahl');
       const total = this.api.sumArray(this.api.getValues(result, 'Anzahl'));
 
@@ -513,7 +511,7 @@ export class StartComponent implements OnInit {
 
     if (thefield == "decisions") {
       let decisions = [];
-      decisions = await this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+      decisions = await this.db.listdata('decisions', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
       let total = this.api.sumArray(this.api.getValues(decisions, 'Anzahl'));
       this.decisions_ttt = this.api.replacemissing(this.api.groupbysum(decisions, 'TTTsmed_text', "TTTdispo_text", 'Anzahl'), 'TTTdispo_text', "Keine Daten");
       this.decisions_poc = this.api.replacemissing(this.api.groupbysum(decisions, 'POCsmed_text', "POCdispo_text", 'Anzahl'), 'POCdispo_text', "Keine Daten");;
@@ -544,7 +542,7 @@ export class StartComponent implements OnInit {
         },
       ]
 
-      const data = await this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum']);
+      const data = await this.db.listdata('stats', this.levelsettings['level'], this.levelsettings['levelvalues'], this.levelsettings['start'], this.levelsettings['stop'], true, this.levelsettings["resolution"], this.levelsettings['zeitraum'], this.levelsettings['smedLevel']);
       let total = 0
 
       if (data.length > 0) {

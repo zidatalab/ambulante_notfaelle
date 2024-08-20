@@ -9,9 +9,9 @@ export class DBService {
 
   constructor(private api: ApiService) { }
 
-  async storestand(Indicator, level, levelid, Stand, mindate, maxdate, resolution) {
+  async storestand(Indicator, level, levelid, Stand, mindate, maxdate, resolution, SmED_level = '') {
     await db.standdb
-      .where('[level+levelid+Indicator+timeframe]')
+      .where('[level+levelid+Indicator+timeframe+SmED_level]')
       .equals([level, levelid, Indicator, resolution])
       .delete();
     db.standdb.put({
@@ -21,17 +21,18 @@ export class DBService {
       'Indicator': Indicator,
       'startdate': mindate,
       'stopdate': maxdate,
-      'timeframe': resolution
+      'timeframe': resolution,
+      'SmED_level': SmED_level
     });
   };
 
-  getstand(Indicator, level, levelid, resolution) {
+  getstand(Indicator, level, levelid, resolution, SmED_level='') {
     return db.standdb
-      .where('[level+levelid+Indicator+timeframe]')
-      .equals([level, levelid, Indicator, resolution]).first();
+      .where('[level+levelid+Indicator+timeframe+SmED_level]')
+      .equals([level, levelid, Indicator, resolution, SmED_level]).first();
   }
 
-  listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution, timeframe = '') {
+  listdata(Indicator, level, levelid, start = "", stop = "", expand = true, resolution, timeframe = '', SmED_level = '') {
     let tosearch = {
       Indicator: Indicator,
       level: level,
@@ -42,37 +43,37 @@ export class DBService {
     if (start !== "" && stop !== "" && expand == true) {
       if (timeframe === 'Letztes Jahr') {
         const lastYear = Number(start.slice(0, 4))
-        return db.datadb.where('[level+levelid+Indicator+timeframe+Jahr]').equals([level, levelid, Indicator, resolution, lastYear]).toArray()
+        return db.datadb.where('[level+levelid+Indicator+timeframe+SmED_level+Jahr]').equals([level, levelid, Indicator, resolution, SmED_level, lastYear]).toArray()
           .then(data => {
             return this.api.objectkeystocolumns(data, 'data')
           });
       }
 
       return db.datadb
-        .where('[level+levelid+Indicator+timeframe+Datum]')
-        .between([level, levelid, Indicator, resolution, start], [level, levelid, Indicator, resolution, stop])
+        .where('[level+levelid+Indicator+timeframe+SmED_level+Datum]')
+        .between([level, levelid, Indicator, resolution, SmED_level, start], [level, levelid, Indicator, resolution, SmED_level, stop])
         .toArray()
         .then(data => this.api.objectkeystocolumns(data, 'data'));
     }
 
     if (expand == true) {
       return db.datadb
-        .where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).toArray().then(data => this.api.objectkeystocolumns(data, 'data'));
+        .where('[level+levelid+Indicator+timeframe+SmED_level]').equals([level, levelid, Indicator, resolution, SmED_level]).toArray().then(data => this.api.objectkeystocolumns(data, 'data'));
     }
 
     if (expand == false) {
       return db.datadb
-        .where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).toArray();
+        .where('[level+levelid+Indicator+timeframe+SmED_level]').equals([level, levelid, Indicator, resolution, SmED_level]).toArray();
     };
   }
 
-  async querydatadates(level, levelid, Indicator, resolution = "monthly") {
-    let res = await db.standdb.where('[level+levelid+Indicator+timeframe]').equals([level, levelid, Indicator, resolution]).toArray();
+  async querydatadates(level, levelid, Indicator, resolution = "monthly", SmED_level = 'Gesamt') {
+    let res = await db.standdb.where('[level+levelid+Indicator+timeframe+SmED_level]').equals([level, levelid, Indicator, resolution, SmED_level]).toArray();
 
     return res
   }
 
-  deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "", timeframe = "") {
+  deletewhere(Indicator, level, levelid, resolution = "monthly", start = "", stop = "", timeframe = "", SmED_level = '') {
     let tosearch = {
       Indicator: Indicator,
       level: level,
@@ -86,19 +87,19 @@ export class DBService {
 
       if (timeframe === 'Letztes Jahr') {
         return db.datadb
-          .where('[level+levelid+Indicator+timeframe+Jahr]').equals(
-            [level, levelid, Indicator, resolution, lastYear]).delete();
+          .where('[level+levelid+Indicator+timeframe+SmED_level+Jahr]').equals(
+            [level, levelid, Indicator, resolution, SmED_level, lastYear]).delete();
       }
 
       return db.datadb
-        .where('[level+levelid+Indicator+timeframe+Datum]').between(
-          [level, levelid, Indicator, resolution, start],
-          [level, levelid, Indicator, resolution, stop]).delete();
+        .where('[level+levelid+Indicator+timeframe+SmED_level+Datum]').between(
+          [level, levelid, Indicator, resolution, SmED_level, start],
+          [level, levelid, Indicator, resolution, SmED_level, stop]).delete();
     }
     else {
       return db.datadb
-        .where('[level+levelid+Indicator+timeframe]').equals(
-          [level, levelid, Indicator, resolution]).delete();
+        .where('[level+levelid+Indicator+timeframe+SmED_level]').equals(
+          [level, levelid, Indicator, resolution, SmED_level]).delete();
     }
   }
 
@@ -106,7 +107,8 @@ export class DBService {
     return db.datadb.bulkPut(array);
   };
 
-  async adddata({ level, levelid, Jahr, Monat, KW, Datum, Indicator, data, KM6Versicherte, BEVSTAND, resolution }) {
+  async adddata({ level, levelid, Jahr, Monat, KW, Datum, Indicator, data, KM6Versicherte, BEVSTAND, resolution, SmED_level }) {
+    console.log(level, levelid, Jahr, Monat, KW, Datum, Indicator, data, KM6Versicherte, BEVSTAND, resolution, SmED_level)
     return await db.datadb
       .put({
         Indicator: Indicator,
@@ -117,7 +119,8 @@ export class DBService {
         KW: KW,
         Datum: Datum,
         data: data,
-        timeframe: resolution
+        timeframe: resolution,
+        SmED_level: SmED_level
       });
   };
 
