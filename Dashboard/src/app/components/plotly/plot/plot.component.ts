@@ -48,6 +48,7 @@ export class PlotComponent implements OnInit {
   @Input() legendposx = 'right';
   @Input() legendposy = 1;
   @Output() clicked = new EventEmitter<string>();
+  @Input() resolution: string
 
   constructor(private api: ApiService) { }
   plotlayout: any;
@@ -241,8 +242,10 @@ export class PlotComponent implements OnInit {
       this.plotlayout['showlegend'] = true;
     }
 
-    if (this.xtickformat != '') {
-      this.plotlayout['xaxis']['tickformat'] = this.xtickformat;
+    if (this.resolution === 'weekly') {
+      this.plotlayout.xaxis.tickformat = 'KW %V %Y';
+    } else {
+      this.plotlayout.xaxis.tickformat = '%d.%m.<br>%Y';
     }
 
     this.plotlayout['font'] = {
