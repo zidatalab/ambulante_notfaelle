@@ -242,8 +242,8 @@ export class PlotComponent implements OnInit {
       this.plotlayout['showlegend'] = true;
     }
 
-    if (this.resolution === 'weekly') {
-      this.plotlayout.xaxis.tickformat = 'KW %V %Y';
+    if (this.xvalue === 'KW') {
+      this.plotlayout.xaxis.tickformat = 'KW';
     } else {
       this.plotlayout.xaxis.tickformat = '%d.%m.<br>%Y';
     }
@@ -385,7 +385,7 @@ export class PlotComponent implements OnInit {
         }
 
         trace['name'] = ''
-        trace['hovertemplate'] = '%{x} | %{y:.2f}'
+        trace['hovertemplate'] = this.xvalue === 'KW' ? 'KW %{x} | %{y:.2f}' : '%{x} | %{y:.2f}'
       }
 
       if (this.plottype == "area") {
