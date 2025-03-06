@@ -1472,14 +1472,14 @@ class PlotComponent {
             this.plotlayout['showlegend'] = true;
         }
         if (this.xvalue === 'KW') {
-            this.plotlayout.xaxis.tickformat = 'KW';
+            this.plotlayout.xaxis.tickformat = '%V %Y';
         }
         else {
             this.plotlayout.xaxis.tickformat = '%d.%m.<br>%Y';
         }
         this.plotlayout['font'] = {
             family: this.fontfamily,
-            size: this.fontsize,
+            size: this.xvalue === 'KW' ? 10 : this.fontsize,
             color: this.fontcolor
         };
         if (this.xtitle !== "") {
@@ -7572,7 +7572,7 @@ class ApiService {
     let values = [];
 
     for (let item of array) {
-      values.push(item[key]);
+      values.push(key === 'KW' ? `${item[key]} | ${item['Jahr']}` : item[key]);
     }
 
     return values;
@@ -7677,6 +7677,10 @@ class ApiService {
     let result = array;
 
     if (order == "ascending") {
+      if (key === 'KW') {
+        return result.sort((a, b) => a['Jahr'] - b['Jahr'] || a[key] - b[key]);
+      }
+
       return result.sort((a, b) => a[key] < b[key] ? -1 : 1);
     } else {
       return result.sort((a, b) => a[key] > b[key] ? -1 : 1);
