@@ -1471,8 +1471,8 @@ class PlotComponent {
         if (this.showlegend) {
             this.plotlayout['showlegend'] = true;
         }
-        if (this.resolution === 'weekly') {
-            this.plotlayout.xaxis.tickformat = 'KW %V %Y';
+        if (this.xvalue === 'KW') {
+            this.plotlayout.xaxis.tickformat = 'KW';
         }
         else {
             this.plotlayout.xaxis.tickformat = '%d.%m.<br>%Y';
@@ -1590,7 +1590,7 @@ class PlotComponent {
                     size: this.linewidth * 5
                 };
                 trace['name'] = '';
-                trace['hovertemplate'] = '%{x} | %{y:.2f}';
+                trace['hovertemplate'] = this.xvalue === 'KW' ? 'KW %{x} | %{y:.2f}' : '%{x} | %{y:.2f}';
             }
             if (this.plottype == "area") {
                 trace["fill"] = "tozeroy";
@@ -5617,7 +5617,7 @@ function StartComponent_div_7_div_18_div_2_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", ctx_r35.absoluteNumbers);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r35.stats_ts)("xvalue", "Datum")("outcomes", !ctx_r35.absoluteNumbers ? _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](14, _c1) : _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](15, _c2))("sortx", true)("fontcolor", "white")("resolution", ctx_r35.levelsettings["resolution"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r35.stats_ts)("xvalue", ctx_r35.levelsettings["resolution"] === "monthly" ? "Datum" : "KW")("outcomes", !ctx_r35.absoluteNumbers ? _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](14, _c1) : _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](15, _c2))("sortx", true)("fontcolor", "white")("resolution", ctx_r35.levelsettings["resolution"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx_r35.panelOpenState);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](2);
@@ -5708,7 +5708,7 @@ function StartComponent_div_7_div_18_div_3_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r36 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"](3);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r36.stats_ts)("xvalue", "Datum")("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](9, _c3))("sortx", true)("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](10, _c4))("resolution", ctx_r36.levelsettings["resolution"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r36.stats_ts)("xvalue", ctx_r36.levelsettings["resolution"] === "monthly" ? "Datum" : "KW")("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](9, _c3))("sortx", true)("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](10, _c4))("resolution", ctx_r36.levelsettings["resolution"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx_r36.panelOpenState);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](2);
@@ -6114,7 +6114,7 @@ function StartComponent_div_7_div_18_div_7_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r40 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"](3);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r40.stats_ts)("xvalue", "Datum")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r40.colorsscheme[3]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c8))("resolution", ctx_r40.levelsettings["resolution"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r40.stats_ts)("xvalue", ctx_r40.levelsettings["resolution"] === "monthly" ? "Datum" : "KW")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r40.colorsscheme[3]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c8))("resolution", ctx_r40.levelsettings["resolution"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx_r40.panelOpenState);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](3);
@@ -6195,7 +6195,7 @@ function StartComponent_div_7_div_18_div_8_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r41 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"](3);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](7);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r41.stats_ts)("xvalue", "Datum")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r41.colorsscheme[2]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c9))("resolution", ctx_r41.levelsettings["resolution"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r41.stats_ts)("xvalue", ctx_r41.levelsettings["resolution"] === "monthly" ? "Datum" : "KW")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r41.colorsscheme[2]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c9))("resolution", ctx_r41.levelsettings["resolution"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx_r41.panelOpenState);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](3);
@@ -6279,7 +6279,7 @@ function StartComponent_div_7_div_18_div_9_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r42 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"](3);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](9);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r42.stats_ts)("xvalue", "Datum")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r42.colorsscheme[1]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c10))("resolution", ctx_r42.levelsettings["resolution"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("data", ctx_r42.stats_ts)("xvalue", ctx_r42.levelsettings["resolution"] === "monthly" ? "Datum" : "KW")("fontcolor", "white")("colorscheme", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction1"](9, _c7, ctx_r42.colorsscheme[1]))("sortx", true)("outcomes", _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpureFunction0"](11, _c10))("resolution", ctx_r42.levelsettings["resolution"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", !ctx_r42.panelOpenState);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](3);
