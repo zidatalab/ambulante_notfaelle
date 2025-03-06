@@ -243,14 +243,14 @@ export class PlotComponent implements OnInit {
     }
 
     if (this.xvalue === 'KW') {
-      this.plotlayout.xaxis.tickformat = 'KW';
+      this.plotlayout.xaxis.tickformat = '%V %Y';
     } else {
       this.plotlayout.xaxis.tickformat = '%d.%m.<br>%Y';
     }
 
     this.plotlayout['font'] = {
       family: this.fontfamily,
-      size: this.fontsize,
+      size: this.xvalue === 'KW' ? 10 : this.fontsize,
       color: this.fontcolor
     };
 
@@ -383,7 +383,6 @@ export class PlotComponent implements OnInit {
           color: colors[i],
           size: this.linewidth * 5
         }
-
         trace['name'] = ''
         trace['hovertemplate'] = this.xvalue === 'KW' ? 'KW %{x} | %{y:.2f}' : '%{x} | %{y:.2f}'
       }

@@ -77,7 +77,7 @@ export class ApiService {
   public getValues(array, key) {
     let values = [];
     for (let item of array) {
-      values.push(item[key]);
+      values.push(key === 'KW' ? `${item[key]} | ${item['Jahr']}` : item[key]);
     }
     return values;
   }
@@ -157,6 +157,9 @@ export class ApiService {
   public sortArray(array, key, order = "ascending") {
     let result = array;
     if (order == "ascending") {
+      if(key === 'KW') {
+        return result.sort((a, b) => a['Jahr'] - b['Jahr'] || a[key] - b[key]);
+      }
       return result.sort((a, b) => (a[key] < b[key] ? -1 : 1));
     }
     else {
